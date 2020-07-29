@@ -103,8 +103,6 @@ def main():
 
     accumulated = []
 
-    score_ranges = []
-
     for hyp_line in hyp_handle:
         hyp_line = hyp_line.strip()
 
@@ -114,13 +112,11 @@ def main():
             ref_line = ref_handle.readline()
             ref_line = ref_line.strip()
             score_range = compute_ranges(accumulated, ref_line)
-            score_ranges.append(score_range)
+
+            score_range = [str(s) for s in score_range]
+            print("/t".join(score_range))
 
             accumulated = []
-
-    for score_range in score_ranges:
-        score_range = [str(s) for s in score_range]
-        print("/t".join(score_range))
 
 
 if __name__ == '__main__':
