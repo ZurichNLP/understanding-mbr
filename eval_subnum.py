@@ -157,6 +157,7 @@ def main():
     range_averages = [str(r) for r in range_averages]
 
     logging.debug("RANGE AVERAGES:")
+    logging.debug("BLEU\tTER\tMETEOR\tRATIO")
     logging.debug("\t".join(range_averages))
 
     for score_range in score_ranges:
