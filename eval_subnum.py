@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ref", type=str, help="Reference translations", required=True)
-    parser.add_argument("--hyp", type=int, help="Hypotheses for all modified inputs.", default=64)
+    parser.add_argument("--hyp", type=str, help="Hypotheses for all modified inputs.", default=64)
     parser.add_argument("--num-variations", type=int, help="How many variations per input sentence.", default=1)
 
     args = parser.parse_args()
