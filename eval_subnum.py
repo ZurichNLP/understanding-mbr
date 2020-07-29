@@ -103,6 +103,10 @@ def main():
     ref_handle = open(args.ref, "r")
     hyp_handle = open(args.hyp, "r")
 
+    print("BLEU\tTER\tMETEOR\tRATIO")
+
+    seen = 0
+
     for num_line, ref_line in zip(num_handle, ref_handle):
 
         ref_line = ref_line.strip()
@@ -123,7 +127,10 @@ def main():
         score_range = [str(s) for s in score_range]
         print("\t".join(score_range))
 
-        break
+        seen += 1
+
+        if seen % 100 == 0:
+            logging.debug("Seen %d sentences." % seen)
 
 
 if __name__ == '__main__':
