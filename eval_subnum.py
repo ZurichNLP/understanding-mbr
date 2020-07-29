@@ -96,6 +96,22 @@ def compute_ranges(accumulated: List[str], ref_line: str) -> List[float]:
     return [compute_range(s) for s in all_scores]
 
 
+def compute_range_average(score_ranges: List[List[float]]) -> List[float]:
+    """
+
+    :param score_ranges:
+    :return:
+    """
+    bleu_ranges = [s[0] for s in score_ranges]
+    ter_ranges = [s[1] for s in score_ranges]
+    meteor_ranges = [s[2] for s in score_ranges]
+    ratio_ranges = [s[3] for s in score_ranges]
+
+    all_ranges = [bleu_ranges, ter_ranges, meteor_ranges, ratio_ranges]
+
+    return [float(np.mean(r)) for r in all_ranges]
+
+
 def main():
 
     args = parse_args()
@@ -110,6 +126,8 @@ def main():
     print("BLEU\tTER\tMETEOR\tRATIO")
 
     seen = 0
+
+    score_ranges = []
 
     for num_line, ref_line in zip(num_handle, ref_handle):
 
@@ -128,13 +146,22 @@ def main():
 
         score_range = compute_ranges(accumulated, ref_line)
 
-        score_range = [str(s) for s in score_range]
-        print("\t".join(score_range))
+        score_ranges.append(score_range)
 
         seen += 1
 
         if seen % 100 == 0:
             logging.debug("Seen %d sentences." % seen)
+
+    range_averages = compute_range_average(score_ranges)
+    range_averages = [str(r) for r in range_averages]
+
+    logging.debug("RANGE AVERAGES:")
+    logging.debug("\t".join(range_averages))
+
+    for score_range in score_ranges:
+        score_range = [str(s) for s in score_range]
+        print("\t".join(score_range))
 
 
 if __name__ == '__main__':
