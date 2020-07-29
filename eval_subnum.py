@@ -32,7 +32,11 @@ def compute_ratio(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return len(hyp) / len(ref)
+    # naive tokenization
+    hyp_len = len(hyp.split(" "))
+    ref_len = len(ref.split(" "))
+
+    return hyp_len / ref_len
 
 
 def compute_meteor(hyp: str, ref: str) -> float:
@@ -42,7 +46,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return nltk.translate.meteor_score.single_meteor_score(ref, hyp)
+    return nltk.translate.meteor_score.single_meteor_score(ref, hyp) * 100
 
 
 def compute_ter(hyp: str, ref: str) -> float:
