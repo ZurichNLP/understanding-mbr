@@ -16,8 +16,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--ref", type=str, help="Reference translations", required=True)
-    parser.add_argument("--hyp", type=str, help="Hypotheses for all modified inputs.", default=64)
-    parser.add_argument("--num-variations", type=int, help="How many variations per input sentence.", default=1)
+    parser.add_argument("--hyp", type=str, help="Hypotheses for all modified inputs.", required=True)
+    parser.add_argument("--num", type=str, help="File listing counts of variations per reference sentence.",
+                        required=True)
 
     args = parser.parse_args()
 
@@ -98,25 +99,29 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(args)
 
+    num_handle = open(args.num, "r")
     ref_handle = open(args.ref, "r")
     hyp_handle = open(args.hyp, "r")
 
-    accumulated = []
+    for num_line, ref_line in zip(num_handle, ref_handle):
 
-    for hyp_line in hyp_handle:
-        hyp_line = hyp_line.strip()
+        ref_line = ref_line.strip()
+        num = int(num_line.strip())
 
-        accumulated.append(hyp_line)
+        if num == 0:
+            continue
 
-        if len(accumulated) == args.num_variations:
-            ref_line = ref_handle.readline()
-            ref_line = ref_line.strip()
-            score_range = compute_ranges(accumulated, ref_line)
+        accumulated = []
 
-            score_range = [str(s) for s in score_range]
-            print("/t".join(score_range))
+        for _ in range(num):
+            hyp_line = hyp_handle.readline()
+            hyp_line = hyp_line.strip()
+            accumulated.append(hyp_line)
 
-            accumulated = []
+        score_range = compute_ranges(accumulated, ref_line)
+
+        score_range = [str(s) for s in score_range]
+        print("/t".join(score_range))
 
 
 if __name__ == '__main__':
