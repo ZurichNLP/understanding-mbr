@@ -123,6 +123,8 @@ def main():
         score_range = [str(s) for s in score_range]
         print("/t".join(score_range))
 
+        break
+
 
 if __name__ == '__main__':
     main()
