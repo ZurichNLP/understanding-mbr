@@ -121,7 +121,7 @@ def main():
         score_range = compute_ranges(accumulated, ref_line)
 
         score_range = [str(s) for s in score_range]
-        print("/t".join(score_range))
+        print("\t".join(score_range))
 
         break
 
