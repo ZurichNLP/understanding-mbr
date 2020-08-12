@@ -1,6 +1,7 @@
 import sys
 import torch
-import copy
+import logging
+import argparse
 
 from typing import List
 
@@ -9,18 +10,31 @@ import numpy as np
 from fairseq import hub_utils, utils
 from fairseq.models.transformer import TransformerModel
 
-seed = 2
-
-# set seeds
-np.random.seed(seed)
-utils.set_torch_seed(seed)
 
 class GeneratorHubInterfaceWithScoring(hub_utils.GeneratorHubInterface):
 
     def translate_with_score(self, sentences: List[str], beam: int = 5, nbest_size: int = 1, verbose: bool = False, **kwargs) -> List[str]:
+        """
+
+        :param sentences:
+        :param beam:
+        :param nbest_size:
+        :param verbose:
+        :param kwargs:
+        :return:
+        """
         return self.sample_with_score(sentences, beam, nbest_size, verbose, **kwargs)
 
     def sample_with_score(self, sentences: List[str], beam: int = 1, nbest_size: int = 1, verbose: bool = False, **kwargs) -> List[str]:
+        """
+
+        :param sentences:
+        :param beam:
+        :param nbest_size:
+        :param verbose:
+        :param kwargs:
+        :return:
+        """
 
         if isinstance(sentences, str):
             return self.sample_with_score([sentences], beam=beam, nbest_size=nbest_size, verbose=verbose, **kwargs)[0]
@@ -40,6 +54,14 @@ class TransformerModelWithScoring(TransformerModel):
 
     @classmethod
     def from_pretrained(cls, model_name_or_path, checkpoint_file='model.pt', data_name_or_path='.', **kwargs):
+        """
+
+        :param model_name_or_path:
+        :param checkpoint_file:
+        :param data_name_or_path:
+        :param kwargs:
+        :return:
+        """
 
         x = hub_utils.from_pretrained(
             model_name_or_path,
@@ -52,14 +74,27 @@ class TransformerModelWithScoring(TransformerModel):
         return GeneratorHubInterfaceWithScoring(x['args'], x['task'], x['models'])
 
 
-def load_model():
+def load_model(model_path: str,
+               checkpoint_file: str,
+               bpe_codes: str,
+               bpe: str = "fastbpe",
+               tokenizer: str = "moses") -> GeneratorHubInterfaceWithScoring:
+    """
+
+    :param model_path:
+    :param checkpoint_file:
+    :param bpe_codes:
+    :param bpe:
+    :param tokenizer:
+    :return:
+    """
 
     de2en = TransformerModelWithScoring.from_pretrained(
-      'model/wmt19.de-en.joined-dict.ensemble',
-      checkpoint_file='model1.pt',
-      bpe='fastbpe',
-      tokenizer='moses',
-      bpe_codes='model/wmt19.de-en.joined-dict.ensemble/bpecodes'
+      model_path,
+      checkpoint_file=checkpoint_file,
+      bpe=bpe,
+      tokenizer=tokenizer,
+      bpe_codes=bpe_codes
     )
 
     de2en.eval()
@@ -68,50 +103,52 @@ def load_model():
 
     return de2en
 
-def translate_string(text, model=None):
 
-    if model is None:
-        model = load_model()
-    print(model.translate(text))
+def parse_args():
+    parser = argparse.ArgumentParser()
 
-def interactive():
+    parser.add_argument("--method", type=str, help="Beam or sampling", required=True, choices=["beam", "sampling"])
 
-    import readline
+    parser.add_argument("--beam_size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=False, default=5)
+    parser.add_argument("--nbest_size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=True)
 
-    model = load_model()
+    parser.add_argument("--model-folder", type=str, help="Path to model folder", required=True)
+    parser.add_argument("--checkpoint", type=str, help="Name of checkpoint file", required=True)
+    parser.add_argument("--bpe-codes", type=str, help="Path to BPE model", required=True)
 
-    while True:
+    parser.add_argument("--bpe-method", type=str, help="How to segment sentences into subwords", required=True)
+    parser.add_argument("--tokenizer-method", type=str, help="How to tokenize sentences", required=True)
 
-        try:
-            line = input("> ")
+    parser.add_argument("--seed", type=int, help="RNG seed only relevant for sampling", required=False, default=None)
 
-            if line.strip() != "":
-                output = model.translate(line)
-                print("  " + output)
+    args = parser.parse_args()
 
-        except KeyboardInterrupt:
-            print()
-            exit(0)
+    return args
 
-def translate_file(inpath, outpath):
 
-    inputs = [l.strip() for l in open(inpath, "r").readlines()]
+def main():
 
-    de2en = load_model()
+    args = parse_args()
 
-    outputs = de2en.translate(inputs)
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug(args)
 
-    with open(outpath, "w") as handle:
-        for output in outputs:
-            handle.write(output + "\n")
+    if args.seed is not None:
+        np.random.seed(args.seed)
+        utils.set_torch_seed(args.seed)
 
-def translate_stdin():
+    model = load_model(model_path=args.model_folder,
+                       checkpoint_file=args.checkpoint,
+                       bpe_codes=args.bpe_codes,
+                       bpe=args.bpe_method,
+                       tokenizer=args.tokenizer_method)
 
     inputs = [l.strip() for l in sys.stdin.readlines()]
 
-    de2en = load_model()
-
-    outputs = de2en.translate_with_score(inputs, nbest_size=3, sampling=True)
+    outputs = model.translate_with_score(inputs,
+                                         beam=args.beam_size,
+                                         nbest_size=args.nbest_size,
+                                         sampling=True if args.method == "sampling" else False)
 
     for nbest_list in outputs:
         for index, hyp in enumerate(nbest_list):
@@ -119,19 +156,6 @@ def translate_stdin():
             score = str(score.cpu().detach().numpy())
             sys.stdout.write(str(index) + "\t" + score + "\t" + output + "\n")
 
-#translate_file("data/wmt19-ende-wmtp.ref", "wmt.p.hyps")
-# translate_file("data/wmt19-en-de.trg", "wmt.hyps")
 
-#model = load_model()
-
-# original WMT sentence
-
-# translate_string('Walisische Abgeordnete sorgen sich "wie Dödel auszusehen"', model=model)
-
-# paraphrased by a human
-
-#translate_string("Abgeordnete walisischen Ursprungs machen sich Sorgen, „wie Idioten auszusehen“", model=model)
-
-# interactive()
-
-translate_stdin()
+if __name__ == "__main__":
+    main()
