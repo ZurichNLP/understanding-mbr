@@ -90,6 +90,12 @@ def get_minimum_risk_sample(samples: Tuple[str], risk_function: Callable) -> Tup
 
         average_risks.append(np.mean(risks))
 
+    print("risks:")
+    print(risks)
+
+    print("average risk:")
+    print(average_risks)
+
     minimum_risk_index = int(np.argmin(average_risks))
 
     return samples[minimum_risk_index], np.min(average_risks)
@@ -109,7 +115,10 @@ def main():
 
     for samples in zip(*input_handles):  # type: Tuple[str]
         output, risk = get_minimum_risk_sample(samples=samples, risk_function=risk_function)
-        output_handle.write(output + " " + str(risk))
+
+        output = output.strip()
+
+        output_handle.write(str(risk) + " " + output)
 
 
 if __name__ == "__main__":
