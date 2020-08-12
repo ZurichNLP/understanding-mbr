@@ -109,8 +109,8 @@ def parse_args():
 
     parser.add_argument("--method", type=str, help="Beam or sampling", required=True, choices=["beam", "sampling"])
 
-    parser.add_argument("--beam_size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=False, default=5)
-    parser.add_argument("--nbest_size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=True)
+    parser.add_argument("--beam-size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=False, default=5)
+    parser.add_argument("--nbest-size", type=int, help="Size of nbest list (beam search) or number of samples (sampling)", required=True)
 
     parser.add_argument("--model-folder", type=str, help="Path to model folder", required=True)
     parser.add_argument("--checkpoint", type=str, help="Name of checkpoint file", required=True)
