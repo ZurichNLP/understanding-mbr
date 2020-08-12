@@ -11,7 +11,7 @@ translations=$base/translations
 
 mkdir -p $translations
 
-for seed in {1..10}; do
+for seed in {1..30}; do
 
   cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
       --method sampling \
@@ -24,3 +24,14 @@ for seed in {1..10}; do
       --seed $seed \
       | cut -f3 > $translations/toy_samples.$seed
 done
+
+cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
+      --method beam \
+      --nbest-size 1 \
+      --beam-size 5 \
+      --model-folder $models_sub/"wmt19.de-en.joined-dict.ensemble" \
+      --checkpoint "model1.pt" \
+      --bpe-codes $models_sub/"wmt19.de-en.joined-dict.ensemble/bpecodes" \
+      --bpe-method "fastbpe" \
+      --tokenizer-method "moses" \
+       > $translations/toy_translation
