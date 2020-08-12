@@ -1,6 +1,6 @@
 #! /bin/bash
 
-for seed in {1..30}; do
+for seed in {1..10}; do
 
   cat t | CUDA_VISIBLE_DEVICES=1 python translate.py \
       --method sampling \
@@ -11,5 +11,5 @@ for seed in {1..30}; do
       --bpe-method "fastbpe" \
       --tokenizer-method "moses" \
       --seed $seed \
-      > t.seed$seed
+      > t.$seed
 done
