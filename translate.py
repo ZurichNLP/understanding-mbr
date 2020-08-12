@@ -4,8 +4,16 @@ import copy
 
 from typing import List
 
-from fairseq import hub_utils
+import numpy as np
+
+from fairseq import hub_utils, utils
 from fairseq.models.transformer import TransformerModel
+
+seed = 2
+
+# set seeds
+np.random.seed(seed)
+utils.set_torch_seed(seed)
 
 class GeneratorHubInterfaceWithScoring(hub_utils.GeneratorHubInterface):
 
@@ -103,7 +111,7 @@ def translate_stdin():
 
     de2en = load_model()
 
-    outputs = de2en.translate_with_score(inputs, nbest_size=3)
+    outputs = de2en.translate_with_score(inputs, nbest_size=3, sampling=True)
 
     for nbest_list in outputs:
         for index, hyp in enumerate(nbest_list):

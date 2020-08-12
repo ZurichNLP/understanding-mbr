@@ -57,9 +57,6 @@ def compute_ter(hyp: str, ref: str) -> float:
     :return:
     """
 
-    # dummy return, takes too long for some reason
-    return 1.0
-
     return pyter.ter(hyp, ref)
 
 
