@@ -9,6 +9,8 @@ models_sub=$models/fairseq-wmt19-de-en
 
 translations=$base/translations
 
+mkdir -p $translations
+
 for seed in {1..10}; do
 
   cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
