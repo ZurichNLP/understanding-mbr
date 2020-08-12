@@ -26,7 +26,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return nltk.translate.meteor_score.single_meteor_score(ref, hyp) * 100
+    return nltk.translate.meteor_score.single_meteor_score(ref, hyp)
 
 
 def compute_ter(hyp: str, ref: str) -> float:
@@ -90,10 +90,10 @@ def get_minimum_risk_sample(samples: Tuple[str], risk_function: Callable) -> Tup
 
         average_risks.append(np.mean(risks))
 
-    print("risks:")
-    print(risks)
+        print("risks:")
+        print(risks)
 
-    print("average risk:")
+    print("average risks:")
     print(average_risks)
 
     minimum_risk_index = int(np.argmin(average_risks))
