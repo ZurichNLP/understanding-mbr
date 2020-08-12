@@ -31,3 +31,7 @@ git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
 (cd $tools/sacrebleu && git checkout add-ter)
 
 (cd $tools/sacrebleu && pip install --upgrade .)
+
+# variation-generation
+
+git clone https://github.com/bricksdont/variation-generation $tools/variation-generation

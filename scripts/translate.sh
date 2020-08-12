@@ -7,6 +7,8 @@ data=$base/data
 models=$base/models
 models_sub=$models/fairseq-wmt19-de-en
 
+translations=$base/translations
+
 for seed in {1..10}; do
 
   cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
@@ -18,5 +20,5 @@ for seed in {1..10}; do
       --bpe-method "fastbpe" \
       --tokenizer-method "moses" \
       --seed $seed \
-      > $data/toy_samples.$seed
+      | cut -f3 > $translations/toy_samples.$seed
 done
