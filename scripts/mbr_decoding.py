@@ -112,7 +112,7 @@ def main():
 
         output = output.strip()
 
-        output_handle.write(str(risk) + " " + output)
+        output_handle.write("%f %s\n" % (risk, output))
 
 
 if __name__ == "__main__":
