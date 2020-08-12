@@ -11,7 +11,7 @@ from typing import List, Callable, Iterable, Tuple
 
 
 RISK_SENTENCE_BLEU = "sentence-bleu"
-RISK_SENTENCE_METEOR = "sentence-bleu"
+RISK_SENTENCE_METEOR = "sentence-meteor"
 RISK_SENTENCE_TER = "sentence-ter"
 
 RISK_FUNCTIONS = [RISK_SENTENCE_BLEU,
