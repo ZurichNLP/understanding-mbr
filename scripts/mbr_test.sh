@@ -3,7 +3,6 @@
 scripts=`dirname "$0"`
 base=$scripts/..
 
-data=$base/data
 translations=$base/translations
 
 python3 $scripts/mbr_decoding.py \
