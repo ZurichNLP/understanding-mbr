@@ -92,7 +92,7 @@ def get_minimum_risk_sample(samples: Tuple[str], risk_function: Callable) -> Tup
 
     minimum_risk_index = int(np.argmin(average_risks))
 
-    return samples[minimum_risk_index]
+    return samples[minimum_risk_index], np.min(average_risks)
 
 
 def main():
