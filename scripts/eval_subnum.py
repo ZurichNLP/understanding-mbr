@@ -45,7 +45,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return nltk.translate.meteor_score.single_meteor_score(ref, hyp) * 100
+    return nltk.translate.meteor_score.single_meteor_score(ref, hyp)
 
 
 def compute_ter(hyp: str, ref: str) -> float:
@@ -150,7 +150,7 @@ def main():
 
         seen += 1
 
-        if seen % 100 == 0:
+        if seen % 10000 == 0:
             logging.debug("Seen %d sentences." % seen)
 
     range_averages = compute_range_average(score_ranges)

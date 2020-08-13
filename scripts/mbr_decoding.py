@@ -5,6 +5,7 @@ import sacrebleu
 import argparse
 import logging
 
+import random
 import numpy as np
 
 from typing import Callable, Tuple
@@ -88,7 +89,12 @@ def get_maximum_utility_sample(samples: Tuple[str], utility_function: Callable) 
             if sample != pseudo_reference:
                 utilities.append(utility_function(sample, pseudo_reference))
 
-        average_utilities.append(np.mean(utilities))
+        if len(utilities) == 0:
+            average_utility = 0.0
+        else:
+            average_utility = np.mean(utilities)
+
+        average_utilities.append(average_utility)
 
     maximum_utility_index = int(np.argmax(average_utilities))
 
