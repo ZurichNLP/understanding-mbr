@@ -3,7 +3,6 @@
 import argparse
 import logging
 
-import pyter
 import nltk
 import sacrebleu
 
@@ -57,7 +56,7 @@ def compute_ter(hyp: str, ref: str) -> float:
     :return:
     """
 
-    return pyter.ter(hyp, ref)
+    return sacrebleu.sentence_ter(hyp, ref).score
 
 
 def compute_bleu(hyp: str, ref: str) -> float:
