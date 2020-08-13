@@ -8,6 +8,7 @@ variations=$base/variations
 
 mkdir -p $variations
 
+data_sub=$data/wmt
 variations_sub=$variations/wmt
 
 mkdir -p $variations_sub
@@ -18,8 +19,8 @@ trg=en
 for year in {13..20}; do
 
     python $scripts/create_variations.py \
-        --input-src $data/wmt$year.$src-$trg.$src \
-        --input-trg $data/wmt$year.$src-$trg.$trg \
+        --input-src $data_sub/wmt$year.$src-$trg.$src \
+        --input-trg $data_sub/wmt$year.$src-$trg.$trg \
         --output-src $variations_sub/wmt$year.$src-$trg.$src \
         --output-trg $variations_sub/wmt$year.$src-$trg.$trg \
         --output-variation-counts $variations_sub/wmt$year.$src-$trg.count \
@@ -30,12 +31,12 @@ done
 
 for lang in $src $trg; do
 
-  rm -f $variations_sub/all.$lang
+  rm -f $variations_sub/wmt.all.$lang
 
-  cat $variations_sub/*.$lang > $variations_sub/all.$lang
+  cat $variations_sub/*.$lang > $variations_sub/wmt.all.$lang
 
 done
 
-rm -f $variations_sub/all.count
+rm -f $variations_sub/wmt.all.count
 
-cat $variations_sub/*.count > $variations_sub/all.count
+cat $variations_sub/*.count > $variations_sub/wmt.all.count

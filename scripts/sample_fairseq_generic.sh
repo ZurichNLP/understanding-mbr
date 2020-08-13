@@ -26,3 +26,12 @@ for seed in {1..30}; do
 
       cat $output_prefix.$seed | cut -f3 > $output_prefix.text.$seed
 done
+
+# find best MBR sample
+
+python $scripts/mbr_decoding.py \
+    --inputs $output_prefix.text.{1..30} \
+    --output $output_prefix.mbr \
+    --utility-function sentence-meteor
+
+cat $output_prefix.mbr | cut -f2 > $output_prefix.mbr.text
