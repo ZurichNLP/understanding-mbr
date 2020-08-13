@@ -26,19 +26,23 @@ curl https://dl.fbaipublicfiles.com/fairseq/models/wmt19.de-en.joined-dict.ensem
 
 # WMT test sets + additional paraphrased references
 
+mkdir -p $data/wmt
+
 wget https://raw.githubusercontent.com/google/wmt19-paraphrased-references/master/wmt19/ende/wmt19-ende-wmtp.ref
-mv wmt19-ende-wmtp.ref $data/
+mv wmt19-ende-wmtp.ref $data/wmt/
 
 for year in {13..20}; do
-    sacrebleu -t wmt$year -l de-en --echo src > $data/wmt$year.de-en.de
-    sacrebleu -t wmt$year -l de-en --echo ref > $data/wmt$year.de-en.en
+    sacrebleu -t wmt$year -l de-en --echo src > $data/wmt/wmt$year.de-en.de
+    sacrebleu -t wmt$year -l de-en --echo ref > $data/wmt/wmt$year.de-en.en
 done
 
 # dummy data to test sampling and MBR
 
-echo "Bei einem Unfall eines Reisebusses mit 43 Senioren als Fahrgästen sind am Donnerstag in Krummhörn (Landkreis Aurich) acht Menschen verletzt worden." > $data/toy_input
+mkdir -p $data/toy
 
-echo "On Thursday, an accident involving a coach carrying 43 elderly people in Krummhörn (district of Aurich) led to eight people being injured." > $data/toy_reference
+echo "Bei einem Unfall eines Reisebusses mit 43 Senioren als Fahrgästen sind am Donnerstag in Krummhörn (Landkreis Aurich) acht Menschen verletzt worden." > $data/toy/toy_input
+
+echo "On Thursday, an accident involving a coach carrying 43 elderly people in Krummhörn (district of Aurich) led to eight people being injured." > $data/toy/toy_reference
 
 # variation-generation
 

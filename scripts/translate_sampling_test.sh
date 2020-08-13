@@ -4,8 +4,6 @@ scripts=`dirname "$0"`
 base=$scripts/..
 
 data=$base/data
-models=$base/models
-models_sub=$models/fairseq-wmt19-de-en
 
 samples=$base/samples
 translations=$base/translations
@@ -13,29 +11,26 @@ translations=$base/translations
 mkdir -p $translations
 mkdir -p $samples
 
-for seed in {1..30}; do
+translations_sub=$translations/toy
+samples_sub=$samples/toy
 
-  cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
-      --method sampling \
-      --nbest-size 1 \
-      --model-folder $models_sub/"wmt19.de-en.joined-dict.ensemble" \
-      --checkpoint "model1.pt" \
-      --bpe-codes $models_sub/"wmt19.de-en.joined-dict.ensemble/bpecodes" \
-      --bpe-method "fastbpe" \
-      --tokenizer-method "moses" \
-      --seed $seed \
-      > $samples/toy_samples.$seed
+mkdir -p $translations_sub
+mkdir -p $samples_sub
 
-      cat $samples/toy_samples.$seed | cut -f3 > $samples/toy_samples.text_only.$seed
-done
+data_sub=$data/toy
 
-cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
-      --method beam \
-      --nbest-size 1 \
-      --beam-size 5 \
-      --model-folder $models_sub/"wmt19.de-en.joined-dict.ensemble" \
-      --checkpoint "model1.pt" \
-      --bpe-codes $models_sub/"wmt19.de-en.joined-dict.ensemble/bpecodes" \
-      --bpe-method "fastbpe" \
-      --tokenizer-method "moses" \
-       > $translations/toy_translation
+# sampling
+
+input=$data_sub/toy_input
+output_prefix=$samples_sub/toy_samples
+
+. $scripts/sample_fairseq_generic.sh
+
+# beam translations
+
+input=$data_sub/toy_input
+output=$translations_sub/toy_translation
+nbest_size=3
+beam_size=5
+
+. $scripts/translate_fairseq_generic.sh
