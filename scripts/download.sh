@@ -35,6 +35,8 @@ sacrebleu -t wmt19 -l de-en --echo ref > $data/wmt19-en-de.trg
 
 echo "Bei einem Unfall eines Reisebusses mit 2 Senioren als Fahrgästen sind am Donnerstag in Krummhörn (Landkreis Aurich) acht Menschen verletzt worden." > $data/toy_input
 
+echo "On Thursday, an accident involving a coach carrying 43 elderly people in Krummhörn (district of Aurich) led to eight people being injured." > $data/toy_reference
+
 # variation-generation
 
 git clone https://github.com/bricksdont/variation-generation $tools/variation-generation

@@ -4,12 +4,14 @@ scripts=`dirname "$0"`
 base=$scripts/..
 
 data=$base/data
-tools=$base/tools
 variations=$base/variations
 
 mkdir -p $variations
 
-python3 $tools/variation-generation/main.py \
-    --bitext $data/toy_input \
-    --numvar 10 \
-    --output $variations/toy_input
+python3 $scripts/create_variations.py \
+    --input-src $data/toy_input \
+    --input-trg $data/toy_reference \
+    --output-src $variations/toy_variations.src \
+    --output-trg $variations/toy_variations.trg \
+    --output-variation-counts $variations/toy_variations.count \
+    --num-range 10
