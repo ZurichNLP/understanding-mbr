@@ -9,7 +9,7 @@ variations=$base/variations
 
 mkdir -p $variations
 
-python3 $tools/variation-generation/src/main.py \
+python3 $tools/variation-generation/main.py \
     --bitext $data/toy_input \
     --numvar 10 \
     --output $variations/toy_input
