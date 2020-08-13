@@ -11,6 +11,12 @@ scripts=$base/scripts
 models=$base/models
 models_sub=$models/fairseq-wmt19-de-en
 
+if [[ -f $output_prefix.mbr.text ]]; then
+    echo "File exists: $output_prefix.mbr.text"
+    echo "Skipping."
+    exit
+fi
+
 for seed in {1..30}; do
 
   cat $input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
