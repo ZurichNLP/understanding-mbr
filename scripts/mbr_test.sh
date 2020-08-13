@@ -3,9 +3,9 @@
 scripts=`dirname "$0"`
 base=$scripts/..
 
-translations=$base/translations
+samples=$base/samples
 
 python3 $scripts/mbr_decoding.py \
-    --inputs $translations/toy_samples.{1..30} \
-    --output $translations/toy_output \
+    --inputs $samples/toy_samples.text_only.{1..30} \
+    --output $samples/toy_output \
     --utility-function sentence-meteor

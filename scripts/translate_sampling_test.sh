@@ -7,9 +7,11 @@ data=$base/data
 models=$base/models
 models_sub=$models/fairseq-wmt19-de-en
 
+samples=$base/samples
 translations=$base/translations
 
 mkdir -p $translations
+mkdir -p $samples
 
 for seed in {1..30}; do
 
@@ -22,7 +24,9 @@ for seed in {1..30}; do
       --bpe-method "fastbpe" \
       --tokenizer-method "moses" \
       --seed $seed \
-      | cut -f3 > $translations/toy_samples.$seed
+      > $samples/toy_samples.$seed
+
+      cat $samples/toy_samples.$seed | cut -f3 > $samples/toy_samples.text_only.$seed
 done
 
 cat $data/toy_input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
