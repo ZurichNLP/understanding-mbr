@@ -163,8 +163,6 @@ def main():
 
     input_chunks = chunks(inputs, MAX_LINES)
 
-    outputs = []
-
     for input_chunk in input_chunks:
 
         output_chunk = model.translate_with_score(input_chunk,
@@ -172,13 +170,11 @@ def main():
                                          nbest_size=args.nbest_size,
                                          sampling=True if args.method == "sampling" else False)
 
-        outputs.extend(output_chunk)
-
-    for nbest_list in outputs:
-        for index, hyp in enumerate(nbest_list):
-            score, output = hyp
-            score = str(score)
-            sys.stdout.write(str(index) + "\t" + score + "\t" + output + "\n")
+        for nbest_list in output_chunk:
+            for index, hyp in enumerate(nbest_list):
+                score, output = hyp
+                score = str(score)
+                sys.stdout.write(str(index) + "\t" + score + "\t" + output + "\n")
 
 
 if __name__ == "__main__":
