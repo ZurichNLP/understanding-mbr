@@ -13,6 +13,9 @@ from fairseq import hub_utils, utils
 from fairseq.models.transformer import TransformerModel
 
 
+MAX_LINES = 10000
+
+
 class GeneratorHubInterfaceWithScoring(hub_utils.GeneratorHubInterface):
 
     def translate_with_score(self, sentences: List[str], beam: int = 5, nbest_size: int = 1, verbose: bool = False, **kwargs) -> List[str]:
@@ -46,7 +49,7 @@ class GeneratorHubInterfaceWithScoring(hub_utils.GeneratorHubInterface):
         results = []
         for hypos in batched_hypos:
             relevant_hyps = hypos[:nbest_size]
-            relevant_hyps = [(hyp['score'], self.decode(hyp['tokens'])) for hyp in relevant_hyps]
+            relevant_hyps = [(hyp['score'].cpu().detach().numpy(), self.decode(hyp['tokens'])) for hyp in relevant_hyps]
             results.append(relevant_hyps)
 
         return results
@@ -106,6 +109,17 @@ def load_model(model_path: str,
     return de2en
 
 
+def chunks(lst, chunk_size: int):
+    """
+    Yield successive n-sized chunks from lst.
+
+    Source:
+    https://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks
+    """
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
 
@@ -147,15 +161,23 @@ def main():
 
     inputs = [l.strip() for l in sys.stdin.readlines()]
 
-    outputs = model.translate_with_score(inputs,
+    input_chunks = chunks(inputs, MAX_LINES)
+
+    outputs = []
+
+    for input_chunk in input_chunks:
+
+        output_chunk = model.translate_with_score(input_chunk,
                                          beam=args.beam_size,
                                          nbest_size=args.nbest_size,
                                          sampling=True if args.method == "sampling" else False)
 
+        outputs.extend(output_chunk)
+
     for nbest_list in outputs:
         for index, hyp in enumerate(nbest_list):
             score, output = hyp
-            score = str(score.cpu().detach().numpy())
+            score = str(score)
             sys.stdout.write(str(index) + "\t" + score + "\t" + output + "\n")
 
 
