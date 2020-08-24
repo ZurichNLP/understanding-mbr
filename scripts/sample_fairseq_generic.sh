@@ -18,6 +18,19 @@ else
 
     for seed in {1..30}; do
 
+      if [[ -f $output_prefix.$seed ]]; then
+
+        num_lines_input=`cat $input | wc -l`
+        num_lines_output=`cat $output_prefix.$seed | wc -l`
+
+        if [[ $num_lines_input == $num_lines_output ]]; then
+          echo "output exists and number of lines are equal to input:"
+          echo "$num_lines_input == $num_lines_output"
+          echo "Skipping."
+          continue
+        fi
+      fi
+
       cat $input | CUDA_VISIBLE_DEVICES=1 python $scripts/translate.py \
           --method sampling \
           --nbest-size 1 \
