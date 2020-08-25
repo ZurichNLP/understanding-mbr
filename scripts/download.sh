@@ -4,12 +4,10 @@ scripts=`dirname "$0"`
 base=$scripts/..
 
 venvs=$base/venvs
-data=$base/data
 tools=$base/tools
 
 export TMPDIR="/var/tmp"
 
-mkdir -p $data
 mkdir -p $tools
 
 source $venvs/sockeye3/bin/activate
