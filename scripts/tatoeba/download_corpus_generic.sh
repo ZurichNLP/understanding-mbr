@@ -25,13 +25,13 @@ else
 
     mkdir -p $data_sub_sub
 
-    wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar
+    wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar -P $data_sub_sub
 
     # untar entire corpus
 
-    tar -xvf ${src}-${trg}.tar -C $data_sub_sub --strip=2
+    tar -xvf $data_sub_sub/${src}-${trg}.tar --strip=2
 
-    rm ${src}-${trg}.tar
+    rm $data_sub_sub/${src}-${trg}.tar
 
     # unzip train parts
 
