@@ -4,6 +4,8 @@
 # $base
 # $src
 # $trg
+# $model_name
+# $train_additional_args
 
 SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
 
@@ -16,7 +18,10 @@ logs_sub=$logs/${src}-${trg}
 
 mkdir -p $logs_sub
 
+echo "##############################################"
 echo "LANGPAIR: ${src}-${trg}"
+echo "MODEL NAME: $model_name"
+echo "ADDITIONAL TRAIN ARGS: $train_additional_args"
 
 # download corpus for language pair
 
@@ -56,15 +61,12 @@ echo "  id_prepare: $id_prepare"
 
 # Sockeye train (depends on prepare)
 
-model_name=baseline
-additional_args=""
-
 id_train=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterany:$id_prepare \
+    --qos=vesta --time=01:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterany:$id_prepare \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/train_generic.sh \
-    $base $src $trg $model_name "$additional_args"
+    $base $src $trg $model_name "$train_additional_args"
 )
 
 echo "  id_train: $id_train"
@@ -72,8 +74,6 @@ echo "  id_train: $id_train"
 exit
 
 # translate + sample test set (depends on train)
-
-model_name=baseline
 
 id_translate=$(
     $scripts/sbatch_bare.sh \
