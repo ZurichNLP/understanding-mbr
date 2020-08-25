@@ -21,28 +21,28 @@ data_sub_sub=$data_sub/$model_name
 if [[ -d $data_sub_sub ]]; then
     echo "data_sub_sub already exists: $data_sub_sub"
     echo "Skipping. Delete files to repeat step."
-else
-
-    mkdir -p $data_sub_sub
-
-    wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar -P $data_sub_sub
-
-    # untar entire corpus
-
-    tar -xvf $data_sub_sub/${src}-${trg}.tar -C $data_sub_sub --strip=2
-
-    rm $data_sub_sub/${src}-${trg}.tar
-
-    # unzip train parts
-
-    gunzip $data_sub_sub/train.id.gz
-
-    gunzip $data_sub_sub/train.src.gz
-    gunzip $data_sub_sub/train.trg.gz
-
-    rm -f $data_sub_sub/train.id.gz $data_sub_sub/train.src.gz $data_sub_sub/train.trg.gz
-
+    exit 0
 fi
+
+mkdir -p $data_sub_sub
+
+wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar -P $data_sub_sub
+
+# untar entire corpus
+
+tar -xvf $data_sub_sub/${src}-${trg}.tar -C $data_sub_sub --strip=2
+
+rm $data_sub_sub/${src}-${trg}.tar
+
+# unzip train parts
+
+gunzip $data_sub_sub/train.id.gz
+
+gunzip $data_sub_sub/train.src.gz
+gunzip $data_sub_sub/train.trg.gz
+
+rm -f $data_sub_sub/train.id.gz $data_sub_sub/train.src.gz $data_sub_sub/train.trg.gz
+
 
 echo "Sizes of files:"
 
