@@ -10,3 +10,11 @@ export TMPDIR="/var/tmp"
 mkdir -p $venvs
 
 virtualenv -p python3 $venvs/fairseq3
+
+# different venv for Sockeye
+
+virtualenv -p python3 $venvs/sockeye3
+
+# different venv for Sockeye CPU
+
+virtualenv -p python3 $venvs/sockeye3-cpu
