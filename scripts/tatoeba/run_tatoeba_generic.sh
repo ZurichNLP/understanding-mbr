@@ -20,9 +20,9 @@ logs_sub_sub=$logs_sub/$model_name
 mkdir -p $logs_sub_sub
 
 echo "##############################################"
-echo "LANGPAIR: ${src}-${trg}"
-echo "MODEL NAME: $model_name"
-echo "ADDITIONAL TRAIN ARGS: $train_additional_args"
+echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
+echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
+echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
 
 # download corpus for language pair
 
@@ -34,7 +34,7 @@ id_download=$(
     $base $src $trg $model_name
 )
 
-echo "  id_download: $id_download"
+echo "  id_download: $id_download" | tee -a $logs_sub_sub/MAIN
 
 # preprocess: create subnum variations, normalize, SPM (depends on download)
 
@@ -46,7 +46,7 @@ id_preprocess=$(
     $base $src $trg $model_name
 )
 
-echo "  id_preprocess: $id_preprocess"
+echo "  id_preprocess: $id_preprocess" | tee -a $logs_sub_sub/MAIN
 
 # Sockeye prepare (depends on preprocess)
 
@@ -58,7 +58,7 @@ id_prepare=$(
     $base $src $trg $model_name
 )
 
-echo "  id_prepare: $id_prepare"
+echo "  id_prepare: $id_prepare"  | tee -a $logs_sub_sub/MAIN
 
 # Sockeye train (depends on prepare)
 
@@ -72,7 +72,7 @@ id_train=$(
     $base $src $trg $model_name "$train_additional_args"
 )
 
-echo "  id_train: $id_train"
+echo "  id_train: $id_train"  | tee -a $logs_sub_sub/MAIN
 
 # translate + sample test set (depends on train)
 
@@ -84,13 +84,16 @@ id_translate=$(
     $base $src $trg $model_name
 )
 
-echo "  id_translate: $id_translate"
+echo "  id_translate: $id_translate"  | tee -a $logs_sub_sub/MAIN
 
 # evaluate BLEU and variation range (depends on translate)
 
-echo "  id_evaluate:"
-
-sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterok:$id_translate \
+id_evaluate=$(
+    $scripts/sbatch_bare.sh \
+    --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterok:$id_translate \
     -o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/evaluate_generic.sh \
     $base $src $trg $model_name
+)
+
+echo "  id_evaluate: $id_evaluate"  | tee -a $logs_sub_sub/MAIN
