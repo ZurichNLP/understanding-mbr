@@ -36,7 +36,7 @@ for corpus in dev test variations; do
     for seed in {1..30}; do
 
         if [[ -s $samples_sub_sub/$corpus.pieces.$seed.trg ]]; then
-          echo "File exists: $samples_sub_sub/$corpus.pieces.trg"
+          echo "File exists: $samples_sub_sub/$corpus.pieces.$seed.trg"
           echo "Skipping"
           continue
         fi
@@ -63,7 +63,7 @@ for corpus in dev test variations; do
     # change venv for correct version of sacrebleu that has TER
 
     deactivate
-    source $venvs/sockeye3-cpu/bin/activate
+    source $base/venvs/sockeye3-cpu/bin/activate
 
     # MBR
 
@@ -73,6 +73,6 @@ for corpus in dev test variations; do
         --utility-function sentence-meteor \
         --num-workers 2
 
-    cat $samples_sub_sub/$corpus.mbr | cut-f2 > $samples_sub_sub/$corpus.mbr.text
+    cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
 
 done

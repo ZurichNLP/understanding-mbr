@@ -39,7 +39,7 @@ echo "  id_download: $id_download"
 
 id_preprocess=$(
     $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterany:$id_download \
+    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_download \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg
@@ -51,7 +51,7 @@ echo "  id_preprocess: $id_preprocess"
 
 id_prepare=$(
     $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterany:$id_preprocess \
+    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_preprocess \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/prepare_generic.sh \
     $base $src $trg
@@ -65,7 +65,7 @@ echo "  id_prepare: $id_prepare"
 
 id_train=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=00:15:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterany:$id_prepare \
+    --qos=vesta --time=00:15:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/train_generic.sh \
     $base $src $trg $model_name "$train_additional_args"
@@ -77,7 +77,7 @@ echo "  id_train: $id_train"
 
 id_translate=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterany:$id_train \
+    --qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_train \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/translate_generic.sh \
     $base $src $trg $model_name
@@ -91,7 +91,7 @@ exit
 
 echo "  id_evaluate:"
 
-sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterany:$id_translate \
+sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterok:$id_translate \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/evaluate_generic.sh \
     $base $src $trg
