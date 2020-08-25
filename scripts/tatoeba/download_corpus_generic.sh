@@ -29,7 +29,7 @@ else
 
     # untar entire corpus
 
-    tar -xvf $data_sub_sub/${src}-${trg}.tar --strip=2
+    tar -xvf $data_sub_sub/${src}-${trg}.tar -C $data_sub_sub --strip=2
 
     rm $data_sub_sub/${src}-${trg}.tar
 
