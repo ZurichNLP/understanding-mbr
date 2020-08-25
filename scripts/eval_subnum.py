@@ -67,7 +67,7 @@ def compute_bleu(hyp: str, ref: str) -> float:
     :return:
     """
 
-    return sacrebleu.sentence_bleu(hyp, ref).score
+    return sacrebleu.sentence_bleu(hyp, [ref]).score
 
 
 def compute_range(scores: List[float]) -> float:
