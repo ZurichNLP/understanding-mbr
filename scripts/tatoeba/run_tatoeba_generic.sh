@@ -65,7 +65,7 @@ echo "  id_prepare: $id_prepare"
 
 id_train=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=00:01:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
+    --qos=vesta --time=00:05:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/train_generic.sh \
     $base $src $trg $model_name "$train_additional_args"
