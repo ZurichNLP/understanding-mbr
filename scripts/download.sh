@@ -63,6 +63,10 @@ git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
 
 pip install nltk
 
+# meteor dependencies
+
+python -c "import nltk;nltk.download('wordnet')"
+
 # install sentencepiece for subword regularization
 
 pip install sentencepiece
@@ -72,3 +76,4 @@ pip install sentencepiece
 pip install pycld2 iso-639
 
 pip install requests
+
