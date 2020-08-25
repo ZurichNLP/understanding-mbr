@@ -26,6 +26,8 @@ id_download=$(
     $base $src $trg
 )
 
+echo "id_download: $id_download"
+
 # preprocess: create subnum variations, normalize, SPM (depends on download)
 
 id_preprocess=$(
@@ -35,6 +37,8 @@ id_preprocess=$(
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg
 )
+
+echo "id_preprocess: $id_preprocess"
 
 exit
 
@@ -47,6 +51,8 @@ id_prepare=$(
     $scripts/tatoeba/prepare_generic.sh \
     $base $src $trg
 )
+
+echo "id_prepare: $id_prepare"
 
 # Sockeye train (depends on prepare)
 
@@ -61,6 +67,8 @@ id_train=$(
     $base $src $trg $model_name "$additional_args"
 )
 
+echo "id_train: $id_train"
+
 # translate + sample test set (depends on train)
 
 model_name=baseline
@@ -73,7 +81,11 @@ id_translate=$(
     $base $src $trg $model_name
 )
 
+echo "id_translate: $id_translate"
+
 # evaluate BLEU and variation range (depends on translate)
+
+echo "id_evaluate:"
 
 sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterany:$id_translate \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
