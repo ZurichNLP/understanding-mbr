@@ -85,8 +85,6 @@ id_translate=$(
 
 echo "  id_translate: $id_translate"
 
-exit
-
 # evaluate BLEU and variation range (depends on translate)
 
 echo "  id_evaluate:"
@@ -94,4 +92,4 @@ echo "  id_evaluate:"
 sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterok:$id_translate \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/evaluate_generic.sh \
-    $base $src $trg
+    $base $src $trg $model_name
