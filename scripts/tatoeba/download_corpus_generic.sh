@@ -23,6 +23,8 @@ wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar
 
 tar -xvf ${src}-${trg}.tar -C $data_sub --strip=2
 
+rm ${src}-${trg}.tar
+
 # unzip train parts
 
 gunzip $data_sub/train.id.gz
