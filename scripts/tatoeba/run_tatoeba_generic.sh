@@ -23,41 +23,49 @@ echo "LANGPAIR: ${src}-${trg}"
 echo "MODEL NAME: $model_name"
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args"
 
-# download corpus for language pair
+if [[ $model_name == "baseline" ]]; then
 
-id_download=$(
-    $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic \
-    -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
-    $scripts/tatoeba/download_corpus_generic.sh \
-    $base $src $trg
-)
+    # download corpus for language pair
 
-echo "  id_download: $id_download"
+    id_download=$(
+        $scripts/sbatch_bare.sh \
+        --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic \
+        -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
+        $scripts/tatoeba/download_corpus_generic.sh \
+        $base $src $trg
+    )
 
-# preprocess: create subnum variations, normalize, SPM (depends on download)
+    echo "  id_download: $id_download"
 
-id_preprocess=$(
-    $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_download \
-    -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
-    $scripts/tatoeba/preprocess_generic.sh \
-    $base $src $trg
-)
+    # preprocess: create subnum variations, normalize, SPM (depends on download)
 
-echo "  id_preprocess: $id_preprocess"
+    id_preprocess=$(
+        $scripts/sbatch_bare.sh \
+        --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_download \
+        -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
+        $scripts/tatoeba/preprocess_generic.sh \
+        $base $src $trg
+    )
 
-# Sockeye prepare (depends on preprocess)
+    echo "  id_preprocess: $id_preprocess"
 
-id_prepare=$(
-    $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_preprocess \
-    -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
-    $scripts/tatoeba/prepare_generic.sh \
-    $base $src $trg
-)
+    # Sockeye prepare (depends on preprocess)
 
-echo "  id_prepare: $id_prepare"
+    id_prepare=$(
+        $scripts/sbatch_bare.sh \
+        --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_preprocess \
+        -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
+        $scripts/tatoeba/prepare_generic.sh \
+        $base $src $trg
+    )
+
+    echo "  id_prepare: $id_prepare"
+
+    train_dependency_arg="--dependency=afterok:$id_prepare"
+
+else
+    train_dependency_arg=""
+fi
 
 # Sockeye train (depends on prepare)
 
@@ -65,7 +73,7 @@ echo "  id_prepare: $id_prepare"
 
 id_train=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=00:01:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
+    --qos=vesta --time=00:01:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g $train_dependency_arg \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/train_generic.sh \
     $base $src $trg $model_name "$train_additional_args"
