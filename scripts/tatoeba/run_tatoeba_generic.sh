@@ -62,11 +62,9 @@ echo "  id_prepare: $id_prepare"  | tee -a $logs_sub_sub/MAIN
 
 # Sockeye train (depends on prepare)
 
-# TODO: time is set to 1 minute right now
-
 id_train=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=00:05:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
+    --qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_prepare \
     -o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/train_generic.sh \
     $base $src $trg $model_name "$train_additional_args"
