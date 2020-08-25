@@ -13,7 +13,7 @@ from fairseq import hub_utils, utils
 from fairseq.models.transformer import TransformerModel
 
 
-MAX_LINES = 10000
+MAX_LINES = 1000
 
 
 class GeneratorHubInterfaceWithScoring(hub_utils.GeneratorHubInterface):

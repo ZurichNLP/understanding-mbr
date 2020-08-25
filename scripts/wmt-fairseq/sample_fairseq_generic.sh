@@ -50,7 +50,8 @@ else
     python $scripts/mbr_decoding.py \
         --inputs $output_prefix.text.{1..30} \
         --output $output_prefix.mbr \
-        --utility-function sentence-meteor
+        --utility-function sentence-meteor \
+        --num-workers 12
 
     cat $output_prefix.mbr | cut -f2 > $output_prefix.mbr.text
 
