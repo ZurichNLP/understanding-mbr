@@ -42,9 +42,20 @@ SECONDS=0
 
 echo "data_sub: $data_sub"
 
+# prenormalization for train data
+
+for corpus in train dev test; do
+    for lang in src trg; do
+        cat $data_sub/$corpus.$lang | \
+        perl -CS -pe 'tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;' | \
+        perl -CS -pe 's/\&\s*\#\s*160\s*\;/ /g' \
+        > $data_sub/$corpus.prenorm.$lang
+    done
+done
+
 # langid filter
 
-paste $data_sub/train.src $data_sub/train.trg | \
+paste $data_sub/train.prenorm.src $data_sub/train.prenorm.trg | \
     python $scripts/bitext-match-lang.py -s ${src} -t ${trg} > $data_sub/train.langchecked.both
 
 cut -f1 $data_sub/train.langchecked.both > $data_sub/train.langchecked.src
@@ -56,17 +67,17 @@ for lang in src trg; do
     cat $data_sub/train.langchecked.$lang | \
     ${TOKENIZER}/replace-unicode-punctuation.perl | \
     ${TOKENIZER}/remove-non-printing-char.perl | \
-    ${TOKENIZER}/deescape-special-chars.perl |\
+    ${TOKENIZER}/deescape-special-chars.perl | \
     sed 's/  */ /g;s/^ *//g;s/ *$//g' > \
         $data_sub/train.normalized.$lang
 done
 
 for corpus in dev test; do
     for lang in src trg; do
-        cat $data_sub/$corpus.$lang | \
+        cat $data_sub/$corpus.prenorm.$lang | \
         ${TOKENIZER}/replace-unicode-punctuation.perl | \
         ${TOKENIZER}/remove-non-printing-char.perl | \
-        ${TOKENIZER}/deescape-special-chars.perl |\
+        ${TOKENIZER}/deescape-special-chars.perl | \
         sed 's/  */ /g;s/^ *//g;s/ *$//g' > \
             $data_sub/$corpus.normalized.$lang
     done
