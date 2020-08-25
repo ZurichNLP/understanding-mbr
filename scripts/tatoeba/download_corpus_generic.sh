@@ -15,24 +15,31 @@ mkdir -p $data
 
 data_sub=$data/${src}-${trg}
 
-mkdir -p $data_sub
+if [[ -d $data_sub ]]; then
+    echo "data_sub already exists: $data_sub"
+    echo "Skipping. Delete files to repeat step."
+else
 
-wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar
+    mkdir -p $data_sub
 
-# untar entire corpus
+    wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar
 
-tar -xvf ${src}-${trg}.tar -C $data_sub --strip=2
+    # untar entire corpus
 
-rm ${src}-${trg}.tar
+    tar -xvf ${src}-${trg}.tar -C $data_sub --strip=2
 
-# unzip train parts
+    rm ${src}-${trg}.tar
 
-gunzip $data_sub/train.id.gz
+    # unzip train parts
 
-gunzip $data_sub/train.src.gz
-gunzip $data_sub/train.trg.gz
+    gunzip $data_sub/train.id.gz
 
-rm -f $data_sub/train.id.gz $data_sub/train.src.gz $data_sub/train.trg.gz
+    gunzip $data_sub/train.src.gz
+    gunzip $data_sub/train.trg.gz
+
+    rm -f $data_sub/train.id.gz $data_sub/train.src.gz $data_sub/train.trg.gz
+
+fi
 
 echo "Sizes of files:"
 

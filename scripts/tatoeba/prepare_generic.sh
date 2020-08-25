@@ -22,6 +22,12 @@ data_sub=$data/${src}-${trg}
 prepared=$base/prepared
 prepared_sub=$prepared/${src}-${trg}
 
+if [[ -d $prepared_sub ]]; then
+    echo "prepared_sub already exists: $prepared_sub"
+    echo "Skipping. Delete files to repeat step."
+    exit 0
+fi
+
 mkdir -p $prepared_sub
 
 cmd="python -m sockeye.prepare_data -s $data_sub/train.clean.src -t $data_sub/train.clean.trg --shared-vocab -o $prepared_sub --max-seq-len 250:250"

@@ -40,6 +40,12 @@ SECONDS=0
 
 #################
 
+if [[ -f $data_sub/test.pieces.src ]]; then
+    echo "File already exists: $data_sub/test.pieces.src"
+    echo "Skipping. Delete files to repeat step."
+    exit 0
+fi
+
 echo "data_sub: $data_sub"
 
 # prenormalization for train data
@@ -113,7 +119,7 @@ for lang in src trg; do
 
       num_characters=$(head -n 1000000 $data_sub/train.normalized.$lang | python $scripts/num_chars.py | wc -l)
 
-      if [ $num_characters -gt 1000 ]; then
+      if [[ $num_characters -gt 1000 ]]; then
           character_coverage=0.9995
       else
           character_coverage=1.0
