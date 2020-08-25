@@ -24,7 +24,7 @@ prepared_sub=$prepared/${src}-${trg}
 
 mkdir -p $prepared_sub
 
-cmd="python -m sockeye.prepare_data -s $data_sub/train.clean.src -t $data_sub/train.clean.trg --shared-vocab -o $prepared_sub --max-seq-len 500:500"
+cmd="python -m sockeye.prepare_data -s $data_sub/train.clean.src -t $data_sub/train.clean.trg --shared-vocab -o $prepared_sub --max-seq-len 250:250"
 
 echo "Executing:"
 echo "$cmd"
@@ -34,7 +34,7 @@ python -m sockeye.prepare_data \
                         -t $data_sub/train.clean.trg \
 			                  --shared-vocab \
                         -o $prepared_sub \
-                        --max-seq-len
+                        --max-seq-len 250:250
 
 echo "time taken:"
 echo "$SECONDS seconds"
