@@ -40,8 +40,6 @@ id_preprocess=$(
 
 echo "id_preprocess: $id_preprocess"
 
-exit
-
 # Sockeye prepare (depends on preprocess)
 
 id_prepare=$(
@@ -53,6 +51,8 @@ id_prepare=$(
 )
 
 echo "id_prepare: $id_prepare"
+
+exit
 
 # Sockeye train (depends on prepare)
 
