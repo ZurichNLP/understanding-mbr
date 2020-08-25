@@ -77,7 +77,7 @@ echo "  id_train: $id_train"
 
 id_translate=$(
     $scripts/sbatch_bare.sh \
-    --qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterok:$id_train \
+    --qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g --dependency=afterany:$id_train \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/translate_generic.sh \
     $base $src $trg $model_name
