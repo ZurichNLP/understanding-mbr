@@ -27,14 +27,6 @@ pip install matplotlib mxboard
 
 pip install mxnet-cu102mkl==1.6.0.post0
 
-# install sacrebleu for evaluation
-
-git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
-
-(cd $tools/sacrebleu && git checkout add-ter && git pull)
-
-(cd $tools/sacrebleu && pip install --upgrade .)
-
 pip install nltk
 
 # install Moses scripts for preprocessing
@@ -62,6 +54,8 @@ pip install matplotlib mxboard
 pip install subword-nmt
 
 # install sacrebleu for evaluation
+
+git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
 
 (cd $tools/sacrebleu && git checkout add-ter && git pull)
 

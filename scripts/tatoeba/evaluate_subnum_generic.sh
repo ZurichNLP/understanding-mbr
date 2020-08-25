@@ -7,6 +7,8 @@
 # $trg
 # $model_name
 
+source $base/venvs/sockeye3-cpu/bin/activate
+
 scripts=$base/scripts
 
 data_sub=$base/data/${src}-${trg}
@@ -17,10 +19,6 @@ evaluations_sub=$evaluations/${src}-${trg}
 evaluations_sub_sub=$evaluations_sub/$model_name
 
 mkdir -p $evaluations_sub_sub
-
-if [[ -s $evaluations_sub_sub/variations.subnum ]]; then
-  continue
-fi
 
 # compute subnum variation ranges
 

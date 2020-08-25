@@ -7,6 +7,8 @@
 # $trg
 # $model_name
 
+source $base/venvs/sockeye3-cpu/bin/activate
+
 data_sub=$base/data/${src}-${trg}
 translations_sub_sub=$base/translations/${src}-${trg}/$model_name
 

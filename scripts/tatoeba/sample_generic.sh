@@ -58,6 +58,12 @@ for corpus in dev test variations; do
     done
 done
 
+# change venv for correct version of sacrebleu that has TER
+
+deactivate
+
+source $venvs/sockeye3-cpu/bin/activate
+
 # MBR
 
 python $scripts/mbr_decoding.py \
