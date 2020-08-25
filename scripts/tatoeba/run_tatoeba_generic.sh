@@ -12,9 +12,11 @@ module load volta cuda/10.2
 scripts=$base/scripts
 logs=$base/logs
 
-logs_sub=$logs//${src}-${trg}
+logs_sub=$logs/${src}-${trg}
 
 mkdir -p $logs_sub
+
+echo "LANGPAIR: ${src}-${trg}"
 
 # download corpus for language pair
 
@@ -26,7 +28,7 @@ id_download=$(
     $base $src $trg
 )
 
-echo "id_download: $id_download"
+echo "  id_download: $id_download"
 
 # preprocess: create subnum variations, normalize, SPM (depends on download)
 
@@ -38,7 +40,7 @@ id_preprocess=$(
     $base $src $trg
 )
 
-echo "id_preprocess: $id_preprocess"
+echo "  id_preprocess: $id_preprocess"
 
 # Sockeye prepare (depends on preprocess)
 
@@ -50,7 +52,7 @@ id_prepare=$(
     $base $src $trg
 )
 
-echo "id_prepare: $id_prepare"
+echo "  id_prepare: $id_prepare"
 
 # Sockeye train (depends on prepare)
 
@@ -65,7 +67,7 @@ id_train=$(
     $base $src $trg $model_name "$additional_args"
 )
 
-echo "id_train: $id_train"
+echo "  id_train: $id_train"
 
 exit
 
@@ -81,11 +83,11 @@ id_translate=$(
     $base $src $trg $model_name
 )
 
-echo "id_translate: $id_translate"
+echo "  id_translate: $id_translate"
 
 # evaluate BLEU and variation range (depends on translate)
 
-echo "id_evaluate:"
+echo "  id_evaluate:"
 
 sbatch --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterany:$id_translate \
     -o $logs_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub/$SLURM_DEFAULT_FILE_PATTERN \

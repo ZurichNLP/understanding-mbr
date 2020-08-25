@@ -5,10 +5,11 @@ import sacrebleu
 import argparse
 import logging
 
-import random
 import numpy as np
 
 from typing import Callable, Tuple
+from multiprocessing import Pool
+from functools import partial
 
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
@@ -65,6 +66,7 @@ def parse_args():
     parser.add_argument("--output", type=str, help="File to write best samples.", required=True)
     parser.add_argument("--utility-function", type=str, help="Utility function to compare average risk of samples",
                         required=True, choices=UTILITY_FUNCTIONS)
+    parser.add_argument("--num-workers", type=int, help="How many processes to start for multiprocessing.", required=False, default=1)
 
     args = parser.parse_args()
 
@@ -113,11 +115,13 @@ def main():
 
     utility_function = UTILITY_LOOKUP[args.utility_function]
 
-    for samples in zip(*input_handles):  # type: Tuple[str]
-        output, utility = get_maximum_utility_sample(samples=samples, utility_function=utility_function)
+    pool = Pool(processes=args.num_workers)
+
+    get_maximum_utility_sample_func = partial(get_maximum_utility_sample, utility_function=utility_function)
+
+    for output, utility in pool.imap(get_maximum_utility_sample_func, zip(*input_handles)):
 
         output = output.strip()
-
         output_handle.write("%f\t%s\n" % (utility, output))
 
 

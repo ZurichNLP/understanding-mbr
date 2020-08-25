@@ -63,6 +63,7 @@ done
 python $scripts/mbr_decoding.py \
     --inputs $samples_sub_sub/$corpus.{1..30}.trg \
     --output $samples_sub_sub/$corpus.mbr \
-    --utility-function sentence-meteor
+    --utility-function sentence-meteor \
+    --num-workers 2
 
 cat $samples_sub_sub/$corpus.mbr | cut-f2 > $samples_sub_sub/$corpus.mbr.text
