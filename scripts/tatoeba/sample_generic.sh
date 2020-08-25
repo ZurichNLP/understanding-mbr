@@ -30,6 +30,9 @@ model_path=$models_sub/$model_name
 
 for corpus in dev test variations; do
 
+    deactivate
+    source $base/venvs/sockeye3/bin/activate
+
     for seed in {1..30}; do
 
         if [[ -s $samples_sub_sub/$corpus.pieces.$seed.trg ]]; then
@@ -56,20 +59,20 @@ for corpus in dev test variations; do
         cat $samples_sub_sub/$corpus.pieces.$seed.trg | sed 's/ //g;s/▁/ /g' > $samples_sub_sub/$corpus.$seed.trg
 
     done
+
+    # change venv for correct version of sacrebleu that has TER
+
+    deactivate
+    source $venvs/sockeye3-cpu/bin/activate
+
+    # MBR
+
+    python $scripts/mbr_decoding.py \
+        --inputs $samples_sub_sub/$corpus.{1..30}.trg \
+        --output $samples_sub_sub/$corpus.mbr \
+        --utility-function sentence-meteor \
+        --num-workers 2
+
+    cat $samples_sub_sub/$corpus.mbr | cut-f2 > $samples_sub_sub/$corpus.mbr.text
+
 done
-
-# change venv for correct version of sacrebleu that has TER
-
-deactivate
-
-source $venvs/sockeye3-cpu/bin/activate
-
-# MBR
-
-python $scripts/mbr_decoding.py \
-    --inputs $samples_sub_sub/$corpus.{1..30}.trg \
-    --output $samples_sub_sub/$corpus.mbr \
-    --utility-function sentence-meteor \
-    --num-workers 2
-
-cat $samples_sub_sub/$corpus.mbr | cut-f2 > $samples_sub_sub/$corpus.mbr.text
