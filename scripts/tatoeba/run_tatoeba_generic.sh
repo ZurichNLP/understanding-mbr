@@ -26,8 +26,6 @@ id_download=$(
     $base $src $trg
 )
 
-exit
-
 # preprocess: create subnum variations, normalize, SPM (depends on download)
 
 id_preprocess=$(
@@ -37,6 +35,8 @@ id_preprocess=$(
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg
 )
+
+exit
 
 # Sockeye prepare (depends on preprocess)
 
