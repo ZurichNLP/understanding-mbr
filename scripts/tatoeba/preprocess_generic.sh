@@ -87,15 +87,15 @@ done
 
 num_lines=$(wc -l $data_sub/train.normalized.src)
 
-if [ $num_lines -gt ${LARGEST_TRAINSIZE} ]; then
+if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=32000
-elif [ $num_lines -gt ${LARGE_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${LARGE_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=32000
-elif [ $num_lines -gt ${MEDIUM_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${MEDIUM_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=12000
-elif [ $num_lines -gt ${SMALL_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${SMALL_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=4000
-elif [ $num_lines -gt ${SMALLEST_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${SMALLEST_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=1000
 else
     echo "Warning: training data size too small"

@@ -59,31 +59,31 @@ LARGEST_TRAINSIZE=10000000
 
 num_lines=$(wc -l $data_sub/train.normalized.src)
 
-if [ $num_lines -gt ${LARGEST_TRAINSIZE} ]; then
+if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
     embed_dropout=0.1
     transformer_dropout=0.1
     batch_size=4096
     decode_and_evaluate=2500
     checkpoint_interval=5000
-elif [ $num_lines -gt ${LARGE_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${LARGE_TRAINSIZE} ]]; then
     embed_dropout=0.1
     transformer_dropout=0.1
     batch_size=4096
     decode_and_evaluate=2500
     checkpoint_interval=5000
-elif [ $num_lines -gt ${MEDIUM_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${MEDIUM_TRAINSIZE} ]]; then
     embed_dropout=0.1
     transformer_dropout=0.1
     batch_size=4096
     decode_and_evaluate=2500
     checkpoint_interval=5000
-elif [ $num_lines -gt ${SMALL_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${SMALL_TRAINSIZE} ]]; then
     embed_dropout=0.2
     transformer_dropout=0.2
     batch_size=2048
     decode_and_evaluate=1000
     checkpoint_interval=1000
-elif [ $num_lines -gt ${SMALLEST_TRAINSIZE} ]; then
+elif [[ $num_lines -gt ${SMALLEST_TRAINSIZE} ]]; then
     embed_dropout=0.5
     transformer_dropout=0.5
     batch_size=1024
