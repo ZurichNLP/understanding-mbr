@@ -128,6 +128,7 @@ python -m sockeye.train \
 --learning-rate-reduce-num-not-improved 4 \
 --checkpoint-interval $checkpoint_interval \
 --keep-last-params 30 \
+--max-seq-len 500:500 \
 --learning-rate-reduce-factor 0.7 \
 --decode-and-evaluate $decode_and_evaluate \
 --max-num-checkpoint-not-improved 10 \

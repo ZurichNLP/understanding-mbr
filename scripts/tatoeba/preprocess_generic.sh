@@ -102,6 +102,8 @@ else
     exit 0
 fi
 
+echo "sentencepiece_vocab_size=$sentencepiece_vocab_size"
+
 # learn sentencepiece model on train (concatenate both languages)
 
 for lang in src trg; do

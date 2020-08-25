@@ -76,3 +76,5 @@ pip install sentencepiece
 # lang id packages
 
 pip install pycld2 iso-639
+
+pip install requests
