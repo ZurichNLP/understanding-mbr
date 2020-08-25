@@ -85,7 +85,7 @@ done
 
 # determine $sentencepiece_vocab_size
 
-num_lines=$(wc -l $data_sub/train.normalized.src)
+num_lines=$(cat $data_sub/train.normalized.src | wc -l)
 
 if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=32000
