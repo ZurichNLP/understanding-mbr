@@ -52,8 +52,6 @@ id_prepare=$(
 
 echo "id_prepare: $id_prepare"
 
-exit
-
 # Sockeye train (depends on prepare)
 
 model_name=baseline
@@ -68,6 +66,8 @@ id_train=$(
 )
 
 echo "id_train: $id_train"
+
+exit
 
 # translate + sample test set (depends on train)
 

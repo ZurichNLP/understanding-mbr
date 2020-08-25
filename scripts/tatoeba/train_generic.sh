@@ -57,7 +57,7 @@ MEDIUM_TRAINSIZE=500000
 LARGE_TRAINSIZE=1000000
 LARGEST_TRAINSIZE=10000000
 
-num_lines=$(wc -l $data_sub/train.normalized.src)
+num_lines=$(cat $data_sub/train.clean.src | wc -l)
 
 if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
     embed_dropout=0.1
