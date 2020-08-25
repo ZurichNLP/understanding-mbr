@@ -4,10 +4,12 @@
 # base
 # $src
 # $trg
+# $model_name
 
 base=$1
 src=$2
 trg=$3
+model_name=$4
 
 data=$base/data
 venvs=$base/venvs
@@ -20,6 +22,11 @@ mkdir -p $shared_models
 
 data_sub=$data/${src}-${trg}
 shared_models_sub=$shared_models/${src}-${trg}
+
+# overwrite subfolder names to make it easier to read
+
+data_sub=$data_sub/$model_name
+shared_models_sub=$shared_models_sub/$model_name
 
 mkdir -p $shared_models_sub
 
