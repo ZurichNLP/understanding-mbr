@@ -5,6 +5,8 @@
 # $src
 # $trg
 
+module load volta cuda/10.2
+
 scripts=$base/scripts
 
 # download corpus for language pair
