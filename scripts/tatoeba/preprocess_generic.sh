@@ -132,8 +132,8 @@ done
 # create subnum variations of test set
 
 python $scripts/create_variations.py \
-    --input-src $data_sub/train.normalized.src \
-    --input-trg $data_sub/train.normalized.trg \
+    --input-src $data_sub/test.normalized.src \
+    --input-trg $data_sub/test.normalized.trg \
     --output-src $data_sub/variations.normalized.src \
     --output-trg $data_sub/variations.normalized.trg \
     --output-variation-counts $data_sub/variations.count \

@@ -32,6 +32,8 @@ gunzip $data_sub/train.id.gz
 gunzip $data_sub/train.src.gz
 gunzip $data_sub/train.trg.gz
 
+rm -f $data_sub/train.id.gz $data_sub/train.src.gz $data_sub/train.trg.gz
+
 echo "Sizes of files:"
 
 wc -l $data_sub/*
