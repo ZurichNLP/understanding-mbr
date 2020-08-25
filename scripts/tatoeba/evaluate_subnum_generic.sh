@@ -37,10 +37,11 @@ python $scripts/eval_subnum.py \
     --ref $data_sub_sub/test.trg \
     --hyp $translations_sub_sub/variations.trg \
     --num $data_sub_sub/variations.count \
+    --average $evaluations_sub_sub/variations.beam.subnum.average \
     > $evaluations_sub_sub/variations.beam.subnum
 
-echo "$evaluations_sub_sub/variations.beam.subnum"
-cat $evaluations_sub_sub/variations.beam.subnum
+echo "$evaluations_sub_sub/variations.beam.subnum.average"
+cat $evaluations_sub_sub/variations.beam.subnum.average
 
 # MBR decoding
 
@@ -48,7 +49,8 @@ python $scripts/eval_subnum.py \
     --ref $data_sub_sub/test.trg \
     --hyp $samples_sub_sub/variations.mbr.text \
     --num $data_sub_sub/variations.count \
+    --average $evaluations_sub_sub/variations.mbr.subnum.average \
     > $evaluations_sub_sub/variations.mbr.subnum
 
-echo "$evaluations_sub_sub/variations.mbr.subnum"
-cat $evaluations_sub_sub/variations.mbr.subnum
+echo "$evaluations_sub_sub/variations.mbr.subnum.average"
+cat $evaluations_sub_sub/variations.mbr.subnum.average

@@ -18,6 +18,8 @@ def parse_args():
     parser.add_argument("--hyp", type=str, help="Hypotheses for all modified inputs.", required=True)
     parser.add_argument("--num", type=str, help="File listing counts of variations per reference sentence.",
                         required=True)
+    parser.add_argument("--average", type=str, help="File to write average ranges.",
+                        required=True)
 
     args = parser.parse_args()
 
@@ -122,6 +124,7 @@ def main():
     num_handle = open(args.num, "r")
     ref_handle = open(args.ref, "r")
     hyp_handle = open(args.hyp, "r")
+    avg_handle = open(args.average, "w")
 
     print("BLEU\tTER\tMETEOR\tRATIO")
 
@@ -156,9 +159,9 @@ def main():
     range_averages = compute_range_average(score_ranges)
     range_averages = [str(r) for r in range_averages]
 
-    logging.debug("RANGE AVERAGES:")
-    logging.debug("BLEU\tTER\tMETEOR\tRATIO")
-    logging.debug("\t".join(range_averages))
+    avg_handle.write("RANGE AVERAGES:\n")
+    avg_handle.write("BLEU\tTER\tMETEOR\tRATIO\n")
+    avg_handle.write("\t".join(range_averages) + "\n")
 
     for score_range in score_ranges:
         score_range = [str(s) for s in score_range]
