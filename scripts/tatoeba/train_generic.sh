@@ -16,19 +16,17 @@ additional_args=$5
 
 data=$base/data
 data_sub=$data/${src}-${trg}
+data_sub_sub=$data_sub/$model_name
 
 prepared=$base/prepared
 prepared_sub=$prepared/${src}-${trg}
+prepared_sub_sub=$prepared_sub/$model_name
 
 models=$base/models
 models_sub=$models/${src}-${trg}
+models_sub_sub=$models_sub/$model_name
 
-mkdir -p $models
-mkdir -p $models_sub
-
-model_sub_sub=$models_sub/$model_name
-
-mkdir -p $model_sub_sub
+mkdir -p $models_sub_sub
 
 echo "additional args: "
 echo "$additional_args"
@@ -57,7 +55,7 @@ MEDIUM_TRAINSIZE=500000
 LARGE_TRAINSIZE=1000000
 LARGEST_TRAINSIZE=10000000
 
-num_lines=$(cat $data_sub/train.clean.src | wc -l)
+num_lines=$(cat $data_sub_sub/train.clean.src | wc -l)
 
 if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
     embed_dropout=0.1
@@ -97,10 +95,10 @@ fi
 ##################################################
 
 python -m sockeye.train \
--d $prepared_sub \
--vs $data_sub/dev.pieces.src \
--vt $data_sub/dev.pieces.trg \
---output $model_sub_sub \
+-d $prepared_sub_sub \
+-vs $data_sub_sub/dev.pieces.src \
+-vt $data_sub_sub/dev.pieces.trg \
+--output $models_sub_sub \
 --seed 1 \
 --batch-type word \
 --batch-size $batch_size \

@@ -10,21 +10,19 @@ scripts=$base/scripts
 
 data=$base/data
 data_sub=$data/${src}-${trg}
+data_sub_sub=$data_sub/$model_name
 
 models=$base/models
 models_sub=$models/${src}-${trg}
+models_sub_sub=$models_sub/$model_name
 
 samples=$base/samples
 samples_sub=$samples/${src}-${trg}
 samples_sub_sub=$samples_sub/$model_name
 
-mkdir -p $samples
-mkdir -p $samples_sub
 mkdir -p $samples_sub_sub
 
 source $base/venvs/sockeye3/bin/activate
-
-model_path=$models_sub/$model_name
 
 # sampling translation
 
@@ -44,9 +42,9 @@ for corpus in dev test variations; do
         # 1-best, fixed beam size, fixed batch size
 
         OMP_NUM_THREADS=1 python -m sockeye.translate \
-                -i $data_sub/$corpus.pieces.src \
+                -i $data_sub_sub/$corpus.pieces.src \
                 -o $samples_sub_sub/$corpus.pieces.$seed.trg \
-                -m $model_path \
+                -m $models_sub_sub \
                 --sample \
                 --seed $seed \
                 --length-penalty-alpha 1.0 \
