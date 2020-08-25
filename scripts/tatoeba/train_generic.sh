@@ -119,7 +119,6 @@ python -m sockeye.train \
 --transformer-dropout-prepost $transformer_dropout \
 --transformer-positional-embedding-type fixed \
 --embed-dropout $embed_dropout:$embed_dropout \
---weight-tying \
 --weight-tying-type src_trg_softmax \
 --num-embed $num_embed \
 --num-words 64000:64000 \
