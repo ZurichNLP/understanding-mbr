@@ -31,7 +31,9 @@ for corpus in dev test variations; do
     deactivate
     source $base/venvs/sockeye3/bin/activate
 
-    for seed in {1..30}; do
+    # TODO: change back to 30
+
+    for seed in {1..3}; do
 
         if [[ -s $samples_sub_sub/$corpus.pieces.$seed.trg ]]; then
           echo "File exists: $samples_sub_sub/$corpus.pieces.$seed.trg"
@@ -65,8 +67,10 @@ for corpus in dev test variations; do
 
     # MBR
 
+    # TODO: change back to 30
+
     python $scripts/mbr_decoding.py \
-        --inputs $samples_sub_sub/$corpus.{1..30}.trg \
+        --inputs $samples_sub_sub/$corpus.{1..3}.trg \
         --output $samples_sub_sub/$corpus.mbr \
         --utility-function sentence-meteor \
         --num-workers 2
