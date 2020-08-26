@@ -62,8 +62,8 @@ for corpus in dev test variations; do
     for part in {1..8}; do
 
         python $scripts/mbr_decoding.py \
-            --inputs $samples_sub_sub/$corpus.{1..30}.trg.$part \
-            --output $samples_sub_sub/$corpus.mbr.$part \
+            --inputs $samples_sub_sub/sample_parts/$corpus.{1..30}.trg.$part \
+            --output $samples_sub_sub/sample_parts/$corpus.mbr.$part \
             --utility-function sentence-meteor &
     done
 
