@@ -82,9 +82,8 @@ for year in {13..20}; do
     $METEOR \
         $translations_sub/wmt$year.$src-$trg.$trg.top.tok \
         $data_sub/wmt$year.$src-$trg.$trg.tok \
-        $METEOR_PARAMS | \
-        tail -n 1 \
-        > $evaluations_sub/wmt$year.beam.meteor 2> /dev/null
+        $METEOR_PARAMS 2> /dev/null \
+        > $evaluations_sub/wmt$year.beam.meteor
 
     echo "$evaluations_sub/wmt$year.beam.meteor"
     cat $evaluations_sub/wmt$year.beam.meteor
@@ -98,9 +97,8 @@ for year in {13..20}; do
     $METEOR \
         $samples_sub/wmt$year.$src-$trg.$trg.text.1.tok \
         $data_sub/wmt$year.$src-$trg.$trg.tok \
-        $METEOR_PARAMS | \
-        tail -n 1 \
-        > $evaluations_sub/wmt$year.single_sample.meteor 2> /dev/null
+        $METEOR_PARAMS 2> /dev/null \
+        > $evaluations_sub/wmt$year.single_sample.meteor
 
     echo "$evaluations_sub/wmt$year.single_sample.meteor"
     cat $evaluations_sub/wmt$year.single_sample.meteor
@@ -114,9 +112,8 @@ for year in {13..20}; do
     $METEOR \
         $samples_sub/wmt$year.$src-$trg.$trg.mbr.text.tok \
         $data_sub/wmt$year.$src-$trg.$trg.tok \
-        $METEOR_PARAMS | \
-        tail -n 1 \
-        > $evaluations_sub/wmt$year.mbr.meteor 2> /dev/null
+        $METEOR_PARAMS 2> /dev/null \
+        > $evaluations_sub/wmt$year.mbr.meteor
 
     echo "$evaluations_sub/wmt$year.mbr.meteor"
     cat $evaluations_sub/wmt$year.mbr.meteor
