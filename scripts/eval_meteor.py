@@ -56,11 +56,9 @@ class ExternalProcessor(object):
             shell=True,
             stdin=PIPE,
             stdout=PIPE,
-            stderr=PIPE if self._stream_stderr else None
+            stderr=PIPE
         )
         self._lock = threading.Lock()
-        if self._stream_stderr:
-            self._nbsr = _NonBlockingStreamReader(self._process.stderr)
 
     def close(self):
         """
@@ -81,55 +79,7 @@ class ExternalProcessor(object):
             self._process.stdin.flush()
             result = self._process.stdout.readline()
 
-            # attempt reading from STDERR
-            if self._stream_stderr:
-                errors = self._nbsr.readline()
-                if errors:
-                    message = errors.decode()
-                    logging.info(message.strip())
         return result.decode().strip()
-
-
-class _NonBlockingStreamReader:
-    """
-    Reads from stream without blocking, even if nothing can be read
-    """
-
-    def __init__(self, stream):
-        """
-        @param stream the stream to read from, usually a process' STDOUT or STDERR
-        """
-
-        self._stream = stream
-        self._queue = Queue()
-
-        def _populate_queue(__stream, queue):
-            """
-            Collects lines from '@param stream and puts them in @param queue.
-            """
-
-            while True:
-                line = __stream.readline()
-                if line:
-                    queue.put(line)
-                else:
-                    raise _UnexpectedEndOfStream
-
-        self._thread = threading.Thread(target=_populate_queue,
-                                        args=(self._stream, self._queue))
-        self._thread.daemon = True
-        self._thread.start()  # start collecting lines from the stream
-
-    def readline(self, timeout=None):
-        try:
-            return self._queue.get(block=timeout is not None,
-                                   timeout=timeout)
-        except Empty:
-            return None
-
-
-class _UnexpectedEndOfStream(Exception):
-    pass
 
 
 class MeteorScorer(object):
