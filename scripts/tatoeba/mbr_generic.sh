@@ -69,7 +69,7 @@ for corpus in dev test variations; do
 
     wait
 
-    cat $samples_sub_sub/sample_parts/$corpus.mbr.{1..32} > $samples_sub_sub/$corpus.mbr
+    cat $samples_sub_sub/sample_parts/$corpus.mbr.{1..8} > $samples_sub_sub/$corpus.mbr
 
     cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
 
