@@ -70,13 +70,13 @@ for year in {13..20}; do
     # tokenize reference once
 
     cat $data_sub/wmt$year.$src-$trg.$trg | \
-        python $scripts/tokenize_v13a.py \
+        python $base/scripts/tokenize_v13a.py \
         > $data_sub/wmt$year.$src-$trg.$trg.tok
 
     # beam translations
 
     cat $translations_sub/wmt$year.$src-$trg.$trg.top | \
-        python $scripts/tokenize_v13a.py \
+        python $base/scripts/tokenize_v13a.py \
         > $translations_sub/wmt$year.$src-$trg.$trg.top.tok
 
     $METEOR \
@@ -92,7 +92,7 @@ for year in {13..20}; do
     # single sample translation
 
     cat $samples_sub/wmt$year.$src-$trg.$trg.text.1 | \
-        python $scripts/tokenize_v13a.py \
+        python $base/scripts/tokenize_v13a.py \
         > $samples_sub/wmt$year.$src-$trg.$trg.text.1.tok
 
     $METEOR \
@@ -108,7 +108,7 @@ for year in {13..20}; do
     # 30 samples, MBR decoding
 
     cat $samples_sub/wmt$year.$src-$trg.$trg.mbr.text | \
-        python $scripts/tokenize_v13a.py \
+        python $base/scripts/tokenize_v13a.py \
         > $samples_sub/wmt$year.$src-$trg.$trg.mbr.text.tok
 
     $METEOR \
