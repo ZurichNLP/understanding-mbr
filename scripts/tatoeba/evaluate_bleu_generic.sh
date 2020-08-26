@@ -31,7 +31,7 @@ mkdir -p $evaluations_sub_sub
 
 for corpus in dev test; do
 
-    if [[ -s $evaluations_sub_sub/$corpus.bleu ]]; then
+    if [[ -s $evaluations_sub_sub/$corpus.beam.bleu ]]; then
       continue
     fi
 

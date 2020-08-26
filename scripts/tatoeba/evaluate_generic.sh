@@ -15,4 +15,6 @@ scripts=$base/scripts
 
 . $scripts/tatoeba/evaluate_bleu_generic.sh
 
+. $scripts/tatoeba/evaluate_meteor_generic.sh
+
 . $scripts/tatoeba/evaluate_subnum_generic.sh
