@@ -19,7 +19,6 @@ def parse_args():
                         required=True)
     parser.add_argument("--average", type=str, help="File to write average ranges.",
                         required=True)
-    parser.add_argument("--meteor-path", type=str, help="Folder with METEOR jar file.", required=True)
 
     args = parser.parse_args()
 

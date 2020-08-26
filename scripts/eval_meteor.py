@@ -19,7 +19,8 @@ def parse_args():
 
     parser.add_argument("--hyp", type=str, help="System hypotheses.", required=True)
     parser.add_argument("--ref", type=str, help="Reference translations.", required=True)
-    parser.add_argument("--meteor-path", type=str, help="Folder with METEOR jar file.", required=True)
+    parser.add_argument("--meteor-path", type=str, help="Folder with METEOR jar file.", required=False,
+                        default=METEOR_DEFAULT_PATH)
 
     args = parser.parse_args()
 
