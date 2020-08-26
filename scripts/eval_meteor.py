@@ -11,6 +11,9 @@ from queue import Queue, Empty
 from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
 
 
+METEOR_DEFAULT_PATH = "/net/cephfs/scratch/mathmu/map-volatility/tools/meteor"
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
 
@@ -124,7 +127,7 @@ class _UnexpectedEndOfStream(Exception):
 
 class MeteorScorer(object):
 
-    def __init__(self, meteor_path: str) -> None:
+    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH) -> None:
         """
 
         """
@@ -170,6 +173,19 @@ class MeteorScorer(object):
         score = self.processor.process(second_call_input)
 
         return float(score)
+
+
+def sentence_meteor(hyp: str, ref: str) -> float:
+    """
+    Stateless, single sentence pair
+
+    Assumes METEOR default path, and overhead for object creation for each call.
+
+    :param hyp:
+    :param ref:
+    :return:
+    """
+    return MeteorScorer().score(hyp, ref)
 
 
 def main():

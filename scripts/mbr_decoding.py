@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-import nltk
 import sacrebleu
 import argparse
 import logging
@@ -10,6 +9,7 @@ import numpy as np
 from typing import Callable, Tuple
 from multiprocessing import Pool
 from functools import partial
+from eval_meteor import sentence_meteor
 
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
@@ -28,7 +28,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return nltk.translate.meteor_score.single_meteor_score(ref, hyp)
+    return sentence_meteor(ref, hyp)
 
 
 def compute_ter(hyp: str, ref: str) -> float:

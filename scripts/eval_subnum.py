@@ -2,13 +2,12 @@
 
 import argparse
 import logging
-
-import nltk
 import sacrebleu
 
 import numpy as np
 
 from typing import List
+from eval_meteor import sentence_meteor
 
 
 def parse_args():
@@ -20,6 +19,7 @@ def parse_args():
                         required=True)
     parser.add_argument("--average", type=str, help="File to write average ranges.",
                         required=True)
+    parser.add_argument("--meteor-path", type=str, help="Folder with METEOR jar file.", required=True)
 
     args = parser.parse_args()
 
@@ -47,7 +47,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return nltk.translate.meteor_score.single_meteor_score(ref, hyp)
+    return sentence_meteor(ref, hyp)
 
 
 def compute_ter(hyp: str, ref: str) -> float:
