@@ -6,7 +6,7 @@
 # $output_prefix
 # $base
 
-scripts=$base/scripts
+scripts=$base/scripts/wmt-fairseq
 
 models=$base/models
 models_sub=$models/fairseq-wmt19-de-en

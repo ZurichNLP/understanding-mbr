@@ -8,7 +8,7 @@
 # $nbest_size
 # $beam_size
 
-scripts=$base/scripts
+scripts=$base/scripts/wmt-fairseq
 
 models=$base/models
 models_sub=$models/fairseq-wmt19-de-en
