@@ -10,4 +10,4 @@ t = Tokenizer13a()
 for line in sys.stdin:
     line = line.strip()
     tokenized = t(line)
-    print(line)
+    print(tokenized)
