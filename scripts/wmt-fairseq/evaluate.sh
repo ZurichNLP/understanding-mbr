@@ -127,7 +127,7 @@ done
 
 # beam translations
 
-python $scripts/eval_subnum.py \
+python $base/scripts/eval_subnum.py \
     --ref $variations_sub/wmt.all.$trg \
     --hyp $translations_sub/variations.$trg.top \
     --num $variations_sub/wmt.all.count \
@@ -139,7 +139,7 @@ cat $evaluations_sub/variations.beam.subnum.average
 
 # MBR decoding
 
-python $scripts/eval_subnum.py \
+python $base/scripts/eval_subnum.py \
     --ref $variations_sub/wmt.all.$trg \
     --hyp $samples_sub/variations.mbr.text \
     --num $variations_sub/wmt.all.count \
