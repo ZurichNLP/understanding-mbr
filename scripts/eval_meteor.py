@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 
+import os
 import argparse
 import threading
 import logging
@@ -49,9 +50,17 @@ class ExternalProcessor(object):
 
         if not quiet:
             logging.debug("Executing %s", self.command)
+
+        # avoid wrong LC_NUMERIC or similar?
+        # https://github.com/Maluuba/nlg-eval/pull/33
+
+        env = os.environ.copy()
+        env['LC_ALL'] = "C"
+
         self._process = Popen(
             self.command,
             shell=True,
+            env=env,
             stdin=PIPE,
             stdout=PIPE,
             stderr=PIPE if self._stream_stderr else None
