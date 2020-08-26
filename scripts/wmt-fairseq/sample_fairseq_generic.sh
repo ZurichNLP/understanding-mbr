@@ -52,12 +52,12 @@ else
     mkdir -p $base/samples/wmt/sample_parts
 
     for seed in {1..30}; do
-        python $scripts/split.py --parts 16 --input $output_prefix.text.$seed
+        python $base/scripts/split.py --parts 16 --input $output_prefix.text.$seed
     done
 
     for part in {1..16}; do
 
-        python $scripts/mbr_decoding.py \
+        python $base/scripts/mbr_decoding.py \
             --inputs $output_prefix.text.{1..30}.$part \
             --output $output_prefix.mbr.$part \
             --utility-function sentence-meteor &
