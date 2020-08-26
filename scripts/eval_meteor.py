@@ -176,6 +176,10 @@ def main():
     scores = []
 
     for hyp, ref in zip(hyp_handle, ref_handle):
+
+        hyp = hyp.strip()
+        ref = ref.strip()
+
         score = ms.score(hyp, ref)
         scores.append(score)
 
