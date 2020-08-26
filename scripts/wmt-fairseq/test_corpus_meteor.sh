@@ -22,8 +22,8 @@ evaluations_sub=$evaluations/wmt
 
 mkdir -p $evaluations_sub
 
-METEOR="java -Xmx2G -jar $base/tools/meteor/meteor-*.jar "
-METEOR_PARAMS=" -l other -q"
+METEOR="java -Xmx2G -jar $base/tools/meteor/meteor-*.jar"
+METEOR_PARAMS="-l other -q"
 
 # compute METEOR with internal tokenization
 
@@ -48,9 +48,8 @@ for year in 13; do
     $METEOR \
         $translations_sub/wmt$year.$src-$trg.$trg.top.tok \
         $data_sub/wmt$year.$src-$trg.$trg.tok \
-        $METEOR_PARAMS | \
-        tail -n 1 \
-        > $evaluations_sub/wmt$year.beam.meteor 2> /dev/null
+        $METEOR_PARAMS 2> /dev/null \
+        > $evaluations_sub/wmt$year.beam.meteor
 
     echo "$evaluations_sub/wmt$year.beam.meteor"
     cat $evaluations_sub/wmt$year.beam.meteor
