@@ -8,6 +8,8 @@ import numpy
 from subprocess import Popen, PIPE
 from queue import Queue, Empty
 
+from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -171,6 +173,8 @@ def main():
     hyp_handle = open(args.hyp, "r")
     ref_handle = open(args.ref, "r")
 
+    tokenizer = Tokenizer13a()
+
     ms = MeteorScorer(args.meteor_path)
 
     scores = []
@@ -180,7 +184,10 @@ def main():
         hyp = hyp.strip()
         ref = ref.strip()
 
-        score = ms.score(hyp, ref)
+        hyp_tokenized = tokenizer(hyp)
+        ref_tokenized = tokenizer(ref)
+
+        score = ms.score(hyp_tokenized, ref_tokenized)
         scores.append(score)
 
     assert len(scores) > 0, "No scores computed. Are hyp or ref input files empty?"
