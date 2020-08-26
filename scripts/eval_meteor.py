@@ -141,6 +141,9 @@ class MeteorScorer(object):
             stream_stderr=True
         )
 
+        # sacrebleu tokenizer
+        self.tokenizer = Tokenizer13a()
+
     def close(self):
         del self.processor
 
@@ -148,6 +151,12 @@ class MeteorScorer(object):
         """
         Scores a single segment.
         """
+        hyp = hyp.strip()
+        ref = ref.strip()
+
+        hyp = self.tokenizer(hyp)
+        ref = self.tokenizer(ref)
+
         first_call_args = ["SCORE",
                            ref,
                            hyp]
@@ -173,21 +182,13 @@ def main():
     hyp_handle = open(args.hyp, "r")
     ref_handle = open(args.ref, "r")
 
-    tokenizer = Tokenizer13a()
-
     ms = MeteorScorer(args.meteor_path)
 
     scores = []
 
     for hyp, ref in zip(hyp_handle, ref_handle):
 
-        hyp = hyp.strip()
-        ref = ref.strip()
-
-        hyp_tokenized = tokenizer(hyp)
-        ref_tokenized = tokenizer(ref)
-
-        score = ms.score(hyp_tokenized, ref_tokenized)
+        score = ms.score(hyp, ref)
         scores.append(score)
 
     assert len(scores) > 0, "No scores computed. Are hyp or ref input files empty?"
