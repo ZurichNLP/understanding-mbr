@@ -88,7 +88,7 @@ echo "  id_translate: $id_translate"  | tee -a $logs_sub_sub/MAIN
 
 id_mbr=$(
     $scripts/sbatch_bare.sh \
-    --cpus-per-task=32 --time=24:00:00 --mem=128G --partition=generic --dependency=afterok:$id_translate \
+    --cpus-per-task=8 --time=24:00:00 --mem=64G --partition=generic --dependency=afterok:$id_translate \
     -o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/mbr_generic.sh \
     $base $src $trg $model_name

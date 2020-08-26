@@ -49,17 +49,17 @@ for corpus in dev test variations; do
 
     # MBR
 
-    # divide inputs into up to 32 parts
+    # divide inputs into up to 8 parts
 
     mkdir -p $samples_sub_sub/sample_parts
 
     for seed in {1..30}; do
         cp $samples_sub_sub/$corpus.$seed.trg $samples_sub_sub/sample_parts/$corpus.$seed.trg
 
-        python $scripts/split.py --parts 32 --input $samples_sub_sub/sample_parts/$corpus.$seed.trg
+        python $scripts/split.py --parts 8 --input $samples_sub_sub/sample_parts/$corpus.$seed.trg
     done
 
-    for part in {1..32}; do
+    for part in {1..8}; do
 
         python $scripts/mbr_decoding.py \
             --inputs $samples_sub_sub/$corpus.{1..30}.trg.$part \
