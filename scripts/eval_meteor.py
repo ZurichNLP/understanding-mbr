@@ -12,7 +12,7 @@ from queue import Queue, Empty
 from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
 
 # alternative:
-#METEOR_DEFAULT_PATH = "/srv/scratch1/mmueller/fairseq-para/tools/meteor"
+# METEOR_DEFAULT_PATH = "/srv/scratch1/mmueller/fairseq-para/tools/meteor"
 
 METEOR_DEFAULT_PATH = "/net/cephfs/scratch/mathmu/map-volatility/tools/meteor"
 
@@ -134,7 +134,7 @@ class _UnexpectedEndOfStream(Exception):
 
 class MeteorScorer(object):
 
-    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH, quiet: bool =True) -> None:
+    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH, quiet: bool = True) -> None:
         """
 
         """
@@ -156,6 +156,7 @@ class MeteorScorer(object):
         self.tokenizer = Tokenizer13a()
 
     def close(self):
+        self.processor.close()
         del self.processor
 
     def score(self, hyp: str, ref: str) -> float:
