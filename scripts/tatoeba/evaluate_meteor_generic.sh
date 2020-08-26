@@ -57,7 +57,7 @@ for corpus in dev test; do
         $data_sub_sub/$corpus.trg.tok \
         $METEOR_PARAMS | \
         tail -n 1 \
-        > $evaluations_sub_sub/$corpus.beam.meteor
+        > $evaluations_sub_sub/$corpus.beam.meteor 2> /dev/null
 
     echo "$evaluations_sub_sub/$corpus.beam.meteor"
     cat $evaluations_sub_sub/$corpus.beam.meteor
@@ -73,7 +73,7 @@ for corpus in dev test; do
         $data_sub_sub/$corpus.trg.tok \
         $METEOR_PARAMS | \
         tail -n 1 \
-        > $evaluations_sub_sub/$corpus.single_sample.meteor
+        > $evaluations_sub_sub/$corpus.single_sample.meteor 2> /dev/null
 
     echo "$evaluations_sub_sub/$corpus.single_sample.meteor"
     cat $evaluations_sub_sub/$corpus.single_sample.meteor
@@ -89,7 +89,7 @@ for corpus in dev test; do
         $data_sub_sub/$corpus.trg.tok \
         $METEOR_PARAMS | \
         tail -n 1 \
-        > $evaluations_sub_sub/$corpus.mbr.meteor
+        > $evaluations_sub_sub/$corpus.mbr.meteor 2> /dev/null
 
     echo "$evaluations_sub_sub/$corpus.mbr.meteor"
     cat $evaluations_sub_sub/$corpus.mbr.meteor
