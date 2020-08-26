@@ -25,6 +25,25 @@ source $base/venvs/sockeye3/bin/activate
 
 for corpus in dev test variations; do
 
+    if [[ -s $samples_sub_sub/$corpus.mbr.text ]]; then
+      echo "Mbr decodes exist: $samples_sub_sub/$corpus.mbr.text"
+
+      num_lines_input=$(cat $samples_sub_sub/$corpus.1.trg | wc -l)
+      num_lines_output=$(cat $samples_sub_sub/$corpus.mbr.text | wc -l)
+
+      if [[ $num_lines_input == $num_lines_output ]]; then
+          echo "output exists and number of lines are equal to input:"
+          echo "$samples_sub_sub/$corpus.1.trg == $samples_sub_sub/$corpus.mbr.text"
+          echo "$num_lines_input == $num_lines_output"
+          echo "Skipping."
+          continue
+      else
+          echo "$samples_sub_sub/$corpus.1.trg != $samples_sub_sub/$corpus.mbr.text"
+          echo "$num_lines_input != $num_lines_output"
+          echo "Repeating step."
+      fi
+    fi
+
     deactivate
     source $base/venvs/sockeye3-cpu/bin/activate
 
