@@ -82,8 +82,7 @@ for corpus in dev test variations; do
     python $scripts/mbr_decoding.py \
         --inputs $samples_sub_sub/$corpus.{1..30}.trg \
         --output $samples_sub_sub/$corpus.mbr \
-        --utility-function sentence-meteor \
-        --num-workers 2
+        --utility-function sentence-meteor
 
     cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
 
