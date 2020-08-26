@@ -49,10 +49,27 @@ for corpus in dev test variations; do
 
     # MBR
 
-    python $scripts/mbr_decoding.py \
-        --inputs $samples_sub_sub/$corpus.{1..30}.trg \
-        --output $samples_sub_sub/$corpus.mbr \
-        --utility-function sentence-meteor
+    # divide inputs into up to 32 parts
+
+    mkdir -p $samples_sub_sub/sample_parts
+
+    for seed in {1..30}; do
+        cp $samples_sub_sub/$corpus.$seed.trg $samples_sub_sub/sample_parts/$corpus.$seed.trg
+
+        python $scripts/split.py --parts 32 --input $samples_sub_sub/sample_parts/$corpus.$seed.trg
+    done
+
+    for part in {1..32}; do
+
+        python $scripts/mbr_decoding.py \
+            --inputs $samples_sub_sub/$corpus.{1..30}.trg.$part \
+            --output $samples_sub_sub/$corpus.mbr.$part \
+            --utility-function sentence-meteor &
+    done
+
+    wait
+
+    cat $samples_sub_sub/sample_parts/$corpus.mbr.{1..32} > $samples_sub_sub/$corpus.mbr
 
     cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
 

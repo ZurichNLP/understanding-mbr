@@ -1,13 +1,11 @@
 #! /usr/bin/python3
 
-import os
 import argparse
 import threading
 import logging
 import numpy
 
 from subprocess import Popen, PIPE
-from queue import Queue, Empty
 
 from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
 
