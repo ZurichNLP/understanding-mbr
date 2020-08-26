@@ -12,6 +12,14 @@ mkdir -p $tools
 
 source $venvs/sockeye3/bin/activate
 
+# install METEOR
+
+mkdir -p $tools/meteor
+
+wget wget http://www.cs.cmu.edu/~alavie/METEOR/download/meteor-1.5.tar.gz -P $tools/meteor
+
+tar -xzvf $tools/meteor/meteor-1.5.tar.gz -C $tools/meteor --strip=1
+
 # install Sockeye 2
 
 # CUDA version on instance
