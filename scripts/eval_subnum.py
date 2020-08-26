@@ -7,7 +7,10 @@ import sacrebleu
 import numpy as np
 
 from typing import List
-from eval_meteor import sentence_meteor
+from eval_meteor import MeteorScorer
+
+
+meteor_scorer = MeteorScorer()
 
 
 def parse_args():
@@ -46,7 +49,7 @@ def compute_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return sentence_meteor(ref, hyp)
+    return meteor_scorer.score(ref, hyp)
 
 
 def compute_ter(hyp: str, ref: str) -> float:

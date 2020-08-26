@@ -10,6 +10,8 @@ from queue import Queue, Empty
 
 from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
 
+# alternative:
+# METEOR_DEFAULT_PATH = "/srv/scratch1/mmueller/fairseq-para/tools/meteor"
 
 METEOR_DEFAULT_PATH = "/net/cephfs/scratch/mathmu/map-volatility/tools/meteor"
 
