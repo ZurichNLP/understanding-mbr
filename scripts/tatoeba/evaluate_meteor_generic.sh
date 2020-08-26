@@ -29,6 +29,9 @@ evaluations_sub_sub=$evaluations_sub/$model_name
 
 mkdir -p $evaluations_sub_sub
 
+METEOR="java -Xmx2G -jar $base/tools/meteor/meteor-*.jar "
+METEOR_PARAMS=" -l other -q"
+
 # compute METEOR with internal tokenization
 
 for corpus in dev test; do
@@ -37,11 +40,23 @@ for corpus in dev test; do
       continue
     fi
 
+    # tokenize reference once
+
+    cat $data_sub_sub/$corpus.trg | \
+        python $scripts/tokenize_v13a.py \
+        > $data_sub_sub/$corpus.trg.tok
+
     # beam translations
 
-    python $scripts/eval_meteor.py \
-        --hyp $translations_sub_sub/$corpus.trg \
-        --ref $data_sub_sub/$corpus.trg \
+    cat $translations_sub_sub/$corpus.trg | \
+        python $scripts/tokenize_v13a.py \
+        > $translations_sub_sub/$corpus.trg.tok
+
+    $METEOR \
+        $translations_sub_sub/$corpus.trg.tok \
+        $data_sub_sub/$corpus.trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub_sub/$corpus.beam.meteor
 
     echo "$evaluations_sub_sub/$corpus.beam.meteor"
@@ -49,9 +64,15 @@ for corpus in dev test; do
 
     # single sample translation
 
-    python $scripts/eval_meteor.py \
-        --hyp $samples_sub_sub/$corpus.1.trg \
-        --ref $data_sub_sub/$corpus.trg \
+    cat $samples_sub_sub/$corpus.1.trg | \
+        python $scripts/tokenize_v13a.py \
+        > $samples_sub_sub/$corpus.1.trg.tok
+
+    $METEOR \
+        $samples_sub_sub/$corpus.1.trg.tok \
+        $data_sub_sub/$corpus.trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub_sub/$corpus.single_sample.meteor
 
     echo "$evaluations_sub_sub/$corpus.single_sample.meteor"
@@ -59,9 +80,15 @@ for corpus in dev test; do
 
     # 30 samples, MBR decoding
 
-    python $scripts/eval_meteor.py \
-        --hyp $samples_sub_sub/$corpus.mbr.text \
-        --ref $data_sub_sub/$corpus.trg \
+    cat $samples_sub_sub/$corpus.mbr.text | \
+        python $scripts/tokenize_v13a.py \
+        > $samples_sub_sub/$corpus.mbr.text.tok
+
+    $METEOR \
+        $samples_sub_sub/$corpus.mbr.text.tok \
+        $data_sub_sub/$corpus.trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub_sub/$corpus.mbr.meteor
 
     echo "$evaluations_sub_sub/$corpus.mbr.meteor"

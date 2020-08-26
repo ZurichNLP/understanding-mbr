@@ -25,6 +25,9 @@ evaluations_sub=$evaluations/wmt
 
 mkdir -p $evaluations_sub
 
+METEOR="java -Xmx2G -jar $base/tools/meteor/meteor-*.jar "
+METEOR_PARAMS=" -l other -q"
+
 # compute case-sensitive BLEU on detokenized data
 
 for year in {13..20}; do
@@ -64,11 +67,23 @@ for year in {13..20}; do
       continue
     fi
 
+    # tokenize reference once
+
+    cat $data_sub/wmt$year.$src-$trg.$trg | \
+        python $scripts/tokenize_v13a.py \
+        > $data_sub/wmt$year.$src-$trg.$trg.tok
+
     # beam translations
 
-    python $scripts/eval_meteor.py \
-        --hyp $translations_sub/wmt$year.$src-$trg.$trg.top \
-        --ref $data_sub/wmt$year.$src-$trg.$trg \
+    cat $translations_sub/wmt$year.$src-$trg.$trg.top | \
+        python $scripts/tokenize_v13a.py \
+        > $translations_sub/wmt$year.$src-$trg.$trg.top.tok
+
+    $METEOR \
+        $translations_sub/wmt$year.$src-$trg.$trg.top.tok \
+        $data_sub/wmt$year.$src-$trg.$trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub/wmt$year.beam.meteor
 
     echo "$evaluations_sub/wmt$year.beam.meteor"
@@ -76,9 +91,15 @@ for year in {13..20}; do
 
     # single sample translation
 
-    python $scripts/eval_meteor.py \
-        --hyp $samples_sub/wmt$year.$src-$trg.$trg.text.1 \
-        --ref $data_sub/wmt$year.$src-$trg.$trg \
+    cat $samples_sub/wmt$year.$src-$trg.$trg.text.1 | \
+        python $scripts/tokenize_v13a.py \
+        > $samples_sub/wmt$year.$src-$trg.$trg.text.1.tok
+
+    $METEOR \
+        $samples_sub/wmt$year.$src-$trg.$trg.text.1.tok \
+        $data_sub/wmt$year.$src-$trg.$trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub/wmt$year.single_sample.meteor
 
     echo "$evaluations_sub/wmt$year.single_sample.meteor"
@@ -86,9 +107,15 @@ for year in {13..20}; do
 
     # 30 samples, MBR decoding
 
-    python $scripts/eval_meteor.py \
-        --hyp $samples_sub/wmt$year.$src-$trg.$trg.mbr.text \
-        --ref $data_sub/wmt$year.$src-$trg.$trg \
+    cat $samples_sub/wmt$year.$src-$trg.$trg.mbr.text | \
+        python $scripts/tokenize_v13a.py \
+        > $samples_sub/wmt$year.$src-$trg.$trg.mbr.text.tok
+
+    $METEOR \
+        $samples_sub/wmt$year.$src-$trg.$trg.mbr.text.tok \
+        $data_sub/wmt$year.$src-$trg.$trg.tok \
+        $METEOR_PARAMS | \
+        tail -n 1 \
         > $evaluations_sub/wmt$year.mbr.meteor
 
     echo "$evaluations_sub/wmt$year.mbr.meteor"

@@ -56,4 +56,3 @@ else
     cat $output_prefix.mbr | cut -f2 > $output_prefix.mbr.text
 
 fi
-
