@@ -40,10 +40,15 @@ for corpus in dev test variations; do
             num_lines_output=$(cat $samples_sub_sub/$corpus.$seed.trg | wc -l)
 
             if [[ $num_lines_input == $num_lines_output ]]; then
-                # echo "output chunk exists and number of lines are equal to input chunk:"
-                # echo "$num_lines_input_chunk == $num_lines_output_chunk"
-                # echo "Skipping."
+                echo "output exists and number of lines are equal to input:"
+                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.$seed.trg"
+                echo "$num_lines_input == $num_lines_output"
+                echo "Skipping."
                 continue
+            else
+                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.$seed.trg"
+                echo "$num_lines_input != $num_lines_output"
+                echo "Repeating step."
             fi
 
         fi

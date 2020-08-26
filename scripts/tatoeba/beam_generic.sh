@@ -33,12 +33,16 @@ for corpus in dev test variations; do
       num_lines_output=$(cat $translations_sub_sub/$corpus.trg | wc -l)
 
       if [[ $num_lines_input == $num_lines_output ]]; then
-          # echo "output chunk exists and number of lines are equal to input chunk:"
-          # echo "$num_lines_input_chunk == $num_lines_output_chunk"
-          # echo "Skipping."
+          echo "output exists and number of lines are equal to input:"
+          echo "$data_sub_sub/$corpus.pieces.src == $translations_sub_sub/$corpus.trg"
+          echo "$num_lines_input == $num_lines_output"
+          echo "Skipping."
           continue
+      else
+          echo "$data_sub_sub/$corpus.pieces.src != $translations_sub_sub/$corpus.trg"
+          echo "$num_lines_input != $num_lines_output"
+          echo "Repeating step."
       fi
-
     fi
 
     # produce nbest list, desired beam size, desired batch size
