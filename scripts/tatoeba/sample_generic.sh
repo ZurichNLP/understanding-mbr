@@ -71,19 +71,4 @@ for corpus in dev test variations; do
         cat $samples_sub_sub/$corpus.pieces.$seed.trg | sed 's/ //g;s/▁/ /g' > $samples_sub_sub/$corpus.$seed.trg
 
     done
-
-    # change venv for correct version of sacrebleu that has TER
-
-    deactivate
-    source $base/venvs/sockeye3-cpu/bin/activate
-
-    # MBR
-
-    python $scripts/mbr_decoding.py \
-        --inputs $samples_sub_sub/$corpus.{1..30}.trg \
-        --output $samples_sub_sub/$corpus.mbr \
-        --utility-function sentence-meteor
-
-    cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
-
 done
