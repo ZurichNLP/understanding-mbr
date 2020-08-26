@@ -63,7 +63,7 @@ done
 
 for year in {13..20}; do
 
-    if [[ -s evaluations_sub/wmt$year.beam.meteor ]]; then
+    if [[ -s $evaluations_sub/wmt$year.beam.meteor ]]; then
       continue
     fi
 

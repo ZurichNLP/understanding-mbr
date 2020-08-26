@@ -189,7 +189,11 @@ def sentence_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return MeteorScorer(quiet=True).score(hyp, ref)
+    ms = MeteorScorer(quiet=True)
+    score = ms.score(hyp, ref)
+    ms.close()
+
+    return score
 
 
 def main():
