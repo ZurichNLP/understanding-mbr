@@ -47,7 +47,7 @@ else
 
     # find best MBR sample
 
-    python $scripts/mbr_decoding.py \
+    python $base/scripts/mbr_decoding.py \
         --inputs $output_prefix.text.{1..30} \
         --output $output_prefix.mbr \
         --utility-function sentence-meteor
