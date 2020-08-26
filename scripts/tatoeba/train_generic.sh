@@ -92,6 +92,19 @@ else
     exit 0
 fi
 
+# check if training is finished
+
+if [[ -f $models_sub_sub/log ]]; then
+
+    training_finished=`grep "Training finished" $models_sub_sub/log | wc -l`
+
+    if [[ $training_finished != 0 ]]; then
+        echo "Training is finished"
+        echo "Skipping. Delete files to repeat step."
+        exit 0
+    fi
+fi
+
 ##################################################
 
 python -m sockeye.train \

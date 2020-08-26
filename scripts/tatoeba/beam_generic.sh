@@ -26,10 +26,19 @@ source $base/venvs/sockeye3/bin/activate
 
 for corpus in dev test variations; do
 
-    if [[ -s $translations_sub_sub/$corpus.pieces.trg ]]; then
-      echo "File exists: $translations_sub_sub/$corpus.pieces.trg"
-      echo "Skipping"
-      continue
+    if [[ -s $translations_sub_sub/$corpus.trg ]]; then
+      echo "Translations exist: $translations_sub_sub/$corpus.trg"
+
+      num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
+      num_lines_output=$(cat $translations_sub_sub/$corpus.trg | wc -l)
+
+      if [[ $num_lines_input == $num_lines_output ]]; then
+          # echo "output chunk exists and number of lines are equal to input chunk:"
+          # echo "$num_lines_input_chunk == $num_lines_output_chunk"
+          # echo "Skipping."
+          continue
+      fi
+
     fi
 
     # produce nbest list, desired beam size, desired batch size

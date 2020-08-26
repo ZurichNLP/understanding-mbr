@@ -33,10 +33,19 @@ for corpus in dev test variations; do
 
     for seed in {1..30}; do
 
-        if [[ -s $samples_sub_sub/$corpus.pieces.$seed.trg ]]; then
-          echo "File exists: $samples_sub_sub/$corpus.pieces.$seed.trg"
-          echo "Skipping"
-          continue
+        if [[ -s $samples_sub_sub/$corpus.$seed.trg ]]; then
+            echo "Samples exist: $samples_sub_sub/$corpus.$seed.trg"
+
+            num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
+            num_lines_output=$(cat $samples_sub_sub/$corpus.$seed.trg | wc -l)
+
+            if [[ $num_lines_input == $num_lines_output ]]; then
+                # echo "output chunk exists and number of lines are equal to input chunk:"
+                # echo "$num_lines_input_chunk == $num_lines_output_chunk"
+                # echo "Skipping."
+                continue
+            fi
+
         fi
 
         # 1-best, fixed beam size, fixed batch size

@@ -35,6 +35,8 @@ source $venvs/sockeye3-cpu/bin/activate
 MOSES=$base/tools/moses-scripts/scripts
 TOKENIZER=$MOSES/tokenizer
 
+DEV_MAXSIZE=10000
+
 SMALLEST_TRAINSIZE=10000
 SMALL_TRAINSIZE=100000
 MEDIUM_TRAINSIZE=500000
@@ -168,6 +170,20 @@ done
 # ratio etc filter
 
 $MOSES/training/clean-corpus-n.perl $data_sub/train.pieces src trg $data_sub/train.clean 1 250
+
+# truncate dev and test data to $DEV_MAXSIZE if too large
+# TODO: also for test?
+
+for corpus in dev; do
+    num_lines_src=$(cat $data_sub/$corpus.pieces.src | wc -l)
+
+    if [[ $num_lines_src -gt $DEV_MAXSIZE ]]; then
+        for lang in src trg; do
+            mv $data_sub/$corpus.pieces.$lang $data_sub/$corpus.pieces.$lang.big
+            head -n $DEVTEST_MAXSIZE $data_sub/$corpus.pieces.$lang.big > $data_sub/$corpus.pieces.$lang
+        done
+    fi
+done
 
 # sizes
 echo "Sizes of all files:"
