@@ -35,7 +35,7 @@ class ExternalProcessor(object):
     https://github.com/ZurichNLP/mtrain/blob/moses-only/mtrain/preprocessing/external.py
     """
 
-    def __init__(self, command, stream_stderr=False):
+    def __init__(self, command, stream_stderr=False, quiet: bool = False):
         """
         @param command the command that should be executed on the shell
         @param stream_stderr whether STDERR should be streamread in a non-
@@ -44,7 +44,9 @@ class ExternalProcessor(object):
 
         self.command = command
         self._stream_stderr = stream_stderr
-        logging.debug("Executing %s", self.command)
+
+        if not quiet:
+            logging.debug("Executing %s", self.command)
         self._process = Popen(
             self.command,
             shell=True,
@@ -128,7 +130,7 @@ class _UnexpectedEndOfStream(Exception):
 
 class MeteorScorer(object):
 
-    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH) -> None:
+    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH, quiet: bool =True) -> None:
         """
 
         """
@@ -142,7 +144,8 @@ class MeteorScorer(object):
 
         self.processor = ExternalProcessor(
             command=" ".join(arguments),
-            stream_stderr=True
+            stream_stderr=True,
+            quiet=quiet
         )
 
         # sacrebleu tokenizer
@@ -186,7 +189,7 @@ def sentence_meteor(hyp: str, ref: str) -> float:
     :param ref:
     :return:
     """
-    return MeteorScorer().score(hyp, ref)
+    return MeteorScorer(quiet=True).score(hyp, ref)
 
 
 def main():
