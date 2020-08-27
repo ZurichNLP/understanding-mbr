@@ -134,6 +134,7 @@ def main():
                                 corpus, decoding_method, metric = parse_filename(file)
 
                                 filepath = os.path.join(path_model, file)
+                                print(filepath)
 
                                 metric_names, metric_values = parse_metric_values(metric, filepath)
 
