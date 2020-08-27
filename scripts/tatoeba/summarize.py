@@ -61,6 +61,9 @@ def parse_bleu(filename: str) -> str:
 
         parts = line.split(" ")
 
+    if len(parts) == 0:
+        return "-"
+
     return parts[2]
 
 
@@ -68,6 +71,9 @@ def parse_meteor(filename: str) -> str:
 
     with open(filename, "r") as infile:
         line = infile.readline().strip()
+
+    if line == "":
+        return "-"
 
     return line
 
