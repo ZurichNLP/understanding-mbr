@@ -28,8 +28,6 @@ def walklevel(some_dir, level=1):
     """
     some_dir = some_dir.rstrip(os.path.sep)
 
-    print("walklevel some_dir: %s" % some_dir)
-
     assert os.path.isdir(some_dir)
     num_sep = some_dir.count(os.path.sep)
     for root, dirs, files in os.walk(some_dir):
@@ -128,29 +126,27 @@ def main():
 
             path_langpair = os.path.join(args.eval_folder, langpair)
 
-            for subroot, model_names, _ in walklevel(path_langpair, level=1):
+            model_names = ['baseline', 'no_label_smoothing']
 
-                print(model_names)
+            for model_name in model_names:
+                path_model = os.path.join(path_langpair, model_name)
 
-                for model_name in model_names:
-                    path_model = os.path.join(path_langpair, model_name)
+                print("path_model: %s" % path_model)
 
-                    #print("path_model: %s" % path_model)
+                for _, _, files in os.walk(path_model):
+                    for file in files:
+                        if file.endswith("subnum"):
+                            continue
+                        else:
+                            corpus, decoding_method, metric = parse_filename(file)
 
-                    for _, _, files in os.walk(path_model):
-                        for file in files:
-                            if file.endswith("subnum"):
-                                continue
-                            else:
-                                corpus, decoding_method, metric = parse_filename(file)
+                            filepath = os.path.join(path_model, file)
+                            print("filepath: %s" % filepath)
 
-                                filepath = os.path.join(path_model, file)
-                                #print("filepath: %s" % filepath)
+                            metric_names, metric_values = parse_metric_values(metric, filepath)
 
-                                metric_names, metric_values = parse_metric_values(metric, filepath)
-
-                                for metric_name, metric_value in zip(metric_names, metric_values):
-                                    results[langpair][model_name][metric_name] = metric_value
+                            for metric_name, metric_value in zip(metric_names, metric_values):
+                                results[langpair][model_name][metric_name] = metric_value
 
     print(results)
 
