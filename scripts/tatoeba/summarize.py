@@ -114,9 +114,9 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(args)
 
-    # results[langpair][model_name][metric_name]
+    # results[langpair][model_name][corpus][decoding_method][metric_name]
 
-    results = defaultdict(lambda: defaultdict(lambda: defaultdict(str)))
+    results = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(str)))))
 
     for root, langpairs, _ in walklevel(args.eval_folder, level=1):
 
@@ -146,9 +146,36 @@ def main():
                             metric_names, metric_values = parse_metric_values(metric, filepath)
 
                             for metric_name, metric_value in zip(metric_names, metric_values):
-                                results[langpair][model_name][metric_name] = metric_value
+                                results[langpair][model_name][corpus][decoding_method][metric_name] = metric_value
 
-    print(results)
+    header_names = ["LANGPAIR",
+                    "MODEL_NAME",
+                    "CORPUS",
+                    "DECODING_METHOD",
+                    "BLEU",
+                    "METEOR",
+                    "SUBNUM_RANGE_BLEU",
+                    "SUBNUM_RANGE_TER",
+                    "SUBNUM_RANGE_METEOR",
+                    "SUBNUM_RANGE_RATIO"]
+
+    metric_names = ["BLEU",
+                    "METEOR",
+                    "SUBNUM_RANGE_BLEU",
+                    "SUBNUM_RANGE_TER",
+                    "SUBNUM_RANGE_METEOR",
+                    "SUBNUM_RANGE_RATIO"]
+
+    print("\t".join(header_names))
+
+    for lang_pair, model_dict in results.items():
+        for model_name, corpus_dict in model_dict.items():
+            for corpus, decoding_dict in corpus_dict.items():
+                for decoding_method, metrics_dict in decoding_dict.items():
+                    values = [lang_pair, model_name, corpus, decoding_method]
+                    metrics = [metrics_dict[m] for m in metric_names]
+
+                    print("\t".join(values + metrics))
 
 
 if __name__ == '__main__':
