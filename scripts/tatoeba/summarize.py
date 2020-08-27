@@ -76,7 +76,7 @@ def parse_meteor(filename: str) -> str:
     if line == "":
         return "-"
 
-    return line
+    return format(float(line),'.3f')
 
 
 def parse_subnum_average(filename: str):
@@ -86,6 +86,8 @@ def parse_subnum_average(filename: str):
         lines = [l.strip() for l in lines]
 
     parts = lines[-1].split("\t")
+
+    parts = [format(float(p),'.3f') for p in parts]
 
     bleu, ter, meteor, ratio = parts
 
