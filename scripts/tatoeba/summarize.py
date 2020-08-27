@@ -121,11 +121,17 @@ def main():
     results = defaultdict(lambda: defaultdict(lambda: defaultdict(str)))
 
     for root, langpairs, _ in walklevel(args.eval_folder, level=1):
+
+        print(langpairs)
+
         for langpair in langpairs:
 
             path_langpair = os.path.join(args.eval_folder, langpair)
 
             for subroot, model_names, _ in walklevel(path_langpair, level=1):
+
+                print(model_names)
+
                 for model_name in model_names:
                     path_model = os.path.join(path_langpair, model_name)
 
