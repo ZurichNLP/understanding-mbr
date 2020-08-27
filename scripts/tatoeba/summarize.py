@@ -61,7 +61,7 @@ def parse_bleu(filename: str) -> str:
 
         parts = line.split(" ")
 
-    if len(parts) == 0:
+    if len(parts) < 3:
         return "-"
 
     return parts[2]
