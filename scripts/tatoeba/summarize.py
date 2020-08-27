@@ -76,7 +76,7 @@ def parse_meteor(filename: str) -> str:
     if line == "":
         return "-"
 
-    return format(float(line),'.3f')
+    return format(float(line), '.3f')
 
 
 def parse_subnum_average(filename: str):
@@ -87,7 +87,7 @@ def parse_subnum_average(filename: str):
 
     parts = lines[-1].split("\t")
 
-    parts = [format(float(p),'.3f') for p in parts]
+    parts = [format(float(p), '.3f') for p in parts]
 
     bleu, ter, meteor, ratio = parts
 
@@ -176,6 +176,7 @@ def main():
                 for decoding_method, metrics_dict in decoding_dict.items():
                     values = [lang_pair, model_name, corpus, decoding_method]
                     metrics = [metrics_dict[m] for m in metric_names]
+                    metrics = [m if m != "" else "-" for m in metrics]
 
                     print("\t".join(values + metrics))
 
