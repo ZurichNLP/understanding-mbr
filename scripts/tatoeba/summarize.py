@@ -126,6 +126,8 @@ def main():
                 for model_name in model_names:
                     path_model = os.path.join(path_langpair, model_name)
 
+                    print("path_model: %s" % path_model)
+
                     for _, _, files in os.walk(path_model):
                         for file in files:
                             if file.endswith("subnum"):
@@ -134,7 +136,7 @@ def main():
                                 corpus, decoding_method, metric = parse_filename(file)
 
                                 filepath = os.path.join(path_model, file)
-                                print(filepath)
+                                print("filepath: %s" % filepath)
 
                                 metric_names, metric_values = parse_metric_values(metric, filepath)
 
