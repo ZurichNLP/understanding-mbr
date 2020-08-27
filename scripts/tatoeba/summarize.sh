@@ -7,4 +7,4 @@ evaluations=$base/evaluations
 
 source $base/venvs/sockeye3-cpu/bin/activate
 
-. $scripts/tatoeba/summarize.py --eval-folder $evaluations
+python $scripts/tatoeba/summarize.py --eval-folder $evaluations
