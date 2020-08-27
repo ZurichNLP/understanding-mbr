@@ -27,6 +27,9 @@ def walklevel(some_dir, level=1):
     :return:
     """
     some_dir = some_dir.rstrip(os.path.sep)
+
+    print("walklevel some_dir: %s" % some_dir)
+
     assert os.path.isdir(some_dir)
     num_sep = some_dir.count(os.path.sep)
     for root, dirs, files in os.walk(some_dir):
