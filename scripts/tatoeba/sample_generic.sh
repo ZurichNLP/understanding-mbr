@@ -33,20 +33,20 @@ for corpus in dev test variations; do
 
     for seed in {1..5}; do
 
-        if [[ -s $samples_sub_sub/$corpus.sample.nbest.$seed.trg ]]; then
-            echo "Samples exist: $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
+        if [[ -s $samples_sub_sub/$corpus.sample.top.$seed.trg ]]; then
+            echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$seed.trg"
 
             num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
-            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | wc -l)
+            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.top.$seed.trg | wc -l)
 
             if [[ $num_lines_input == $num_lines_output ]]; then
                 echo "output exists and number of lines are equal to input:"
-                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
+                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.top.$seed.trg"
                 echo "$num_lines_input == $num_lines_output"
                 echo "Skipping."
                 continue
             else
-                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
+                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.top.$seed.trg"
                 echo "$num_lines_input != $num_lines_output"
                 echo "Repeating step."
             fi
@@ -76,7 +76,7 @@ for corpus in dev test variations; do
 
         # extract first sample of each translation JSON line as single_sample
 
-        cat $samples_sub_sub/$corpus.$seed.trg | \
+        cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | \
             python $scripts/extract_top_translations_from_nbest.py > \
             $samples_sub_sub/$corpus.sample.top.$seed.trg
 
