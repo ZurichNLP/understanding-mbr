@@ -84,6 +84,9 @@ id_translate=$(
 
 echo "  id_translate: $id_translate"  | tee -a $logs_sub_sub/MAIN
 
+# TODO: remove
+exit
+
 # MBR decode (depends on sampling)
 
 id_mbr=$(

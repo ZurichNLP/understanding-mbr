@@ -13,6 +13,8 @@ model_name=$4
 
 scripts=$base/scripts
 
-. $scripts/tatoeba/beam_generic.sh
+. $scripts/tatoeba/beam_top_generic.sh
+
+. $scripts/tatoeba/beam_nbest_generic.sh
 
 . $scripts/tatoeba/sample_generic.sh

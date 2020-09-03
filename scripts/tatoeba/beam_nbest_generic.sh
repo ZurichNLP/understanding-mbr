@@ -26,41 +26,42 @@ source $base/venvs/sockeye3/bin/activate
 
 for corpus in dev test variations; do
 
-    if [[ -s $translations_sub_sub/$corpus.trg ]]; then
-      echo "Translations exist: $translations_sub_sub/$corpus.trg"
+    if [[ -s $translations_sub_sub/$corpus.beam.nbest.trg ]]; then
+      echo "Translations exist: $translations_sub_sub/$corpus.beam.nbest.trg"
 
       num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
-      num_lines_output=$(cat $translations_sub_sub/$corpus.trg | wc -l)
+      num_lines_output=$(cat $translations_sub_sub/$corpus.beam.nbest.trg | wc -l)
 
       if [[ $num_lines_input == $num_lines_output ]]; then
           echo "output exists and number of lines are equal to input:"
-          echo "$data_sub_sub/$corpus.pieces.src == $translations_sub_sub/$corpus.trg"
+          echo "$data_sub_sub/$corpus.pieces.src == $translations_sub_sub/$corpus.beam.nbest.trg"
           echo "$num_lines_input == $num_lines_output"
           echo "Skipping."
           continue
       else
-          echo "$data_sub_sub/$corpus.pieces.src != $translations_sub_sub/$corpus.trg"
+          echo "$data_sub_sub/$corpus.pieces.src != $translations_sub_sub/$corpus.beam.nbest.trg"
           echo "$num_lines_input != $num_lines_output"
           echo "Repeating step."
       fi
     fi
 
-    # produce nbest list, desired beam size, desired batch size
-
-    # 1-best, fixed beam size, fixed batch size
+    # produce nbest list of size 100
 
     OMP_NUM_THREADS=1 python -m sockeye.translate \
             -i $data_sub_sub/$corpus.pieces.src \
-            -o $translations_sub_sub/$corpus.pieces.trg \
+            -o $translations_sub_sub/$corpus.beam.nbest.pieces.trg \
             -m $models_sub_sub \
-            --beam-size 10 \
+            --beam-size 100 \
+            --nbest-size 100 \
             --length-penalty-alpha 1.0 \
             --device-ids 0 \
-            --batch-size 64 \
+            --batch-size 16 \
             --disable-device-locking
 
-    # undo pieces
+    # undo pieces in nbest JSON structures
 
-    cat $translations_sub_sub/$corpus.pieces.trg | sed 's/ //g;s/▁/ /g' > $translations_sub_sub/$corpus.trg
+    python $base/scripts/remove_pieces_from_nbest.py \
+        --input $translations_sub_sub/$corpus.beam.nbest.pieces.trg > \
+        $translations_sub_sub/$corpus.beam.nbest.trg
 
 done

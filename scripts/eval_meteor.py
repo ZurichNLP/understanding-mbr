@@ -4,6 +4,7 @@ import argparse
 import threading
 import logging
 import numpy
+import sys
 
 from subprocess import Popen, PIPE
 
@@ -79,6 +80,16 @@ class ExternalProcessor(object):
 
         return result.decode().strip()
 
+    def read_error(self):
+        """
+        Attempts to read from STDERR.
+        """
+
+        with self._lock:
+            error = self._process.stderr.readline()
+
+        return error.decode().strip()
+
 
 class MeteorScorer(object):
 
@@ -129,7 +140,15 @@ class MeteorScorer(object):
 
         score = self.processor.process(second_call_input)
 
-        return float(score)
+        try:
+            score = float(score)
+        except ValueError:
+            error = self.processor.read_error()
+            logging.error("METEOR error:")
+            logging.error(error)
+            raise
+
+        return score
 
 
 def sentence_meteor(hyp: str, ref: str) -> float:

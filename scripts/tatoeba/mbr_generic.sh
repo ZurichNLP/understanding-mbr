@@ -17,60 +17,75 @@ samples=$base/samples
 samples_sub=$samples/${src}-${trg}
 samples_sub_sub=$samples_sub/$model_name
 
-mkdir -p $samples_sub_sub
+mbr=$base/mbr
+mbr_sub=$mbr/${src}-${trg}
+mbr_sub_sub=$mbr_sub/$model_name
+
+mkdir -p $mbr_sub_sub
 
 source $base/venvs/sockeye3/bin/activate
 
-# sampling translation
-
 for corpus in dev test variations; do
-
-    if [[ -s $samples_sub_sub/$corpus.mbr.text ]]; then
-      echo "Mbr decodes exist: $samples_sub_sub/$corpus.mbr.text"
-
-      num_lines_input=$(cat $samples_sub_sub/$corpus.1.trg | wc -l)
-      num_lines_output=$(cat $samples_sub_sub/$corpus.mbr.text | wc -l)
-
-      if [[ $num_lines_input == $num_lines_output ]]; then
-          echo "output exists and number of lines are equal to input:"
-          echo "$samples_sub_sub/$corpus.1.trg == $samples_sub_sub/$corpus.mbr.text"
-          echo "$num_lines_input == $num_lines_output"
-          echo "Skipping."
-          continue
-      else
-          echo "$samples_sub_sub/$corpus.1.trg != $samples_sub_sub/$corpus.mbr.text"
-          echo "$num_lines_input != $num_lines_output"
-          echo "Repeating step."
-      fi
-    fi
 
     deactivate
     source $base/venvs/sockeye3-cpu/bin/activate
 
-    # MBR
+    # MBR with sampled translations
 
-    # divide inputs into up to 8 parts
+    for seed in {1..5}; do
 
-    mkdir -p $samples_sub_sub/sample_parts
+        # divide inputs into up to 8 parts
 
-    for seed in {1..30}; do
-        cp $samples_sub_sub/$corpus.$seed.trg $samples_sub_sub/sample_parts/$corpus.$seed.trg
+        mkdir -p $mbr_sub_sub/sample_parts.$seed
 
-        python $scripts/split.py --parts 8 --input $samples_sub_sub/sample_parts/$corpus.$seed.trg
+        cp $mbr_sub_sub/$corpus.sample.nbest.$seed.trg $mbr_sub_sub/sample_parts/$corpus.sample.nbest.$seed.trg
+
+        python $scripts/split.py --parts 8 --input $mbr_sub_sub/sample_parts/$corpus.sample.nbest.$seed.trg
+
+        for num_samples in {1..100}; do
+
+            if [[ -s $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text ]]; then
+              echo "Mbr decodes exist: $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text"
+
+              num_lines_input=$(cat $mbr_sub_sub/$corpus.sample.nbest.$seed.trg | wc -l)
+              num_lines_output=$(cat $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text | wc -l)
+
+              if [[ $num_lines_input == $num_lines_output ]]; then
+                  echo "output exists and number of lines are equal to input:"
+                  echo "$mbr_sub_sub/$corpus.sample.nbest.$seed.trg == $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text"
+                  echo "$num_lines_input == $num_lines_output"
+                  echo "Skipping."
+                  continue
+              else
+                  echo "$mbr_sub_sub/$corpus.sample.nbest.$seed.trg != $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text"
+                  echo "$num_lines_input != $num_lines_output"
+                  echo "Repeating step."
+              fi
+            fi
+
+            # parallel decoding, assuming 8 physical cores
+
+            for part in {1..8}; do
+
+                python $scripts/mbr_decoding.py \
+                    --input $mbr_sub_sub/sample_parts/$corpus.sample.nbest.$seed.trg.$part \
+                    --output $mbr_sub_sub/sample_parts/$corpus.mbr.sample.$num_samples.$seed.trg.$part \
+                    --utility-function sentence-meteor \
+                    --num-samples $num_samples &
+            done
+
+            wait
+
+            # concatenate parts
+
+            cat $mbr_sub_sub/sample_parts/$corpus.mbr.sample.$num_samples.$seed.trg.{1..8} > \
+                $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg
+
+            # remove MBR scores, leaving only the text
+
+            cat $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg | cut -f2 > \
+                $mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
+
+        done
     done
-
-    for part in {1..8}; do
-
-        python $scripts/mbr_decoding.py \
-            --inputs $samples_sub_sub/sample_parts/$corpus.{1..30}.trg.$part \
-            --output $samples_sub_sub/sample_parts/$corpus.mbr.$part \
-            --utility-function sentence-meteor &
-    done
-
-    wait
-
-    cat $samples_sub_sub/sample_parts/$corpus.mbr.{1..8} > $samples_sub_sub/$corpus.mbr
-
-    cat $samples_sub_sub/$corpus.mbr | cut -f2 > $samples_sub_sub/$corpus.mbr.text
-
 done

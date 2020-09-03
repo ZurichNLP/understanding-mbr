@@ -3,10 +3,11 @@
 import sacrebleu
 import argparse
 import logging
+import json
 
 import numpy as np
 
-from typing import Callable, Tuple
+from typing import Callable, Tuple, List
 from eval_meteor import MeteorScorer
 
 
@@ -20,6 +21,24 @@ UTILITY_SENTENCE_TER = "sentence-ter"
 UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_METEOR,
                      UTILITY_SENTENCE_TER]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--input", type=str, help="Samples of translations. Expect one JSON per line with nbest list.")
+    parser.add_argument("--output", type=str, help="File to write best samples.", required=True)
+    parser.add_argument("--utility-function", type=str, help="Utility function to compare average risk of samples",
+                        required=True, choices=UTILITY_FUNCTIONS)
+    parser.add_argument("--num-samples", type=int, help="How many samples to use for MBR (default: all translations found in --input).",
+                        required=False, default=-1)
+    parser.add_argument("--sample-start-index", type=int,
+                        help="From each nbest list take a slice of --num-samples samples, but start at this index (default: 0).",
+                        required=False, default=0)
+
+    args = parser.parse_args()
+
+    return args
 
 
 def compute_meteor(hyp: str, ref: str) -> float:
@@ -59,21 +78,7 @@ UTILITY_LOOKUP = {UTILITY_SENTENCE_BLEU: compute_bleu,
                   UTILITY_SENTENCE_TER: compute_ter}
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--inputs", nargs="+", type=str, help="Samples of translations. For N samples per input "
-                                                              "sentence, expects N files, sentence-parallel.")
-    parser.add_argument("--output", type=str, help="File to write best samples.", required=True)
-    parser.add_argument("--utility-function", type=str, help="Utility function to compare average risk of samples",
-                        required=True, choices=UTILITY_FUNCTIONS)
-
-    args = parser.parse_args()
-
-    return args
-
-
-def get_maximum_utility_sample(samples: Tuple[str], utility_function: Callable) -> Tuple[str, float]:
+def get_maximum_utility_sample(samples: List[str], utility_function: Callable) -> Tuple[str, float]:
     """
 
     :param samples: Sampled target translations for one single source input sentence
@@ -110,12 +115,19 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(args)
 
-    input_handles = [open(path, "r") for path in args.inputs]
+    input_handle = open(args.input, "r")
     output_handle = open(args.output, "w")
 
     utility_function = UTILITY_LOOKUP[args.utility_function]
 
-    for samples in zip(*input_handles):  # type: Tuple[str]
+    for line in input_handle:
+        jobj = json.loads(line)
+        samples = jobj["translations"]
+
+        if args.num_samples > -1:
+            samples = samples[args.sample_start_index:args.num_samples]
+            assert len(samples) >= args.num_samples, "Slicing selected fewer translations than --num-samples!"
+
         output, utility = get_maximum_utility_sample(samples=samples, utility_function=utility_function)
 
         output = output.strip()

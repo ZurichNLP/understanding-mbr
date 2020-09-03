@@ -23,6 +23,10 @@ samples=$base/samples
 samples_sub=$samples/${src}-${trg}
 samples_sub_sub=$samples_sub/$model_name
 
+mbr=$base/mbr
+mbr_sub=$mbr/${src}-${trg}
+mbr_sub_sub=$mbr_sub/$model_name
+
 evaluations=$base/evaluations
 evaluations_sub=$evaluations/${src}-${trg}
 evaluations_sub_sub=$evaluations_sub/$model_name
