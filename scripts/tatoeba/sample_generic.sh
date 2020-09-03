@@ -71,7 +71,7 @@ for corpus in dev test variations; do
          # undo pieces in nbest JSON structures
 
         python $base/scripts/remove_pieces_from_nbest.py \
-        --input $samples_sub_sub/$corpus.pieces.$seed.trg > \
+        --input $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg > \
         $samples_sub_sub/$corpus.sample.nbest.$seed.trg
 
         # extract first sample of each translation JSON line as single_sample
