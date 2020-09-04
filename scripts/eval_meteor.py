@@ -144,7 +144,9 @@ class MeteorScorer(object):
             score = float(score)
         except ValueError:
             error_lines = self.processor.read_error()
-            logging.error("METEOR error:")
+            logging.error("METEOR error for the following inputs:")
+            logging.error(first_call_input)
+            logging.error(second_call_input)
             for e in error_lines:
                 logging.error(e)
             raise
