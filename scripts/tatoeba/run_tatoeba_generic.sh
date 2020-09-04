@@ -35,6 +35,7 @@ id_download=$(
 )
 
 echo "  id_download: $id_download" | tee -a $logs_sub_sub/MAIN
+echo "  id_download log: $logs_sub_sub/slurm-$id_download.out" | tee -a $logs_sub_sub/MAIN
 
 # preprocess: create subnum variations, normalize, SPM (depends on download)
 
@@ -47,6 +48,7 @@ id_preprocess=$(
 )
 
 echo "  id_preprocess: $id_preprocess" | tee -a $logs_sub_sub/MAIN
+echo "  id_preprocess log: $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
 
 # Sockeye prepare (depends on preprocess)
 
@@ -59,6 +61,7 @@ id_prepare=$(
 )
 
 echo "  id_prepare: $id_prepare"  | tee -a $logs_sub_sub/MAIN
+echo "  id_prepare log: $logs_sub_sub/slurm-$id_prepare.out" | tee -a $logs_sub_sub/MAIN
 
 # Sockeye train (depends on prepare)
 
@@ -71,6 +74,7 @@ id_train=$(
 )
 
 echo "  id_train: $id_train"  | tee -a $logs_sub_sub/MAIN
+echo "  id_train log: $logs_sub_sub/slurm-$id_train.out" | tee -a $logs_sub_sub/MAIN
 
 # translate + sample test set (depends on train)
 
@@ -83,6 +87,7 @@ id_translate=$(
 )
 
 echo "  id_translate: $id_translate"  | tee -a $logs_sub_sub/MAIN
+echo "  id_translate log: $logs_sub_sub/slurm-$id_translate.out" | tee -a $logs_sub_sub/MAIN
 
 # TODO: remove
 exit
@@ -98,6 +103,7 @@ id_mbr=$(
 )
 
 echo "  id_mbr: $id_mbr"  | tee -a $logs_sub_sub/MAIN
+echo "  id_mbr log: $logs_sub_sub/slurm-$id_mbr.out" | tee -a $logs_sub_sub/MAIN
 
 # evaluate BLEU and variation range (depends on mbr)
 
@@ -110,3 +116,4 @@ id_evaluate=$(
 )
 
 echo "  id_evaluate: $id_evaluate"  | tee -a $logs_sub_sub/MAIN
+echo "  id_evaluate log: $logs_sub_sub/slurm-$id_evaluate.out" | tee -a $logs_sub_sub/MAIN
