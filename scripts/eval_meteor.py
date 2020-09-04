@@ -86,9 +86,9 @@ class ExternalProcessor(object):
         """
 
         with self._lock:
-            error = self._process.stderr.readline()
+            error_lines = self._process.stderr.readlines()
 
-        return error.decode().strip()
+        return [e.decode().strip() for e in error_lines]
 
 
 class MeteorScorer(object):
@@ -143,9 +143,10 @@ class MeteorScorer(object):
         try:
             score = float(score)
         except ValueError:
-            error = self.processor.read_error()
+            error_lines = self.processor.read_error()
             logging.error("METEOR error:")
-            logging.error(error)
+            for e in error_lines:
+                logging.error(e)
             raise
 
         return score
