@@ -5,41 +5,48 @@
 # $output
 # $parts_prefix
 
-if [[ -s $output.text ]]; then
-  echo "Mbr decodes exist: $output.text"
+# pseudo loop to check if file exists
 
-  num_lines_input=$(cat $input | wc -l)
-  num_lines_output=$(cat $output.text | wc -l)
+for unused in useless_loop_var; do
 
-  if [[ $num_lines_input == $num_lines_output ]]; then
-      echo "output exists and number of lines are equal to input:"
-      echo "$input == $output.text"
-      echo "$num_lines_input == $num_lines_output"
-      echo "Skipping."
-  else
-      echo "$input != $output.text"
-      echo "$num_lines_input != $num_lines_output"
-      echo "Repeating step."
+    if [[ -s $output.text ]]; then
+      echo "Mbr decodes exist: $output.text"
 
-      # parallel decoding, assuming 8 physical cores
+      num_lines_input=$(cat $input | wc -l)
+      num_lines_output=$(cat $output.text | wc -l)
 
-      for part in {1..8}; do
+      if [[ $num_lines_input == $num_lines_output ]]; then
+          echo "output exists and number of lines are equal to input:"
+          echo "$input == $output.text"
+          echo "$num_lines_input == $num_lines_output"
+          echo "Skipping."
+          continue
+      else
+          echo "$input != $output.text"
+          echo "$num_lines_input != $num_lines_output"
+          echo "Repeating step."
+      fi
+    fi
 
-          python $scripts/mbr_decoding.py \
-              --input $input.$part \
-              --output $parts_prefix.$part \
-              --utility-function sentence-meteor \
-              --num-samples $num_samples &
-      done
+    # parallel decoding, assuming 8 physical cores
 
-      wait
+    for part in {1..8}; do
 
-      # concatenate parts
+        python $scripts/mbr_decoding.py \
+            --input $input.$part \
+            --output $parts_prefix.$part \
+            --utility-function sentence-meteor \
+            --num-samples $num_samples &
+    done
 
-      cat $parts_prefix.{1..8} > $output
+    wait
 
-      # remove MBR scores, leaving only the text
+    # concatenate parts
 
-      cat $output | cut -f2 > $output.text
-  fi
-fi
+    cat $parts_prefix.{1..8} > $output
+
+    # remove MBR scores, leaving only the text
+
+    cat $output | cut -f2 > $output.text
+
+done
