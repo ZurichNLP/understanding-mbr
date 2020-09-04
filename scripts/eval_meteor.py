@@ -121,6 +121,9 @@ class MeteorScorer(object):
     def score(self, hyp: str, ref: str) -> float:
         """
         Scores a single segment.
+
+        Assumes that hyp and ref are NOT empty strings, does not
+        check for performance reasons.
         """
         hyp = hyp.strip()
         ref = ref.strip()
