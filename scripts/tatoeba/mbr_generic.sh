@@ -48,7 +48,7 @@ for corpus in dev test variations; do
 
         input=$mbr_sub_sub/sample_parts.$seed/$corpus.sample.nbest.$seed.trg
 
-        for num_samples in {10..100}; do
+        for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
             parts_prefix=$mbr_sub_sub/sample_parts.$seed/$corpus.mbr.sample.$num_samples.$seed.trg
 
@@ -72,7 +72,7 @@ for corpus in dev test variations; do
 
     input=$mbr_sub_sub/beam_parts/$corpus.beam.nbest.trg
 
-    for num_samples in {10..100}; do
+    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
         parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.beam.$num_samples.trg
         output=$mbr_sub_sub/$corpus.mbr.beam.$num_samples.$seed.trg
