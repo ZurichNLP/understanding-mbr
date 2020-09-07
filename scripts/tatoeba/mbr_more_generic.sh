@@ -28,9 +28,9 @@ for unused in useless_loop_var; do
       fi
     fi
 
-    # parallel decoding, assuming 8 physical cores
+    # parallel decoding, assuming 32 physical cores
 
-    for part in {1..8}; do
+    for part in {1..32}; do
 
         python $scripts/mbr_decoding.py \
             --input $input.$part \
@@ -43,7 +43,7 @@ for unused in useless_loop_var; do
 
     # concatenate parts
 
-    cat $parts_prefix.{1..8} > $output
+    cat $parts_prefix.{1..32} > $output
 
     # remove MBR scores, leaving only the text
 
