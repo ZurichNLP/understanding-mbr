@@ -96,9 +96,6 @@ id_mbr=$(
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN
 
-# TODO: remove
-exit
-
 # evaluate BLEU and variation range (depends on mbr)
 
 id_evaluate=$(
