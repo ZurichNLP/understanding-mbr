@@ -107,3 +107,6 @@ id_evaluate=$(
 )
 
 echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub_sub/MAIN
+
+# TODO: remove
+exit
