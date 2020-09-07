@@ -7,6 +7,8 @@
 # $trg
 # $model_name
 
+scripts=$base/scripts
+
 source $base/venvs/sockeye3-cpu/bin/activate
 
 data=$base/data
@@ -35,29 +37,48 @@ mkdir -p $evaluations_sub_sub
 
 for corpus in dev test; do
 
-    if [[ -s $evaluations_sub_sub/$corpus.beam.bleu ]]; then
-      continue
-    fi
+    ref=$data_sub_sub/$corpus.trg
 
-    # beam translations
+    # beam top translations
 
-    cat $translations_sub_sub/$corpus.trg | sacrebleu $data_sub_sub/$corpus.trg > $evaluations_sub_sub/$corpus.beam.bleu
+    hyp=$translations_sub_sub/$corpus.beam.top.trg
+    output=$evaluations_sub_sub/$corpus.beam.top.bleu
 
-    echo "$evaluations_sub_sub/$corpus.beam.bleu"
-    cat $evaluations_sub_sub/$corpus.beam.bleu
+    . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-    # single sample translation
+    # sample top (single sample), different seeds
+    # e.g. dev.sample.top.1.trg
 
-    cat $samples_sub_sub/$corpus.1.trg | sacrebleu $data_sub_sub/$corpus.trg > $evaluations_sub_sub/$corpus.single_sample.bleu
+    for seed in {1..5}; do
 
-    echo "$evaluations_sub_sub/$corpus.single_sample.bleu"
-    cat $evaluations_sub_sub/$corpus.single_sample.bleu
+        hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
+        output=$evaluations_sub_sub/$corpus.sample.top.$seed.bleu
 
-    # 30 samples, MBR decoding
+        . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-    cat $samples_sub_sub/$corpus.mbr.text | sacrebleu $data_sub_sub/$corpus.trg > $evaluations_sub_sub/$corpus.mbr.bleu
+    done
 
-    echo "$evaluations_sub_sub/$corpus.mbr.bleu"
-    cat $evaluations_sub_sub/$corpus.mbr.bleu
+    # MBR decoding with samples (5 .. 100), different seeds
+    # e.g. dev.mbr.sample.40.1.trg.text
+
+    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+        for seed in {1..5}; do
+
+            hyp=$samples_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
+            output=$evaluations_sub_sub/$corpus.mbr.sample.$num_samples.$seed.bleu
+
+            . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+        done
+    done
+
+    # MBR decoding with beam nbest list (5 .. 100)
+
+    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+
+        hyp=$samples_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
+        output=$evaluations_sub_sub/$corpus.mbr.beam.$num_samples.bleu
+
+        . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+    done
 
 done

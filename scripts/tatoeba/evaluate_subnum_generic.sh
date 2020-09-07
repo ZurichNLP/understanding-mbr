@@ -35,26 +35,53 @@ mkdir -p $evaluations_sub_sub
 
 # compute subnum variation ranges
 
-# beam translations
+corpus=variations
 
-python $scripts/eval_subnum.py \
-    --ref $data_sub_sub/test.trg \
-    --hyp $translations_sub_sub/variations.trg \
-    --num $data_sub_sub/variations.count \
-    --average $evaluations_sub_sub/variations.beam.subnum.average \
-    > $evaluations_sub_sub/variations.beam.subnum
+ref=$data_sub_sub/test.trg
+counts=$data_sub_sub/variations.count
 
-echo "$evaluations_sub_sub/variations.beam.subnum.average"
-cat $evaluations_sub_sub/variations.beam.subnum.average
+# beam top translations
 
-# MBR decoding
+hyp=$translations_sub_sub/$corpus.beam.top.trg
+output=$evaluations_sub_sub/$corpus.beam.top.subnum
+average=$output.average
 
-python $scripts/eval_subnum.py \
-    --ref $data_sub_sub/test.trg \
-    --hyp $samples_sub_sub/variations.mbr.text \
-    --num $data_sub_sub/variations.count \
-    --average $evaluations_sub_sub/variations.mbr.subnum.average \
-    > $evaluations_sub_sub/variations.mbr.subnum
+. $scripts/tatoeba/evaluate_subnum_more_generic.sh
 
-echo "$evaluations_sub_sub/variations.mbr.subnum.average"
-cat $evaluations_sub_sub/variations.mbr.subnum.average
+# sample top (single sample), different seeds
+# e.g. dev.sample.top.1.trg
+
+for seed in {1..5}; do
+
+    hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
+    output=$evaluations_sub_sub/$corpus.sample.top.$seed.subnum
+    average=$output.average
+
+    . $scripts/tatoeba/evaluate_subnum_more_generic.sh
+
+done
+
+# MBR decoding with samples (5 .. 100), different seeds
+# e.g. dev.mbr.sample.40.1.trg.text
+
+for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+    for seed in {1..5}; do
+
+        hyp=$samples_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
+        output=$evaluations_sub_sub/$corpus.mbr.sample.$num_samples.$seed.subnum
+        average=$output.average
+
+        . $scripts/tatoeba/evaluate_subnum_more_generic.sh
+    done
+done
+
+# MBR decoding with beam nbest list (5 .. 100)
+
+for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+
+    hyp=$samples_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
+    output=$evaluations_sub_sub/$corpus.mbr.beam.$num_samples.subnum
+    average=$output.average
+
+    . $scripts/tatoeba/evaluate_subnum_more_generic.sh
+done

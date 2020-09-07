@@ -40,59 +40,54 @@ METEOR_PARAMS=" -l other -q"
 
 for corpus in dev test; do
 
-    if [[ -s $evaluations_sub_sub/$corpus.beam.meteor ]]; then
-      continue
-    fi
-
     # tokenize reference once
+
+    tokenized_ref=$data_sub_sub/$corpus.trg.tok
 
     cat $data_sub_sub/$corpus.trg | \
         python $scripts/tokenize_v13a.py \
-        > $data_sub_sub/$corpus.trg.tok
+        > $tokenized_ref
 
-    # beam translations
+   # beam top translations
 
-    cat $translations_sub_sub/$corpus.trg | \
-        python $scripts/tokenize_v13a.py \
-        > $translations_sub_sub/$corpus.trg.tok
+    untokenized_hyp=$translations_sub_sub/$corpus.beam.top.trg
+    output=$evaluations_sub_sub/$corpus.beam.top.meteor
 
-    $METEOR \
-        $translations_sub_sub/$corpus.trg.tok \
-        $data_sub_sub/$corpus.trg.tok \
-        $METEOR_PARAMS 2> /dev/null \
-        > $evaluations_sub_sub/$corpus.beam.meteor
+    . $scripts/tatoeba/evaluate_meteor_more_generic.sh
 
-    echo "$evaluations_sub_sub/$corpus.beam.meteor"
-    cat $evaluations_sub_sub/$corpus.beam.meteor
+    # sample top (single sample), different seeds
+    # e.g. dev.sample.top.1.trg
 
-    # single sample translation
+    for seed in {1..5}; do
 
-    cat $samples_sub_sub/$corpus.1.trg | \
-        python $scripts/tokenize_v13a.py \
-        > $samples_sub_sub/$corpus.1.trg.tok
+        untokenized_hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
+        output=$evaluations_sub_sub/$corpus.sample.top.$seed.meteor
 
-    $METEOR \
-        $samples_sub_sub/$corpus.1.trg.tok \
-        $data_sub_sub/$corpus.trg.tok \
-        $METEOR_PARAMS 2> /dev/null \
-        > $evaluations_sub_sub/$corpus.single_sample.meteor
+        . $scripts/tatoeba/evaluate_meteor_more_generic.sh
 
-    echo "$evaluations_sub_sub/$corpus.single_sample.meteor"
-    cat $evaluations_sub_sub/$corpus.single_sample.meteor
+    done
 
-    # 30 samples, MBR decoding
+    # MBR decoding with samples (5 .. 100), different seeds
+    # e.g. dev.mbr.sample.40.1.trg.text
 
-    cat $samples_sub_sub/$corpus.mbr.text | \
-        python $scripts/tokenize_v13a.py \
-        > $samples_sub_sub/$corpus.mbr.text.tok
+    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+        for seed in {1..5}; do
 
-    $METEOR \
-        $samples_sub_sub/$corpus.mbr.text.tok \
-        $data_sub_sub/$corpus.trg.tok \
-        $METEOR_PARAMS 2> /dev/null \
-        > $evaluations_sub_sub/$corpus.mbr.meteor
+            untokenized_hyp=$samples_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
+            output=$evaluations_sub_sub/$corpus.mbr.sample.$num_samples.$seed.meteor
 
-    echo "$evaluations_sub_sub/$corpus.mbr.meteor"
-    cat $evaluations_sub_sub/$corpus.mbr.meteor
+            . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+        done
+    done
+
+    # MBR decoding with beam nbest list (5 .. 100)
+
+    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+
+        untokenized_hyp=$samples_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
+        output=$evaluations_sub_sub/$corpus.mbr.beam.$num_samples.meteor
+
+        . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+    done
 
 done
