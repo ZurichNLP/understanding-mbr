@@ -64,7 +64,7 @@ for corpus in dev test; do
     for num_samples in 5 10; do # 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
         for seed in {1..5}; do
 
-            hyp=$samples_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
+            hyp=$mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
             output=$evaluations_sub_sub/$corpus.mbr.sample.$num_samples.$seed.bleu
 
             . $scripts/tatoeba/evaluate_bleu_more_generic.sh
@@ -75,7 +75,7 @@ for corpus in dev test; do
 
     for num_samples in 5 10; do # 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-        hyp=$samples_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
+        hyp=$mbr_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
         output=$evaluations_sub_sub/$corpus.mbr.beam.$num_samples.bleu
 
         . $scripts/tatoeba/evaluate_bleu_more_generic.sh
