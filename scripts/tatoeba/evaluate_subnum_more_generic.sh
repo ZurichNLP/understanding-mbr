@@ -11,7 +11,7 @@
 
 for unused in pseudo_loop; do
 
-    if [[ -s $output ]]; then
+    if [[ -s $average ]]; then
       continue
     fi
 
