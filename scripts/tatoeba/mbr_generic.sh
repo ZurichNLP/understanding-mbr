@@ -36,7 +36,7 @@ for corpus in dev test variations; do
 
     # MBR with sampled translations
 
-    for seed in {1..5}; do
+    for seed in 1 2; do # {1..5}; do
 
         # divide inputs into up to 32 parts
 
