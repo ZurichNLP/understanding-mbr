@@ -65,7 +65,7 @@ for corpus in dev test variations; do
                 --seed $seed \
                 --length-penalty-alpha 1.0 \
                 --device-ids 0 \
-                --batch-size 16 \
+                --batch-size 14 \
                 --disable-device-locking
 
          # undo pieces in nbest JSON structures
