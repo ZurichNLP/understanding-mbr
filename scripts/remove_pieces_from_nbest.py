@@ -22,7 +22,7 @@ def remove_pieces(line: str) -> str:
     :return:
     """
 
-    return line.replace(" ", "").replace("▁", " ")
+    return line.replace(" ", "").replace("▁", " ").strip()
 
 
 def main():
