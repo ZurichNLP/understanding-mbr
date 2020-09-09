@@ -223,7 +223,7 @@ class Result(object):
 
     def signature(self) -> str:
 
-        return "+".join([self.langpair, 
+        return "+".join([self.langpair,
                          self.model_name,
                          self.corpus,
                          self.decoding_method,
@@ -255,7 +255,7 @@ def reduce_results(results: List[Result]) -> List[Result]:
     """
 
     with_signatures = [(r.signature(), r) for r in results]  # type: List[Tuple[str, Result]]
-    with_signatures.sort()
+    with_signatures.sort(key=operator.itemgetter(0))
 
     by_signature_iterator = itertools.groupby(with_signatures, operator.itemgetter(0))
 
