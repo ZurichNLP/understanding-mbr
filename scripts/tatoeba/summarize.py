@@ -278,9 +278,7 @@ def main():
 
     results = []
 
-    for root, langpairs, _ in walklevel(args.eval_folder, level=1):
-
-        print(langpairs)
+    for root, langpairs, _ in walklevel(args.eval_folder, level=0):
 
         for langpair in langpairs:
 
