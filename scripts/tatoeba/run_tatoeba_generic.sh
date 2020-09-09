@@ -100,7 +100,7 @@ echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_s
 
 id_evaluate=$(
     $scripts/sbatch_bare.sh \
-    --cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic --dependency=afterok:$id_mbr \
+    --cpus-per-task=2 --time=12:00:00 --mem=8G --partition=generic --dependency=afterok:$id_mbr \
     -o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/evaluate_generic.sh \
     $base $src $trg $model_name

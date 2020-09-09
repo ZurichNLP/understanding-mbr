@@ -128,8 +128,8 @@ def main():
             samples = samples[args.sample_start_index:args.num_samples]
             assert len(samples) >= args.num_samples, "Slicing with --sample-start-index selected fewer translations than --num-samples!"
 
-        # remove samples if they are the empty string
-        samples = [sample for sample in samples if sample != ""]
+        # remove samples if they are the empty string or whitespace-only
+        samples = [sample for sample in samples if sample.strip() != ""]
 
         output, utility = get_maximum_utility_sample(samples=samples, utility_function=utility_function)
 
