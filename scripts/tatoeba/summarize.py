@@ -241,7 +241,7 @@ def collapse_metrics(results: List[Result]) -> Result:
     first_result = results[0]
 
     for r in results[1:]:
-        for name, value in r.metric_dict.values():
+        for name, value in r.metric_dict.items():
             first_result.update_metric(name, value)
 
     return first_result
