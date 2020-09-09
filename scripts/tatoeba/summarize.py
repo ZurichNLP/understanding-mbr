@@ -212,14 +212,14 @@ class Result(object):
     def __repr__(self):
         metric_dict = str(self.metric_dict)
 
-        return "+".join([self.langpair,
-                         self.model_name,
-                         self.corpus,
-                         self.decoding_method,
-                         self.sample_origin,
-                         self.num_samples,
-                         self.seed,
-                         metric_dict])
+        return "Result(%s)" % "+".join([self.langpair,
+                                        self.model_name,
+                                        self.corpus,
+                                        self.decoding_method,
+                                        self.sample_origin,
+                                        self.num_samples,
+                                        self.seed,
+                                        metric_dict])
 
     def signature(self) -> str:
 

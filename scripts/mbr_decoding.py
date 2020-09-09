@@ -93,8 +93,7 @@ def get_maximum_utility_sample(samples: List[str], utility_function: Callable) -
         utilities = []
 
         for pseudo_reference in samples:
-            if sample != pseudo_reference:
-                utilities.append(utility_function(sample, pseudo_reference))
+            utilities.append(utility_function(sample, pseudo_reference))
 
         if len(utilities) == 0:
             average_utility = 0.0
