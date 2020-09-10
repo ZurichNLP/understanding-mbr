@@ -24,7 +24,9 @@ To run the entire pipeline (downloading data until evaluation of trained model) 
 
     ./scripts/tatoeba/run_sample.sh
 
-The script will call `./scripts/tatoeba/run_tatoeba_generic.sh`, which will submit each individual step (such as translation, or model training) as a separate SLURM job. Depending on the nature of the task, the scripts submits to a different cluster, or asks for different resources. Steps within a pipeline depend on each other (SLURM sbatch `--afterok` dependency in most cases).
+The script will call `./scripts/tatoeba/run_tatoeba_generic.sh`, which will submit each individual step (such as translation, or model training) as a separate SLURM job. Depending on the nature of the task, the scripts submits to a different cluster, or asks for different resources.
+
+Steps within a pipeline depend on each other (SLURM sbatch `--afterok` dependency in most cases). This means that if a job X fails, subsequent jobs that depend on X will never start. If steps are completed, the exit immediately -- so you can always re-run an entire pipeline if any step fails.
 
 To run all required steps for a number of medium-resource language pairs, run
 
