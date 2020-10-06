@@ -17,6 +17,9 @@ preprocess_copy_noise_probability="0.0"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
 
+# TODO:remove
+exit
+
 # without label smoothing
 
 model_name="no_label_smoothing"

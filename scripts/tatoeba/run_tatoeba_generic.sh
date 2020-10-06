@@ -49,9 +49,6 @@ id_preprocess=$(
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
 
-# TODO:remove
-exit
-
 # Sockeye prepare (depends on preprocess)
 
 id_prepare=$(
