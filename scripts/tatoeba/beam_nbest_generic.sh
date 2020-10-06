@@ -5,6 +5,7 @@
 # $src
 # $trg
 # $model_name
+# $corpora
 
 data=$base/data
 data_sub=$data/${src}-${trg}
@@ -24,44 +25,15 @@ source $base/venvs/sockeye3/bin/activate
 
 # beam translation
 
-for corpus in dev test variations; do
+for corpus in $corpora; do
 
-    if [[ -s $translations_sub_sub/$corpus.beam.nbest.trg ]]; then
-      echo "Translations exist: $translations_sub_sub/$corpus.beam.nbest.trg"
+    for length_penalty_alpha in 0.0 1.0; do
 
-      num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
-      num_lines_output=$(cat $translations_sub_sub/$corpus.beam.nbest.trg | wc -l)
+        input=$data_sub_sub/$corpus.pieces.src
+        output_pieces=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.pieces.trg
+        output=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.trg
 
-      if [[ $num_lines_input == $num_lines_output ]]; then
-          echo "output exists and number of lines are equal to input:"
-          echo "$data_sub_sub/$corpus.pieces.src == $translations_sub_sub/$corpus.beam.nbest.trg"
-          echo "$num_lines_input == $num_lines_output"
-          echo "Skipping."
-          continue
-      else
-          echo "$data_sub_sub/$corpus.pieces.src != $translations_sub_sub/$corpus.beam.nbest.trg"
-          echo "$num_lines_input != $num_lines_output"
-          echo "Repeating step."
-      fi
-    fi
+        . $base/scripts/tatoeba/beam_nbest_more_generic.sh
 
-    # produce nbest list of size 100
-
-    OMP_NUM_THREADS=1 python -m sockeye.translate \
-            -i $data_sub_sub/$corpus.pieces.src \
-            -o $translations_sub_sub/$corpus.beam.nbest.pieces.trg \
-            -m $models_sub_sub \
-            --beam-size 100 \
-            --nbest-size 100 \
-            --length-penalty-alpha 1.0 \
-            --device-ids 0 \
-            --batch-size 14 \
-            --disable-device-locking
-
-    # undo pieces in nbest JSON structures
-
-    python $base/scripts/remove_pieces_from_nbest.py \
-        --input $translations_sub_sub/$corpus.beam.nbest.pieces.trg > \
-        $translations_sub_sub/$corpus.beam.nbest.trg
-
+    done
 done

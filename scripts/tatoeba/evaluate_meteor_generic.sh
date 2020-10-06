@@ -6,6 +6,8 @@
 # $src
 # $trg
 # $model_name
+# $seeds
+# $corpora
 
 source $base/venvs/sockeye3-cpu/bin/activate
 
@@ -38,7 +40,7 @@ METEOR_PARAMS=" -l other -q"
 
 # compute METEOR with internal tokenization
 
-for corpus in dev test; do
+for corpus in $corpora; do
 
     # tokenize reference once
 
@@ -50,15 +52,19 @@ for corpus in dev test; do
 
    # beam top translations
 
-    untokenized_hyp=$translations_sub_sub/$corpus.beam.top.trg
-    output=$evaluations_sub_sub/$corpus.beam.top.meteor
+   for length_penalty_alpha in 0.0 1.0; do
 
-    . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+        untokenized_hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
+        output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.meteor
+
+        . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+    done
 
     # sample top (single sample), different seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in 1 2; do # {1..5}; do
+    for seed in $seeds; do
 
         untokenized_hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
         output=$evaluations_sub_sub/$corpus.sample.top.$seed.meteor
@@ -71,7 +77,7 @@ for corpus in dev test; do
     # e.g. dev.mbr.sample.40.1.trg.text
 
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
-        for seed in 1 2; do # {1..5}; do
+        for seed in $seeds; do
 
             for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
@@ -84,17 +90,21 @@ for corpus in dev test; do
         done
     done
 
-    # MBR decoding with beam nbest list (5 .. 100), different utility functions
+    # MBR decoding with beam nbest list (5 .. 100), different utility functions,
+    # different length penalties to produce nbest lists
 
-    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+    for length_penalty_alpha in 0.0 1.0; do
 
-        for utility_function in sentence-meteor sentence-meteor-symmetric; do
+        for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            untokenized_hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.trg.text
-            output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.meteor
+            for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
-            . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+                untokenized_hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text
+                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.meteor
 
+                . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+            done
         done
     done
 

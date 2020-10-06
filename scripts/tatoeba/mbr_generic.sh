@@ -29,14 +29,19 @@ mkdir -p $mbr_sub_sub
 
 source $base/venvs/sockeye3/bin/activate
 
-for corpus in dev test variations; do
+seeds="1 2 3 4 5"
+corpora="dev test" #  variations
+
+for corpus in $corpora; do
 
     deactivate
     source $base/venvs/sockeye3-cpu/bin/activate
 
     # MBR with sampled translations
 
-    for seed in 1 2; do # {1..5}; do
+    # (length penalty does not affect samples)
+
+    for seed in $seeds; do
 
         # divide inputs into up to 32 parts
 
@@ -64,27 +69,32 @@ for corpus in dev test variations; do
         done
     done
 
-    # MBR with beam translations
+    # MBR with nbest beam translations
 
-    # divide inputs into up to 32 parts
+    # (length penalty does affect beam translations, seed does not)
 
-    mkdir -p $mbr_sub_sub/beam_parts
+    for length_penalty_alpha in 0.0 1.0; do
 
-    cp $translations_sub_sub/$corpus.beam.nbest.trg $mbr_sub_sub/beam_parts/$corpus.beam.nbest.trg
+        # divide inputs into up to 32 parts
 
-    python $scripts/split.py --parts 32 --input $mbr_sub_sub/beam_parts/$corpus.beam.nbest.trg
+        mkdir -p $mbr_sub_sub/beam_parts
 
-    input=$mbr_sub_sub/beam_parts/$corpus.beam.nbest.trg
+        cp $translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.trg $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 
-    for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+        python $scripts/split.py --parts 32 --input $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 
-        for utility_function in sentence-meteor sentence-meteor-symmetric; do
+        input=$mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 
-            parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.$utility_function.beam.$num_samples.trg
-            output=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.trg
+        for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            . $scripts/tatoeba/mbr_more_generic.sh
+            for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
+                parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
+                output=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
+
+                . $scripts/tatoeba/mbr_more_generic.sh
+
+            done
         done
     done
 

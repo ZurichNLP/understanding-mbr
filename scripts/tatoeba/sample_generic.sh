@@ -5,6 +5,8 @@
 # $src
 # $trg
 # $model_name
+# $corpora
+# $seeds
 
 scripts=$base/scripts
 
@@ -26,12 +28,12 @@ source $base/venvs/sockeye3/bin/activate
 
 # sampling translation
 
-for corpus in dev test variations; do
+for corpus in $corpora; do
 
     deactivate
     source $base/venvs/sockeye3/bin/activate
 
-    for seed in {1..5}; do
+    for seed in $seeds; do
 
         if [[ -s $samples_sub_sub/$corpus.sample.top.$seed.trg ]]; then
             echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$seed.trg"
@@ -71,8 +73,8 @@ for corpus in dev test variations; do
          # undo pieces in nbest JSON structures
 
         python $base/scripts/remove_pieces_from_nbest.py \
-        --input $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg > \
-        $samples_sub_sub/$corpus.sample.nbest.$seed.trg
+            --input $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg > \
+            $samples_sub_sub/$corpus.sample.nbest.$seed.trg
 
         # extract first sample of each translation JSON line as single_sample
 

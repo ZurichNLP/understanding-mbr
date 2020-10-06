@@ -13,6 +13,9 @@ model_name=$4
 
 scripts=$base/scripts
 
+seeds="1 2 3 4 5"
+corpora="dev test" # variations
+
 . $scripts/tatoeba/evaluate_bleu_generic.sh
 
 . $scripts/tatoeba/evaluate_meteor_generic.sh
