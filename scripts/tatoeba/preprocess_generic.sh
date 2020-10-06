@@ -5,6 +5,7 @@
 # $src
 # $trg
 # $model_name
+# $preprocess_copy_noise_probability
 
 base=$1
 src=$2
@@ -184,6 +185,19 @@ done
 # ratio etc filter
 
 $MOSES/training/clean-corpus-n.perl $data_sub/train.pieces src trg $data_sub/train.clean 1 250
+
+# maybe modify training data to introduce copies into the final training data, depending on $copy_noise_probability
+
+cp $data_sub/train.clean.src $data_sub/train.nocopies.src
+cp $data_sub/train.clean.trg $data_sub/train.nocopies.trg
+
+python $scripts/introduce_copy_noise.py \
+    --input-src $data_sub/train.nocopies.src \
+    --input-trg $data_sub/train.nocopies.trg \
+    --output-src $data_sub/train.clean.src \
+    --output-trg $data_sub/train.clean.trg \
+    --copy-noise-probability $preprocess_copy_noise_probability
+
 
 # sizes
 echo "Sizes of all files:"

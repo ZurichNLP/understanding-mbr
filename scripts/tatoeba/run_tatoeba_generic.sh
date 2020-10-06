@@ -6,6 +6,7 @@
 # $trg
 # $model_name
 # $train_additional_args
+# $preprocess_copy_noise_probability
 
 SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
 
