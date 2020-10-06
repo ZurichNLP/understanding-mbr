@@ -58,27 +58,34 @@ for corpus in dev test; do
 
     done
 
-    # MBR decoding with samples (5 .. 100), different seeds
+    # MBR decoding with samples (5 .. 100), different seeds, different utility functions
     # e.g. dev.mbr.sample.40.1.trg.text
 
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
         for seed in 1 2; do # {1..5}; do
 
-            hyp=$mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg.text
-            output=$evaluations_sub_sub/$corpus.mbr.sample.$num_samples.$seed.bleu
+            for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
-            . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+                hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text
+                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.bleu
+
+                . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+
+            done
         done
     done
 
-    # MBR decoding with beam nbest list (5 .. 100)
+    # MBR decoding with beam nbest list (5 .. 100), different utility functions
 
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-        hyp=$mbr_sub_sub/$corpus.mbr.beam.$num_samples.trg.text
-        output=$evaluations_sub_sub/$corpus.mbr.beam.$num_samples.bleu
+        for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
-        . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+            hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.trg.text
+            output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.bleu
+
+            . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+        done
     done
 
 done

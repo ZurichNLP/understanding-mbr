@@ -23,3 +23,11 @@ model_name="no_label_smoothing"
 train_additional_args="--label-smoothing 0.0"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
+
+# with copies in the training data
+
+# TODO: add this call
+
+model_name="copy_noise"
+
+train_additional_args="--label-smoothing 0.0"

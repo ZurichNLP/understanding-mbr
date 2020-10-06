@@ -17,4 +17,6 @@ scripts=$base/scripts
 
 . $scripts/tatoeba/evaluate_meteor_generic.sh
 
-. $scripts/tatoeba/evaluate_subnum_generic.sh
+# does not seem worth it - do not evaluate for now
+
+# . $scripts/tatoeba/evaluate_subnum_generic.sh

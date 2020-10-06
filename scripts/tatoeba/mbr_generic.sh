@@ -50,13 +50,17 @@ for corpus in dev test variations; do
 
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            parts_prefix=$mbr_sub_sub/sample_parts.$seed/$corpus.mbr.sample.$num_samples.$seed.trg
+            for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
-            # $scripts/tatoeba/mbr_more_generic.sh will add ".text" to this path as the final result file
+                parts_prefix=$mbr_sub_sub/sample_parts.$seed/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg
 
-            output=$mbr_sub_sub/$corpus.mbr.sample.$num_samples.$seed.trg
+                # $scripts/tatoeba/mbr_more_generic.sh will add ".text" to this path as the final result file
 
-            . $scripts/tatoeba/mbr_more_generic.sh
+                output=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg
+
+                . $scripts/tatoeba/mbr_more_generic.sh
+
+            done
         done
     done
 
@@ -74,10 +78,14 @@ for corpus in dev test variations; do
 
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-        parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.beam.$num_samples.trg
-        output=$mbr_sub_sub/$corpus.mbr.beam.$num_samples.trg
+        for utility_function in sentence-meteor sentence-meteor-symmetric; do
 
-        . $scripts/tatoeba/mbr_more_generic.sh
+            parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.$utility_function.beam.$num_samples.trg
+            output=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$num_samples.trg
+
+            . $scripts/tatoeba/mbr_more_generic.sh
+
+        done
     done
 
 done

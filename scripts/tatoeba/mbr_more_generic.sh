@@ -4,6 +4,8 @@
 # $input
 # $output
 # $parts_prefix
+# $num_samples
+# $utility_function
 
 # pseudo loop to check if file exists
 
@@ -35,7 +37,7 @@ for unused in useless_loop_var; do
         python $scripts/mbr_decoding.py \
             --input $input.$part \
             --output $parts_prefix.$part \
-            --utility-function sentence-meteor \
+            --utility-function $utility_function \
             --num-samples $num_samples &
     done
 
