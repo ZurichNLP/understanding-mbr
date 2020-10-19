@@ -39,11 +39,7 @@ echo "Done reading visible devices."
 export MXNET_ENABLE_GPU_P2P=0
 echo "MXNET_ENABLE_GPU_P2P: $MXNET_ENABLE_GPU_P2P"
 
-if [[ $dry_run == "true" ]]; then
-    source $base/venvs/sockeye3-cpu/bin/activate
-else
-    source $base/venvs/sockeye3/bin/activate
-fi
+source $base/venvs/sockeye3/bin/activate
 
 # parameters are the same for all Transformer models
 
