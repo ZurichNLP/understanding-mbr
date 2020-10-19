@@ -21,8 +21,6 @@ translations_sub_sub=$translations_sub/$model_name
 
 mkdir -p $translations_sub_sub
 
-source $base/venvs/sockeye3/bin/activate
-
 # beam translation
 
 for corpus in $corpora; do

@@ -24,8 +24,6 @@ samples_sub_sub=$samples_sub/$model_name
 
 mkdir -p $samples_sub_sub
 
-source $base/venvs/sockeye3/bin/activate
-
 # sampling translation
 
 for corpus in $corpora; do

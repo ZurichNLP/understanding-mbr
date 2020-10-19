@@ -3,10 +3,13 @@
 base=/net/cephfs/scratch/mathmu/map-volatility
 scripts=$base/scripts
 
-# Danish -> Esperanto
+# French -> Latin
 
-src=dan
-trg=epo
+src=fra
+trg=lat
+
+# dry runs?
+dry_run="true"
 
 # baseline
 

@@ -6,12 +6,14 @@
 # $trg
 # $model_name
 # $preprocess_copy_noise_probability
+# $dry_run
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
 preprocess_copy_noise_probability=$5
+dry_run=$6
 
 data=$base/data
 venvs=$base/venvs
@@ -36,6 +38,9 @@ source $venvs/sockeye3-cpu/bin/activate
 
 MOSES=$base/tools/moses-scripts/scripts
 TOKENIZER=$MOSES/tokenizer
+
+DRY_RUN_TRAIN_SIZE=10000
+DRY_RUN_DEVTEST_SIZE=10
 
 DEVTEST_MAXSIZE=10000
 
@@ -69,6 +74,20 @@ for corpus in dev test; do
         done
     fi
 done
+
+# truncate all data if dry run
+
+if [[ $dry_run == "true" ]]; then
+    for lang in src trg; do
+        for corpus in dev test; do
+            mv $data_sub/$corpus.$lang $data_sub/$corpus.$lang.big
+            head -n $DRY_RUN_DEVTEST_SIZE $data_sub/$corpus.$lang.big > $data_sub/$corpus.$lang
+        done
+
+        mv $data_sub/train.$lang $data_sub/train.$lang.big
+        head -n $DRY_RUN_TRAIN_SIZE $data_sub/train.$lang.big > $data_sub/train.$lang
+    done
+fi
 
 echo "data_sub: $data_sub"
 

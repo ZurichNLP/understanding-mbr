@@ -7,12 +7,14 @@
 # $trg
 # $model_name
 # $additional_args
+# $dry_run
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
 additional_args=$5
+dry_run=$6
 
 data=$base/data
 data_sub=$data/${src}-${trg}
@@ -37,7 +39,11 @@ echo "Done reading visible devices."
 export MXNET_ENABLE_GPU_P2P=0
 echo "MXNET_ENABLE_GPU_P2P: $MXNET_ENABLE_GPU_P2P"
 
-source $base/venvs/sockeye3/bin/activate
+if [[ $dry_run == "true" ]]; then
+    source $base/venvs/sockeye3-cpu/bin/activate
+else
+    source $base/venvs/sockeye3/bin/activate
+fi
 
 # parameters are the same for all Transformer models
 
@@ -105,6 +111,12 @@ if [[ -f $models_sub_sub/log ]]; then
     fi
 fi
 
+if [[ $dry_run == "true" ]]; then
+    dry_run_additional_args="--max-checkpoints 1 --use-cpu"
+else
+    dry_run_additional_args=""
+fi
+
 ##################################################
 
 python -m sockeye.train \
@@ -145,4 +157,4 @@ python -m sockeye.train \
 --min-num-epochs 0 \
 --gradient-clipping-type abs \
 --gradient-clipping-threshold 1 \
---disable-device-locking $additional_args
+--disable-device-locking $additional_args $dry_run_additional_args
