@@ -112,7 +112,8 @@ if [[ -f $models_sub_sub/log ]]; then
 fi
 
 if [[ $dry_run == "true" ]]; then
-    dry_run_additional_args="--max-checkpoints 1 --use-cpu"
+    dry_run_additional_args="--max-updates 1 --use-cpu"
+    checkpoint_interval=1
 else
     dry_run_additional_args="--decode-and-evaluate-device-id 0"
 fi
