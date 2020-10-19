@@ -112,8 +112,13 @@ if [[ -f $models_sub_sub/log ]]; then
 fi
 
 if [[ $dry_run == "true" ]]; then
-    dry_run_additional_args="--max-updates 1 --use-cpu"
-    checkpoint_interval=1
+    dry_run_additional_args="--max-updates 10 --use-cpu"
+    checkpoint_interval=10
+    num_embed="64:64"
+    num_layers="6:6"
+    transformer_model_size="64"
+    transformer_attention_heads="1"
+    transformer_feed_forward_num_hidden="64"
 else
     dry_run_additional_args="--decode-and-evaluate-device-id 0"
 fi
