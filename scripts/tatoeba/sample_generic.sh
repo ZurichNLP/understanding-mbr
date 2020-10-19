@@ -10,8 +10,10 @@
 # $dry_run
 
 if [[ $dry_run == "true" ]]; then
+    batch_size=2
     dry_run_additional_args="--use-cpu"
 else
+    batch_size=14
     dry_run_additional_args=""
 fi
 
@@ -72,7 +74,7 @@ for corpus in $corpora; do
                 --seed $seed \
                 --length-penalty-alpha 1.0 \
                 --device-ids 0 \
-                --batch-size 14 \
+                --batch-size $batch_size \
                 --disable-device-locking $dry_run_additional_args
 
          # undo pieces in nbest JSON structures

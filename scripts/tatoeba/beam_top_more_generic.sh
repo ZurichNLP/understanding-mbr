@@ -10,8 +10,12 @@
 # $dry_run
 
 if [[ $dry_run == "true" ]]; then
+    beam_size=1
+    batch_size=2
     dry_run_additional_args="--use-cpu"
 else
+    beam_size=10
+    batch_size=64
     dry_run_additional_args=""
 fi
 
@@ -42,10 +46,10 @@ for unused in pseudo_loop; do
             -i $input \
             -o $output_pieces \
             -m $models_sub_sub \
-            --beam-size 10 \
+            --beam-size $beam_size \
             --length-penalty-alpha $length_penalty_alpha \
             --device-ids 0 \
-            --batch-size 64 \
+            --batch-size $batch_size \
             --disable-device-locking $dry_run_additional_args
 
     # undo pieces

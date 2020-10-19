@@ -11,8 +11,10 @@
 # $dry_run
 
 if [[ $dry_run == "true" ]]; then
+    batch_size=2
     dry_run_additional_args="--use-cpu"
 else
+    batch_size=14
     dry_run_additional_args=""
 fi
 
@@ -47,7 +49,7 @@ for unused in pseudo_loop; do
             --nbest-size 100 \
             --length-penalty-alpha $length_penalty_alpha \
             --device-ids 0 \
-            --batch-size 14 \
+            --batch-size $batch_size \
             --disable-device-locking $dry_run_additional_args
 
     # undo pieces in nbest JSON structures
