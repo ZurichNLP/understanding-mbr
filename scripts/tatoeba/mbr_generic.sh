@@ -35,7 +35,7 @@ seeds="1 2"
 corpora="dev test" #  variations
 
 if [[ $dry_run == "true" ]]; then
-    num_parts=3
+    num_parts=2
 else
     num_parts=32
 fi

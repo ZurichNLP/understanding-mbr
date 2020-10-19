@@ -33,9 +33,9 @@ for unused in useless_loop_var; do
 
     if [[ $dry_run == "true" ]]; then
 
-        # parallel decoding, assuming 3 physical cores
+        # parallel decoding, assuming 2 physical cores
 
-        for part in {1..3}; do
+        for part in {1..2}; do
 
             python $scripts/mbr_decoding.py \
                 --input $input.$part \
@@ -48,7 +48,7 @@ for unused in useless_loop_var; do
 
         # concatenate parts
 
-        cat $parts_prefix.{1..3} > $output
+        cat $parts_prefix.{1..2} > $output
 
     else
         # parallel decoding, assuming 32 physical cores
