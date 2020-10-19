@@ -48,6 +48,8 @@ def parse_args():
                         help="From each nbest list take a slice of --num-samples samples, but start at this index "
                              "(default: 0).",
                         required=False, default=0)
+    parser.add_argument("--dry-run", action="store_true", help="Do not compute actual scores, mockup for dry runs.",
+                        required=False, default=False)
 
     args = parser.parse_args()
 
@@ -186,9 +188,12 @@ def main():
         # remove samples if they are the empty string or whitespace-only
         samples = [sample for sample in samples if sample.strip() != ""]
 
-        output, utility = get_maximum_utility_sample(samples=samples,
-                                                     utility_function=utility_function,
-                                                     symmetric=symmetric_utility)
+        if args.dry_run:
+            output, utility = samples[0], 0.0
+        else:
+            output, utility = get_maximum_utility_sample(samples=samples,
+                                                         utility_function=utility_function,
+                                                         symmetric=symmetric_utility)
 
         output = output.strip()
         output_handle.write("%f\t%s\n" % (utility, output))

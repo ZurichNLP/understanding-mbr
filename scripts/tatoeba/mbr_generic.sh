@@ -42,9 +42,6 @@ fi
 
 for corpus in $corpora; do
 
-    deactivate
-    source $base/venvs/sockeye3-cpu/bin/activate
-
     # MBR with sampled translations
 
     # (length penalty does not affect samples)

@@ -31,6 +31,8 @@ for unused in useless_loop_var; do
       fi
     fi
 
+    # ugly, but curly brace expressions do not allow variable expansion
+
     if [[ $dry_run == "true" ]]; then
 
         # parallel decoding, assuming 2 physical cores
@@ -41,7 +43,8 @@ for unused in useless_loop_var; do
                 --input $input.$part \
                 --output $parts_prefix.$part \
                 --utility-function $utility_function \
-                --num-samples $num_samples &
+                --num-samples $num_samples \
+                --dry-run &
         done
 
         wait
