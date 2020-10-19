@@ -7,6 +7,9 @@ import random
 from typing import Tuple
 
 
+random.seed(42)
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
 

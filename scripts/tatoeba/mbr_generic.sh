@@ -29,7 +29,7 @@ mkdir -p $mbr_sub_sub
 
 source $base/venvs/sockeye3/bin/activate
 
-seeds="1 2 3 4 5"
+seeds="1 2"
 corpora="dev test" #  variations
 
 for corpus in $corpora; do
