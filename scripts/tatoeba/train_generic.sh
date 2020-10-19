@@ -114,7 +114,7 @@ fi
 if [[ $dry_run == "true" ]]; then
     dry_run_additional_args="--max-checkpoints 1 --use-cpu"
 else
-    dry_run_additional_args=""
+    dry_run_additional_args="--decode-and-evaluate-device-id 0"
 fi
 
 ##################################################
@@ -128,7 +128,6 @@ python -m sockeye.train \
 --batch-type word \
 --batch-size $batch_size \
 --device-ids 0 \
---decode-and-evaluate-device-id 0 \
 --encoder transformer \
 --decoder transformer \
 --num-layers $num_layers \
