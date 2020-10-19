@@ -31,10 +31,6 @@ if [[ $dry_run == "true" ]]; then
   SLURM_ARGS_VOLTA_TRANSLATE=$DRY_RUN_SLURM_ARGS
 fi
 
-SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
-
-SLURM_LOG_ARGS="-o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN"
-
 module load volta cuda/10.2
 
 scripts=$base/scripts
@@ -42,6 +38,9 @@ logs=$base/logs
 
 logs_sub=$logs/${src}-${trg}
 logs_sub_sub=$logs_sub/$model_name
+
+SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
+SLURM_LOG_ARGS="-o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN"
 
 mkdir -p $logs_sub_sub
 
