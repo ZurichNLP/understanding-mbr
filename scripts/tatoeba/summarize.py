@@ -41,22 +41,25 @@ def walklevel(some_dir, level=1):
 
 def parse_beam_top(parts: List[str]):
     """
-    Example: dev.beam.top.bleu
+    Structure:  $corpus.beam.$length_penalty_alpha.top.$metric
+    Example:    dev.beam.1.0.top.bleu
 
     :param parts:
     :return:
     """
-    corpus, sample_origin, decoding_method, metric = parts
+    corpus, sample_origin, length_penalty_alpha, decoding_method, metric = parts
 
     seed = "-"
     num_samples = "10"
+    utility_function = "-"
 
-    return corpus, decoding_method, sample_origin, num_samples, seed, metric
+    return corpus, decoding_method, sample_origin, num_samples, seed, length_penalty_alpha, utility_function, metric
 
 
 def parse_sample_top(parts: List[str]):
     """
-    Example: test.sample.top.2.meteor
+    Structure:  $corpus.sample.top.$seed.$metric
+    Example:    test.sample.top.2.meteor
 
     :param parts:
     :return:
@@ -64,34 +67,40 @@ def parse_sample_top(parts: List[str]):
     corpus, sample_origin, decoding_method, seed, metric = parts
 
     num_samples = "1"
+    length_penalty_alpha = "-"
+    utility_function = "-"
 
-    return corpus, decoding_method, sample_origin, num_samples, seed, metric
+    return corpus, decoding_method, sample_origin, num_samples, seed, length_penalty_alpha, utility_function, metric
 
 
 def parse_mbr_beam(parts: List[str]):
     """
-    Example: dev.mbr.beam.10.meteor
+    Structure:  $corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.$metric
+    Example:    dev.mbr.sentence-meteor.beam.1.0.10.meteor
 
     :param parts:
     :return:
     """
-    corpus, decoding_method, sample_origin, num_samples, metric = parts
+    corpus, decoding_method, utility_function, sample_origin, length_penalty_alpha, num_samples, metric = parts
 
     seed = "-"
 
-    return corpus, decoding_method, sample_origin, num_samples, seed, metric
+    return corpus, decoding_method, sample_origin, num_samples, seed, length_penalty_alpha, utility_function, metric
 
 
 def parse_mbr_sample(parts: List[str]):
     """
-    Example: dev.mbr.sample.15.2.meteor
+    Structure:  $corpus.mbr.$utility_function.sample.$num_samples.$seed.$metric
+    Example:    dev.mbr.sentence-meteor.sample.15.2.meteor
 
     :param parts:
     :return:
     """
-    corpus, decoding_method, sample_origin, num_samples, seed, metric = parts
+    corpus, decoding_method, utility_function, sample_origin, num_samples, seed, metric = parts
 
-    return corpus, decoding_method, sample_origin, num_samples, seed, metric
+    length_penalty_alpha = "-"
+
+    return corpus, decoding_method, sample_origin, num_samples, seed, length_penalty_alpha, utility_function, metric
 
 
 def parse_filename(filename: str):
@@ -182,6 +191,8 @@ class Result(object):
                  corpus,
                  decoding_method,
                  sample_origin,
+                 utility_function,
+                 length_penalty_alpha,
                  num_samples,
                  seed,
                  metric_names,
@@ -192,6 +203,8 @@ class Result(object):
         self.corpus = corpus
         self.decoding_method = decoding_method
         self.sample_origin = sample_origin
+        self.utility_function = utility_function
+        self.length_penalty_alpha = length_penalty_alpha
         self.num_samples = num_samples
         self.seed = seed
         self.metric_dict = {}
@@ -217,6 +230,8 @@ class Result(object):
                                         self.corpus,
                                         self.decoding_method,
                                         self.sample_origin,
+                                        self.utility_function,
+                                        self.length_penalty_alpha,
                                         self.num_samples,
                                         self.seed,
                                         metric_dict])
@@ -228,6 +243,8 @@ class Result(object):
                          self.corpus,
                          self.decoding_method,
                          self.sample_origin,
+                         self.utility_function,
+                         self.length_penalty_alpha,
                          self.num_samples,
                          self.seed])
 
@@ -269,6 +286,24 @@ def reduce_results(results: List[Result]) -> List[Result]:
     return reduced_results
 
 
+def get_model_names() -> List[str]:
+    """
+
+    :return:
+    """
+    model_names = ['baseline', 'no_label_smoothing']
+
+    noise_probabilities = "0.001 0.005 0.01 0.05 0.075 0.1 0.25 0.5".split(" ")
+
+    for noise_probability in noise_probabilities:
+        model_names.append("copy_noise." + noise_probability)
+
+    logging.debug("Model names:")
+    logging.debug(model_names)
+
+    return model_names
+
+
 def main():
 
     args = parse_args()
@@ -284,7 +319,7 @@ def main():
 
             path_langpair = os.path.join(args.eval_folder, langpair)
 
-            model_names = ['baseline', 'no_label_smoothing']
+            model_names = get_model_names()
 
             for model_name in model_names:
                 path_model = os.path.join(path_langpair, model_name)
@@ -295,7 +330,8 @@ def main():
                             # exclude this file
                             continue
                         else:
-                            corpus, decoding_method, sample_origin, num_samples, seed, metric = parse_filename(file)
+                            corpus, decoding_method, sample_origin, num_samples, seed, \
+                                length_penalty_alpha, utility_function, metric = parse_filename(file)
 
                             filepath = os.path.join(path_model, file)
 
@@ -306,6 +342,8 @@ def main():
                                             corpus,
                                             decoding_method,
                                             sample_origin,
+                                            utility_function,
+                                            length_penalty_alpha,
                                             num_samples,
                                             seed,
                                             metric_names,
@@ -320,6 +358,8 @@ def main():
                     "CORPUS",
                     "DECODING_METHOD",
                     "SAMPLE_ORIGIN",
+                    "UTILITY_FUNCTION",
+                    "LENGTH_PENALTY_ALPHA",
                     "NUM_SAMPLES",
                     "SEED",
                     "BLEU",
@@ -339,7 +379,8 @@ def main():
     print("\t".join(header_names))
 
     for r in results:
-        values = [r.langpair, r.model_name, r.corpus, r.decoding_method, r.sample_origin, r.num_samples, r.seed]
+        values = [r.langpair, r.model_name, r.corpus, r.decoding_method, r.sample_origin, r.utility_function,
+                  r.length_penalty_alpha, r.num_samples, r.seed]
         metrics = [r.metric_dict.get(m, "-") for m in metric_names]
 
         print("\t".join(values + metrics))
