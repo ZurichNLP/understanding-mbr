@@ -7,6 +7,8 @@
 # $model_name
 # $train_additional_args
 # $preprocess_copy_noise_probability
+#
+# optional: $stop_after_preprocess = true
 
 SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
 
@@ -37,7 +39,7 @@ id_download=$(
 
 echo "  id_download: $id_download | $logs_sub_sub/slurm-$id_download.out" | tee -a $logs_sub_sub/MAIN
 
-# preprocess: create subnum variations, normalize, SPM (depends on download)
+# preprocess: create subnum variations, normalize, SPM, maybe insert copy noise (depends on download)
 
 id_preprocess=$(
     $scripts/sbatch_bare.sh \
@@ -48,6 +50,10 @@ id_preprocess=$(
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
+
+if [[ $stop_after_preprocess == "true" ]]; then
+    exit 0
+fi
 
 # Sockeye prepare (depends on preprocess)
 
