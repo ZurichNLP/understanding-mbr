@@ -47,7 +47,9 @@ def parse_beam_top(parts: List[str]):
     :param parts:
     :return:
     """
-    corpus, sample_origin, length_penalty_alpha, decoding_method, metric = parts
+    corpus, sample_origin, length_penalty_alpha_a, length_penalty_alpha_b, decoding_method, metric = parts
+
+    length_penalty_alpha = ".".join([length_penalty_alpha_a, length_penalty_alpha_b])
 
     seed = "-"
     num_samples = "10"
@@ -81,7 +83,10 @@ def parse_mbr_beam(parts: List[str]):
     :param parts:
     :return:
     """
-    corpus, decoding_method, utility_function, sample_origin, length_penalty_alpha, num_samples, metric = parts
+    corpus, decoding_method, utility_function, sample_origin, length_penalty_alpha_a, length_penalty_alpha_b, \
+        num_samples, metric = parts
+
+    length_penalty_alpha = ".".join([length_penalty_alpha_a, length_penalty_alpha_b])
 
     seed = "-"
 
