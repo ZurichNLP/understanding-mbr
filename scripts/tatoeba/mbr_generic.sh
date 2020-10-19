@@ -5,11 +5,13 @@
 # $src
 # $trg
 # $model_name
+# $dry_run
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
+dry_run=$5
 
 scripts=$base/scripts
 
@@ -32,6 +34,12 @@ source $base/venvs/sockeye3/bin/activate
 seeds="1 2"
 corpora="dev test" #  variations
 
+if [[ $dry_run == "true" ]]; then
+    num_parts=3
+else
+    num_parts=32
+fi
+
 for corpus in $corpora; do
 
     deactivate
@@ -49,7 +57,7 @@ for corpus in $corpora; do
 
         cp $samples_sub_sub/$corpus.sample.nbest.$seed.trg $mbr_sub_sub/sample_parts.$seed/$corpus.sample.nbest.$seed.trg
 
-        python $scripts/split.py --parts 32 --input $mbr_sub_sub/sample_parts.$seed/$corpus.sample.nbest.$seed.trg
+        python $scripts/split.py --parts $num_parts --input $mbr_sub_sub/sample_parts.$seed/$corpus.sample.nbest.$seed.trg
 
         input=$mbr_sub_sub/sample_parts.$seed/$corpus.sample.nbest.$seed.trg
 
@@ -81,7 +89,7 @@ for corpus in $corpora; do
 
         cp $translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.trg $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 
-        python $scripts/split.py --parts 32 --input $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
+        python $scripts/split.py --parts $num_parts --input $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 
         input=$mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
 

@@ -6,6 +6,7 @@
 # $parts_prefix
 # $num_samples
 # $utility_function
+# $dry_run
 
 # pseudo loop to check if file exists
 
@@ -30,22 +31,43 @@ for unused in useless_loop_var; do
       fi
     fi
 
-    # parallel decoding, assuming 32 physical cores
+    if [[ $dry_run == "true" ]]; then
 
-    for part in {1..32}; do
+        # parallel decoding, assuming 3 physical cores
 
-        python $scripts/mbr_decoding.py \
-            --input $input.$part \
-            --output $parts_prefix.$part \
-            --utility-function $utility_function \
-            --num-samples $num_samples &
-    done
+        for part in {1..3}; do
 
-    wait
+            python $scripts/mbr_decoding.py \
+                --input $input.$part \
+                --output $parts_prefix.$part \
+                --utility-function $utility_function \
+                --num-samples $num_samples &
+        done
 
-    # concatenate parts
+        wait
 
-    cat $parts_prefix.{1..32} > $output
+        # concatenate parts
+
+        cat $parts_prefix.{1..3} > $output
+
+    else
+        # parallel decoding, assuming 32 physical cores
+
+        for part in {1..32}; do
+
+            python $scripts/mbr_decoding.py \
+                --input $input.$part \
+                --output $parts_prefix.$part \
+                --utility-function $utility_function \
+                --num-samples $num_samples &
+        done
+
+        wait
+
+        # concatenate parts
+
+        cat $parts_prefix.{1..32} > $output
+    fi
 
     # remove MBR scores, leaving only the text
 

@@ -122,7 +122,7 @@ id_mbr=$(
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/mbr_generic.sh \
-    $base $src $trg $model_name
+    $base $src $trg $model_name $dry_run
 )
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN
