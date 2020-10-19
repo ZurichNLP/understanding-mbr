@@ -46,7 +46,7 @@ id_preprocess=$(
     --cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic --dependency=afterok:$id_download \
     -o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN \
     $scripts/tatoeba/preprocess_generic.sh \
-    $base $src $trg $model_name
+    $base $src $trg $model_name $preprocess_copy_noise_probability
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
