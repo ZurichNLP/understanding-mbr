@@ -20,7 +20,7 @@ noise_probabilities="0.1 0.3"
 
 for preprocess_copy_noise_probability in $noise_probabilities; do
 
-    model_name="copy_noise.$noise_probability"
+    model_name="copy_noise.$preprocess_copy_noise_probability"
     stop_after_preprocess="true"
 
     . $scripts/tatoeba/run_tatoeba_generic.sh
