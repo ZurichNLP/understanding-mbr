@@ -7,6 +7,13 @@
 # $output
 # $length_penalty_alpha
 # $models_sub_sub
+# $dry_run
+
+if [[ $dry_run == "true" ]]; then
+    dry_run_additional_args="--use-cpu"
+else
+    dry_run_additional_args=""
+fi
 
 for unused in pseudo_loop; do
 
@@ -39,7 +46,7 @@ for unused in pseudo_loop; do
             --length-penalty-alpha $length_penalty_alpha \
             --device-ids 0 \
             --batch-size 64 \
-            --disable-device-locking
+            --disable-device-locking $dry_run_additional_args
 
     # undo pieces
 

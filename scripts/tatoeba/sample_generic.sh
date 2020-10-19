@@ -7,6 +7,13 @@
 # $model_name
 # $corpora
 # $seeds
+# $dry_run
+
+if [[ $dry_run == "true" ]]; then
+    dry_run_additional_args="--use-cpu"
+else
+    dry_run_additional_args=""
+fi
 
 scripts=$base/scripts
 
@@ -66,7 +73,7 @@ for corpus in $corpora; do
                 --length-penalty-alpha 1.0 \
                 --device-ids 0 \
                 --batch-size 14 \
-                --disable-device-locking
+                --disable-device-locking $dry_run_additional_args
 
          # undo pieces in nbest JSON structures
 
