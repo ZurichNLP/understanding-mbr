@@ -37,7 +37,7 @@ source $venvs/sockeye3-cpu/bin/activate
 MOSES=$base/tools/moses-scripts/scripts
 TOKENIZER=$MOSES/tokenizer
 
-DEV_MAXSIZE=10000
+DEVTEST_MAXSIZE=10000
 
 SMALLEST_TRAINSIZE=10000
 SMALL_TRAINSIZE=100000
@@ -57,13 +57,12 @@ if [[ -f $data_sub/test.pieces.src ]]; then
     exit 0
 fi
 
-# truncate dev data to $DEV_MAXSIZE if too large
-# TODO: also for test?
+# truncate dev and/or test data to $DEVTEST_MAXSIZE if too large
 
-for corpus in dev; do
+for corpus in dev test; do
     num_lines_src=$(cat $data_sub/$corpus.src | wc -l)
 
-    if [[ $num_lines_src -gt $DEV_MAXSIZE ]]; then
+    if [[ $num_lines_src -gt $DEVTEST_MAXSIZE ]]; then
         for lang in src trg; do
             mv $data_sub/$corpus.$lang $data_sub/$corpus.$lang.big
             head -n $DEVTEST_MAXSIZE $data_sub/$corpus.$lang.big > $data_sub/$corpus.$lang
