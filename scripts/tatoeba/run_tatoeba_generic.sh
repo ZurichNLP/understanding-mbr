@@ -48,6 +48,7 @@ echo "##############################################"
 echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
+echo "DRY RUN: $dry_run" | tee -a $logs_sub_sub/MAIN
 
 # download corpus for language pair
 
