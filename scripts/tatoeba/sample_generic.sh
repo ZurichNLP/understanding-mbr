@@ -37,9 +37,6 @@ mkdir -p $samples_sub_sub
 
 for corpus in $corpora; do
 
-    deactivate
-    source $base/venvs/sockeye3/bin/activate
-
     for seed in $seeds; do
 
         if [[ -s $samples_sub_sub/$corpus.sample.top.$seed.trg ]]; then
