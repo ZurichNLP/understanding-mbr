@@ -29,7 +29,7 @@ mbr_sub_sub=$mbr_sub/$model_name
 
 mkdir -p $mbr_sub_sub
 
-source $base/venvs/sockeye3/bin/activate
+source $base/venvs/sockeye3-cpu/bin/activate
 
 seeds="1 2"
 corpora="dev test" #  variations
