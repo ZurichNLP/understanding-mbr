@@ -39,7 +39,7 @@ source $venvs/sockeye3-cpu/bin/activate
 MOSES=$base/tools/moses-scripts/scripts
 TOKENIZER=$MOSES/tokenizer
 
-DRY_RUN_TRAIN_SIZE=10000
+DRY_RUN_TRAIN_SIZE=12000
 DRY_RUN_DEVTEST_SIZE=10
 
 DEVTEST_MAXSIZE=10000
