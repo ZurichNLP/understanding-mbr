@@ -7,7 +7,6 @@
 # $num_samples
 # $utility_function
 # $dry_run
-# $mbr_execute_on_generic
 
 # pseudo loop to check if file exists
 
@@ -53,25 +52,6 @@ for unused in useless_loop_var; do
         # concatenate parts
 
         cat $parts_prefix.{1..2} > $output
-
-    elif [[ $mbr_execute_on_generic == "true" ]]; then
-
-        # parallel decoding, assuming 8 physical cores
-
-        for part in {1..8}; do
-
-            python $scripts/mbr_decoding.py \
-                --input $input.$part \
-                --output $parts_prefix.$part \
-                --utility-function $utility_function \
-                --num-samples $num_samples &
-        done
-
-        wait
-
-        # concatenate parts
-
-        cat $parts_prefix.{1..8} > $output
 
     else
         # parallel decoding, assuming 32 physical cores
