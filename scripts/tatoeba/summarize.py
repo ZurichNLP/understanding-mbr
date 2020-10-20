@@ -147,6 +147,25 @@ def read_bleu(filename: str) -> str:
     return parts[2]
 
 
+def read_chrf(filename: str) -> str:
+    """
+    Example content: #chrF2+numchars.6+space.false+version.1.4.14 = 0.47
+
+    :param filename:
+    :return:
+    """
+
+    with open(filename, "r") as infile:
+        line = infile.readline().strip()
+
+        parts = line.split(" ")
+
+    if len(parts) < 3:
+        return "-"
+
+    return parts[2]
+
+
 def read_meteor(filename: str) -> str:
 
     with open(filename, "r") as infile:
@@ -178,6 +197,9 @@ def read_metric_values(metric, filepath):
     if metric == "bleu":
         metric_names = ["BLEU"]
         metric_values = [read_bleu(filepath)]
+    elif metric == "chrf":
+        metric_names = ["CHRF"]
+        metric_values = [read_chrf(filepath)]
     elif metric == "meteor":
         metric_names = ["METEOR"]
         metric_values = [read_meteor(filepath)]
@@ -375,6 +397,7 @@ def main():
                     "SUBNUM_RANGE_RATIO"]
 
     metric_names = ["BLEU",
+                    "CHRF",
                     "METEOR",
                     "SUBNUM_RANGE_BLEU",
                     "SUBNUM_RANGE_TER",
