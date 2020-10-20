@@ -6,12 +6,14 @@
 # $trg
 # $model_name
 # $dry_run
+# $utility_functions
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
 dry_run=$5
+utility_functions=$6
 
 scripts=$base/scripts
 
@@ -40,6 +42,12 @@ else
     num_parts=32
 fi
 
+# measure time
+
+SECONDS=0
+
+#################
+
 for corpus in $corpora; do
 
     # MBR with sampled translations
@@ -60,7 +68,7 @@ for corpus in $corpora; do
 
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            for utility_function in sentence-meteor sentence-meteor-symmetric; do
+            for utility_function in $utility_functions; do
 
                 parts_prefix=$mbr_sub_sub/sample_parts.$seed/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg
 
@@ -92,7 +100,7 @@ for corpus in $corpora; do
 
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            for utility_function in sentence-meteor sentence-meteor-symmetric; do
+            for utility_function in $utility_functions; do
 
                 parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
                 output=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
@@ -104,3 +112,6 @@ for corpus in $corpora; do
     done
 
 done
+
+echo "time taken:"
+echo "$SECONDS seconds"

@@ -11,13 +11,13 @@ scripts=$base/scripts
 # this results in *24* models already
 
 #LANG_PAIRS=(
-#    "dan epo"
+#    "eng mar"
 #    "tur uig"
 #    "deu fin"
 #)
 
 LANG_PAIRS=(
-    "dan epo"
+    "eng mar"
 )
 
 noise_probabilities="0.001 0.005 0.01 0.05 0.075 0.1 0.25 0.5"

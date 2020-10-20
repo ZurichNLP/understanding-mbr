@@ -16,7 +16,6 @@ noise_probabilities="0.1 0.3"
 
 dry_run="true"
 
-
 for preprocess_copy_noise_probability in $noise_probabilities; do
 
     model_name="dry_run_copy_noise.$preprocess_copy_noise_probability"

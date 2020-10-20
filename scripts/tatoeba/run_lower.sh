@@ -28,7 +28,6 @@ for PAIR in "${LANG_PAIRS[@]}"; do
     model_name="no_label_smoothing"
 
     train_additional_args="--label-smoothing 0.0"
-    preprocess_copy_noise_probability="0.0"
 
     . $scripts/tatoeba/run_tatoeba_generic.sh
 

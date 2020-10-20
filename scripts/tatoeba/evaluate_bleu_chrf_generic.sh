@@ -8,6 +8,7 @@
 # $model_name
 # $seeds
 # $corpora
+# $utility_functions
 
 scripts=$base/scripts
 
@@ -46,9 +47,15 @@ for corpus in $corpora; do
     for length_penalty_alpha in 0.0 1.0; do
 
         hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
-        output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.bleu
+        output_prefix=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top
+
+        output=$output_prefix.bleu
 
         . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+
+        output=$output_prefix.chrf
+
+        . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
     done
 
@@ -58,9 +65,15 @@ for corpus in $corpora; do
     for seed in $seeds; do
 
         hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
-        output=$evaluations_sub_sub/$corpus.sample.top.$seed.bleu
+        output_prefix=$evaluations_sub_sub/$corpus.sample.top.$seed
+
+        output=$output_prefix.bleu
 
         . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+
+        output=$output_prefix.chrf
+
+        . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
     done
 
@@ -70,12 +83,18 @@ for corpus in $corpora; do
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
         for seed in $seeds; do
 
-            for utility_function in sentence-meteor sentence-meteor-symmetric; do
+            for utility_function in $utility_functions; do
 
                 hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text
-                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.bleu
+                output_prefix=$evaluations_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed
+
+                output=$output_prefix.bleu
 
                 . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+
+                output=$output_prefix.chrf
+
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
             done
         done
@@ -88,12 +107,18 @@ for corpus in $corpora; do
 
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            for utility_function in sentence-meteor sentence-meteor-symmetric; do
+            for utility_function in $utility_functions; do
 
                 hyp=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text
-                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.bleu
+                output_prefix=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples
+
+                output=$output_prefix.bleu
 
                 . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+
+                output=$output_prefix.chrf
+
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
             done
         done
     done
