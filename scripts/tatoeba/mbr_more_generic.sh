@@ -64,8 +64,7 @@ for unused in useless_loop_var; do
                 --input $input.$part \
                 --output $parts_prefix.$part \
                 --utility-function $utility_function \
-                --num-samples $num_samples \
-                --dry-run &
+                --num-samples $num_samples &
         done
 
         wait
