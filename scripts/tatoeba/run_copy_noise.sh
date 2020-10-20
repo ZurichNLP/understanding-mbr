@@ -22,6 +22,9 @@ LANG_PAIRS=(
 
 noise_probabilities="0.001 0.005 0.01 0.05 0.075 0.1 0.25 0.5"
 
+train_additional_args="--label-smoothing 0.0"
+mbr_execute_on_generic="true"
+
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
     src=${PAIR[0]}
@@ -33,7 +36,6 @@ for PAIR in "${LANG_PAIRS[@]}"; do
 
         model_name="copy_noise.$noise_probability"
 
-        train_additional_args="--label-smoothing 0.0"
         preprocess_copy_noise_probability=$noise_probability
 
         . $scripts/tatoeba/run_tatoeba_generic.sh

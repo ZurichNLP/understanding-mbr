@@ -56,7 +56,7 @@ for unused in useless_loop_var; do
 
     elif [[ $mbr_execute_on_generic == "true" ]]; then
 
-        # parallel decoding, assuming 2 physical cores
+        # parallel decoding, assuming 8 physical cores
 
         for part in {1..8}; do
 
