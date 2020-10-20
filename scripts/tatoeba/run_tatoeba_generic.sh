@@ -41,7 +41,7 @@ DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=gener
 
 SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
 SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=8 --time=24:00:00 --mem=32G --partition=generic"
-SLURM_ARGS_HPC="--cpus-per-task=32 --time=48:00:00 --mem=256G --partition=hpc"
+SLURM_ARGS_HPC="--cpus-per-task=32 --time=72:00:00 --mem=256G --partition=hpc"
 SLURM_ARGS_VOLTA_TRAIN="--qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
 SLURM_ARGS_VOLTA_TRANSLATE="--qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
 
