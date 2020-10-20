@@ -27,7 +27,7 @@ for PAIR in "${LANG_PAIRS[@]}"; do
     src=${PAIR[0]}
     trg=${PAIR[1]}
 
-    # with copies in the training data + label smoothing
+    # with copies in the training data + no label smoothing
 
     for noise_probability in $noise_probabilities; do
 
