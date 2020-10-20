@@ -71,7 +71,9 @@ SLURM_LOG_ARGS="-o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$S
 
 mkdir -p $logs_sub_sub
 
-echo "##############################################"
+echo "##############################################" | tee -a $logs_sub_sub/MAIN
+date | tee -a $logs_sub_sub/MAIN
+echo "##############################################" | tee -a $logs_sub_sub/MAIN
 echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
