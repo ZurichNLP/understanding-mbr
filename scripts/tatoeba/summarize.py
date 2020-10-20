@@ -325,9 +325,6 @@ def get_model_names() -> List[str]:
     for noise_probability in noise_probabilities:
         model_names.append("copy_noise." + noise_probability)
 
-    logging.debug("Model names:")
-    logging.debug(model_names)
-
     return model_names
 
 
@@ -342,11 +339,18 @@ def main():
 
     for root, langpairs, _ in walklevel(args.eval_folder, level=0):
 
-        for langpair in langpairs:
+        logging.debug("Language pairs:")
+        logging.debug(langpairs)
+
+        for langpair_index, langpair in enumerate(langpairs):
 
             path_langpair = os.path.join(args.eval_folder, langpair)
 
             model_names = get_model_names()
+
+            if langpair_index == 0:
+                logging.debug("Model names:")
+                logging.debug(model_names)
 
             for model_name in model_names:
                 path_model = os.path.join(path_langpair, model_name)
@@ -390,6 +394,7 @@ def main():
                     "NUM_SAMPLES",
                     "SEED",
                     "BLEU",
+                    "CHRF",
                     "METEOR",
                     "SUBNUM_RANGE_BLEU",
                     "SUBNUM_RANGE_TER",
