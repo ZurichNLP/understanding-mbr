@@ -11,13 +11,7 @@
 # $preprocess_copy_noise_probability
 # $dry_run
 # $utility_functions
-
-DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic"
-
-SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
-SLURM_ARGS_HPC="--cpus-per-task=32 --time=48:00:00 --mem=256G --partition=hpc"
-SLURM_ARGS_VOLTA_TRAIN="--qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
-SLURM_ARGS_VOLTA_TRANSLATE="--qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
+# $mbr_execute_on_generic
 
 # if variables are undefined, set to avoid confusion
 
@@ -35,6 +29,24 @@ fi
 
 if [ -z "$preprocess_copy_noise_probability" ]; then
     preprocess_copy_noise_probability="0.0"
+fi
+
+if [ -z "$mbr_execute_on_generic" ]; then
+    mbr_execute_on_generic="false"
+fi
+
+# SLURM job args
+
+DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic"
+
+SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
+SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=8 --time=24:00:00 --mem=32G --partition=generic"
+SLURM_ARGS_HPC="--cpus-per-task=32 --time=48:00:00 --mem=256G --partition=hpc"
+SLURM_ARGS_VOLTA_TRAIN="--qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
+SLURM_ARGS_VOLTA_TRANSLATE="--qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
+
+if [[ $mbr_execute_on_generic == "true" ]]; then
+  SLURM_ARGS_HPC=$SLURM_ARGS_GENERIC_LARGE
 fi
 
 # if dry run, then all args use generic instances
@@ -139,7 +151,7 @@ id_mbr=$(
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/mbr_generic.sh \
-    $base $src $trg $model_name $dry_run $utility_functions
+    $base $src $trg $model_name $dry_run $utility_functions $mbr_execute_on_generic
 )
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN

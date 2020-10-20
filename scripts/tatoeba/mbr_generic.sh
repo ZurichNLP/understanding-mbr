@@ -7,6 +7,7 @@
 # $model_name
 # $dry_run
 # $utility_functions
+# $mbr_execute_on_generic
 
 base=$1
 src=$2
@@ -14,6 +15,7 @@ trg=$3
 model_name=$4
 dry_run=$5
 utility_functions=$6
+mbr_execute_on_generic=$7
 
 scripts=$base/scripts
 
@@ -38,6 +40,8 @@ corpora="dev test" #  variations
 
 if [[ $dry_run == "true" ]]; then
     num_parts=2
+elif [[ $mbr_execute_on_generic == "true" ]]; then
+    num_parts=8
 else
     num_parts=32
 fi
