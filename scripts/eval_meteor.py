@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 
+import os
 import argparse
 import threading
 import logging
@@ -50,9 +51,13 @@ class ExternalProcessor(object):
         if not quiet:
             logging.debug("Executing %s", self.command)
 
+        env = os.environ.copy()
+        env['LC_ALL'] = "C"
+
         self._process = Popen(
             self.command,
             shell=True,
+            env=env,
             stdin=PIPE,
             stdout=PIPE,
             stderr=PIPE
@@ -78,7 +83,7 @@ class ExternalProcessor(object):
             self._process.stdin.flush()
             result = self._process.stdout.readline()
 
-        return result.decode().strip()
+        return result.decode('utf-8').strip()
 
     def read_error(self):
         """
