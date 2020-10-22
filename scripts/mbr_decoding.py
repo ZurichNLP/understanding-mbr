@@ -7,13 +7,15 @@ import json
 
 import numpy as np
 
-from . import eval_meteor
-
 from scipy import stats
 from typing import Callable, Tuple, List
 from functools import lru_cache
 from collections import Counter
 from sacrebleu import CHRF, BLEU, DEFAULT_TOKENIZER
+
+# local dependency
+
+import eval_meteor
 
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
