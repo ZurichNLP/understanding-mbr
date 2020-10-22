@@ -41,9 +41,8 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
 
 class CachedCHRF(CHRF):
 
-    @staticmethod
     @lru_cache(maxsize=128)
-    def extract_char_ngrams(s: str, n: int) -> Counter:
+    def extract_char_ngrams(self, s: str, n: int) -> Counter:
         """
         Yields counts of character n-grams from string s of order n.
         """
@@ -58,9 +57,8 @@ class CachedCHRF(CHRF):
 
 class CachedBLEU(BLEU):
 
-    @staticmethod
     @lru_cache(maxsize=128)
-    def extract_ngrams(line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
+    def extract_ngrams(self, line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
         """Extracts all the ngrams (min_order <= n <= max_order) from a sequence of tokens.
         :param line: A segment containing a sequence of words.
         :param min_order: Minimum n-gram length (default: 1).
@@ -274,6 +272,10 @@ def main():
         else:
             output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples)
 
+            # always log cache info for dry run
+
+            mbr_decoder.cache_info()
+
         output = output.strip()
         output_handle.write("%f\t%s\n" % (utility, output))
 
@@ -281,7 +283,7 @@ def main():
 
     logging.debug("Last MBR decoder cache info, if scorer is cached:")
 
-    mbr_decoder.cache_info()  #
+    mbr_decoder.cache_info()
 
 
 if __name__ == "__main__":
