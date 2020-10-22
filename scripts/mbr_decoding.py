@@ -120,7 +120,9 @@ class MBR(object):
         :param symmetric:
         """
         self.cached = None
+        self.scorer_class = None
         self.scorer = None
+        self.args = None
 
         self.utility_function_name = utility_function_name
         self.symmetric = symmetric
@@ -138,23 +140,25 @@ class MBR(object):
             else:
                 chrf_beta = 2
 
-            args_chrf = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
+            self.scorer_class = CachedCHRF
+            self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
 
-            self.scorer = CachedCHRF(args_chrf)
+            self.scorer = CachedCHRF(self.args)
             self.cached = True
 
         elif self.utility_function_name == "sentence-bleu":
-            args_bleu = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
+            self.args = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
                                            short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
 
-            self.scorer = CachedBLEU(args_bleu)
+            self.scorer_class = CachedBLEU
+            self.scorer = CachedBLEU(self.args)
             self.cached = True
 
         elif self.utility_function_name == "sentence-ter":
 
-            args_ter = argparse.Namespace(normalized=False, no_punct=False,
+            self.args = argparse.Namespace(normalized=False, no_punct=False,
                                           asian_support=False, case_sensitive=False)
-            self.scorer = TER(args_ter)
+            self.scorer = TER(self.args)
             self.cached = False
 
         else:
@@ -232,7 +236,9 @@ class MBR(object):
         :return:
         """
         if self.cached:
-            logging.debug(self.scorer.cache_clear())
+            self.scorer = self.scorer_class(self.args)
+            logging.debug("Cache info after clearing:")
+            self.scorer.cache_info()
 
 
 def main():
@@ -252,19 +258,14 @@ def main():
         symmetric_utility = False
         utility_function_name = args.utility_function
 
-    mbr_decoder = None
+    mbr_decoder = MBR(utility_function_name=utility_function_name,
+                          symmetric=symmetric_utility)
 
     for line_index, line in enumerate(input_handle):
 
-        # try to garbage collect actively to delete cache
+        # new scorer cache for each set of samples, for caching
 
-        if mbr_decoder is not None:
-            mbr_decoder.cache_clear()
-
-        # new MBR object for each set of samples, for caching
-
-        mbr_decoder = MBR(utility_function_name=utility_function_name,
-                          symmetric=symmetric_utility)
+        mbr_decoder.cache_clear()
 
         jobj = json.loads(line)
         samples = jobj["translations"]
@@ -292,11 +293,11 @@ def main():
         output = output.strip()
         output_handle.write("%f\t%s\n" % (utility, output))
 
-    # log contents of last cache
+    # log contents of last cache if not dry run
 
-    logging.debug("Last MBR decoder cache info, if scorer is cached:")
-
-    mbr_decoder.cache_info()
+    if not args.dry_run:
+        logging.debug("Last MBR decoder cache info, if scorer is cached:")
+        mbr_decoder.cache_info()
 
 
 if __name__ == "__main__":
