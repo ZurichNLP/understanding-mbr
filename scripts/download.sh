@@ -69,9 +69,7 @@ git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
 
 (cd $tools/sacrebleu && pip install --upgrade .)
 
-pip install nltk
-
-pip install scipy
+pip install nltk scipy methodtools
 
 # meteor dependencies
 

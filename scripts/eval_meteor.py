@@ -6,6 +6,7 @@ import logging
 import numpy
 
 from subprocess import Popen, PIPE
+from typing import List
 
 from sacrebleu.tokenizers.tokenizer_13a import Tokenizer13a
 
@@ -90,6 +91,13 @@ class ExternalProcessor(object):
         return [e.decode().strip() for e in error_lines]
 
 
+class MeteorResult:
+
+    def __init__(self,
+                 score: float):
+        self.score = score
+
+
 class MeteorScorer(object):
 
     def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH, quiet: bool = True) -> None:
@@ -154,6 +162,17 @@ class MeteorScorer(object):
             raise
 
         return score
+
+    def sentence_score(self, hyp: str, refs: List[str]) -> MeteorResult:
+        """
+        Wrap score method for MBR decoding, same interface as sacrebleu methods.
+
+        :param hyp:
+        :param refs:
+        :return:
+        """
+        ref = refs[0]
+        return MeteorResult(self.score(hyp, ref))
 
 
 def sentence_meteor(hyp: str, ref: str) -> float:

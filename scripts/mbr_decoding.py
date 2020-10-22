@@ -1,6 +1,5 @@
 #! /usr/bin/python3
 
-import sacrebleu
 import argparse
 import logging
 import json
@@ -8,10 +7,10 @@ import json
 import numpy as np
 
 from scipy import stats
-from typing import Callable, Tuple, List
-from functools import lru_cache
+from typing import Tuple, List, Union
+from methodtools import lru_cache
 from collections import Counter
-from sacrebleu import CHRF, BLEU, DEFAULT_TOKENIZER
+from sacrebleu import CHRF, BLEU, TER, DEFAULT_TOKENIZER
 
 # local dependency
 
@@ -85,18 +84,7 @@ class CachedBLEU(BLEU):
         return self.extract_ngrams.cache_clear()
 
 
-# variables need to be instantiated globally because of a limitation of METEOR external java processes
-
-ARGS_CHRF = argparse.Namespace(chrf_order=6, chrf_beta=2, chrf_whitespace=True, short=False)
-ARGS_CHRF_BALANCED = argparse.Namespace(chrf_order=6, chrf_beta=1, chrf_whitespace=True, short=False)
-
-ARGS_BLEU = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
-                               short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
-
-SCORER_CHRF = CachedCHRF(ARGS_CHRF)
-SCORER_CHRF_BALANCED = CachedCHRF(ARGS_CHRF_BALANCED)
-
-SCORER_BLEU = CachedBLEU(ARGS_BLEU)
+# variable needs to be instantiated globally because of a limitation of METEOR external java processes
 
 SCORER_METEOR = eval_meteor.MeteorScorer()
 
@@ -123,143 +111,122 @@ def parse_args():
     return args
 
 
-def wrap_symmetric(utility_function: Callable,
-                   hyp: str,
-                   ref: str) -> np.ndarray:
-    """
+class MBR(object):
 
-    :param utility_function:
-    :param hyp:
-    :param ref:
-    :return:
-    """
-    forward = utility_function(hyp, ref)
-    backward = utility_function(ref, hyp)
+    def __init__(self,
+                 utility_function_name: str,
+                 symmetric: bool = False) -> None:
+        """
 
-    return stats.hmean([forward, backward])
+        :param utility_function_name:
+        :param symmetric:
+        """
+        self.cached = None
+        self.scorer = None
 
+        self.utility_function_name = utility_function_name
+        self.symmetric = symmetric
 
-def compute_meteor(hyp: str, ref: str) -> float:
-    """
+        self.create_scorer()
 
-    :param hyp:
-    :param ref:
-    :return:
-    """
-    return SCORER_METEOR.score(ref, hyp)
+    def create_scorer(self) -> None:
+        """
 
-
-def compute_ter(hyp: str, ref: str) -> float:
-    """
-
-    :param hyp:
-    :param ref:
-    :return:
-    """
-
-    return sacrebleu.sentence_ter(hyp, [ref]).score
-
-
-def compute_bleu(hyp: str, ref: str) -> float:
-    """
-
-    :param hyp:
-    :param ref:
-    :return:
-    """
-
-    return SCORER_BLEU.sentence_score(hyp, [ref]).score
-
-
-def compute_chrf(hyp: str,
-                 ref: str) -> float:
-    """
-
-    :param hyp:
-    :param ref:
-    :return:
-    """
-
-    return SCORER_CHRF.sentence_score(hyp, [ref]).score
-
-
-def compute_chrf_balanced(hyp: str,
-                          ref: str) -> float:
-    """
-
-    :param hyp:
-    :param ref:
-    :return:
-    """
-
-    return SCORER_CHRF_BALANCED.sentence_score(hyp, [ref]).score
-
-
-UTILITY_LOOKUP = {UTILITY_SENTENCE_BLEU: compute_bleu,
-                  UTILITY_SENTENCE_METEOR: compute_meteor,
-                  UTILITY_SENTENCE_TER: compute_ter,
-                  UTILITY_SENTENCE_CHRF: compute_chrf,
-                  UTILITY_SENTENCE_CHRF_BALANCED: compute_chrf_balanced}
-
-
-CACHED_SCORER_LOOKUP = {UTILITY_SENTENCE_BLEU: SCORER_BLEU,
-                        UTILITY_SENTENCE_CHRF: SCORER_CHRF,
-                        UTILITY_SENTENCE_CHRF_BALANCED: SCORER_CHRF_BALANCED}
-
-
-def get_maximum_utility_sample(samples: List[str],
-                               utility_function: Callable,
-                               symmetric: bool = False) -> Tuple[str, float]:
-    """
-
-    :param samples: Sampled target translations for one single source input sentence
-    :param utility_function: Function to compare one sample to all other samples
-    :param symmetric: Compute utility function in both directions hyp<->ref
-    :return:
-    """
-
-    average_utilities = []
-
-    for sample in samples:
-
-        utilities = []
-
-        for pseudo_reference in samples:
-            if symmetric:
-                utility = wrap_symmetric(utility_function, sample, pseudo_reference)
+        :return:
+        """
+        if "chrf" in self.utility_function_name:
+            if self.utility_function_name.endswith("balanced"):
+                chrf_beta = 1
             else:
-                utility = utility_function(sample, pseudo_reference)
-            utilities.append(utility)
+                chrf_beta = 2
 
-        if len(utilities) == 0:
-            average_utility = 0.0
+            args_chrf = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
+
+            self.scorer = CachedCHRF(args_chrf)
+            self.cached = True
+
+        elif self.utility_function_name == "sentence-bleu":
+            args_bleu = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
+                                           short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
+
+            self.scorer = CachedBLEU(args_bleu)
+            self.cached = True
+
+        elif self.utility_function_name == "sentence-ter":
+
+            args_ter = argparse.Namespace(normalized=False, no_punct=False,
+                                          asian_support=False, case_sensitive=False)
+            self.scorer = TER(args_ter)
+            self.cached = False
+
         else:
-            average_utility = np.mean(utilities)
+            self.scorer = SCORER_METEOR
+            self.cached = False
 
-        average_utilities.append(average_utility)
+    def score(self, hyp: str, ref: str) -> Union[float, np.ndarray]:
+        """
+        Computes a single score between two strings.
 
-    maximum_utility_index = int(np.argmax(average_utilities))
+        :param hyp:
+        :param ref:
+        :return:
+        """
+        if self.symmetric:
+            return self.score_symmetric(hyp, ref)
 
-    return samples[maximum_utility_index], np.max(average_utilities)
+        return self.scorer.sentence_score(hyp, [ref]).score
 
+    def score_symmetric(self, hyp: str, ref: str) -> np.ndarray:
+        """
 
-def empty_cache(utility_function_name: str,
-                log_before_emptying: bool = False) -> None:
-    """
+        :param hyp:
+        :param ref:
+        :return:
+        """
+        forward = self.score(hyp, ref)
+        backward = self.score(ref, hyp)
 
-    :param utility_function_name:
-    :param log_before_emptying:
-    :return:
-    """
-    if utility_function_name in CACHED_SCORER_LOOKUP.keys():
+        # harmonic mean of forward and backward values
 
-        scorer = CACHED_SCORER_LOOKUP[utility_function_name]
+        return stats.hmean([forward, backward])
 
-        if log_before_emptying:
-            logging.debug("Scorer cache info:")
-            logging.debug(scorer.cache_info())
+    def get_maximum_utility_sample(self,
+                                   samples: List[str]) -> Tuple[str, float]:
+        """
 
-        scorer.cache_clear()
+        :param samples: Sampled target translations for one single source input sentence
+
+        :return:
+        """
+
+        average_utilities = []
+
+        for sample in samples:
+
+            utilities = []
+
+            for pseudo_reference in samples:
+                utility = self.score(sample, pseudo_reference)
+                utilities.append(utility)
+
+            if len(utilities) == 0:
+                average_utility = 0.0
+            else:
+                average_utility = np.mean(utilities)
+
+            average_utilities.append(average_utility)
+
+        maximum_utility_index = int(np.argmax(average_utilities))
+
+        return samples[maximum_utility_index], np.max(average_utilities)
+
+    def cache_info(self) -> None:
+        """
+
+        :return:
+        """
+        if self.cached:
+            logging.debug(self.scorer.cache_info())
 
 
 def main():
@@ -279,9 +246,15 @@ def main():
         symmetric_utility = False
         utility_function_name = args.utility_function
 
-    utility_function = UTILITY_LOOKUP[utility_function_name]
+    mbr_decoder = None
 
     for line_index, line in enumerate(input_handle):
+
+        # new MBR object for each set of samples, for caching
+
+        mbr_decoder = MBR(utility_function_name=utility_function_name,
+                          symmetric=symmetric_utility)
+
         jobj = json.loads(line)
         samples = jobj["translations"]
 
@@ -299,16 +272,16 @@ def main():
         if args.dry_run and line_index > 0:
             output, utility = samples[0], 0.0
         else:
-            output, utility = get_maximum_utility_sample(samples=samples,
-                                                         utility_function=utility_function,
-                                                         symmetric=symmetric_utility)
-
-        # after each set of samples, empty cache, log if dry run
-        empty_cache(utility_function_name=utility_function_name,
-                    log_before_emptying=args.dry_run)
+            output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples)
 
         output = output.strip()
         output_handle.write("%f\t%s\n" % (utility, output))
+
+    # log contents of last cache
+
+    logging.debug("Last MBR decoder cache info, if scorer is cached:")
+
+    mbr_decoder.cache_info()  #
 
 
 if __name__ == "__main__":
