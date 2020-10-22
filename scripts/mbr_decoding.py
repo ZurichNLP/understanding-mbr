@@ -41,11 +41,6 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_CHRF_SYMMETRIC]
 
 
-# variable needs to be instantiated globally because of a limitation of METEOR external java processes
-
-SCORER_METEOR = eval_meteor.MeteorScorer()
-
-
 def parse_args():
     parser = argparse.ArgumentParser()
 
@@ -118,7 +113,7 @@ class MBR(object):
             self.cached = False
 
         else:
-            self.scorer = SCORER_METEOR
+            self.scorer = eval_meteor.MeteorScorer()
             self.cached = False
 
     def score_single(self, hyp: str, ref: str) -> float:

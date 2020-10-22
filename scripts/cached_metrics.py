@@ -7,8 +7,10 @@ from itertools import zip_longest
 from typing import List, Iterable, Union
 
 
+# these values should be changed if MBR is performed with more or less than 100 samples
+
 LRU_CACHE_SIZE_CHRF = 600
-LRU_CACHE_SIZE_BLEU = 200
+LRU_CACHE_SIZE_BLEU = 100
 
 
 class CachedCHRF(CHRF):
