@@ -176,7 +176,7 @@ echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee
 id_lengths=$(
     $scripts/sbatch_bare.sh \
     $SLURM_ARGS_GENERIC \
-    --dependency=afterok:$id_mbr \
+    --dependency=afterok:$id_evaluate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/lengths_generic.sh \
     $base $src $trg $model_name $utility_functions
