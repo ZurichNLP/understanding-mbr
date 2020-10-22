@@ -8,13 +8,12 @@ import numpy as np
 
 from scipy import stats
 from typing import Tuple, List, Union
-from methodtools import lru_cache
-from collections import Counter
-from sacrebleu import CHRF, BLEU, TER, DEFAULT_TOKENIZER
+from sacrebleu import TER, DEFAULT_TOKENIZER
 
-# local dependency
+# local dependencies
 
 import eval_meteor
+import cached_metrics
 
 
 LRU_CACHE_SIZE_CHRF = 600
@@ -40,50 +39,6 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_METEOR_SYMMETRIC,
                      UTILITY_SENTENCE_TER_SYMMETRIC,
                      UTILITY_SENTENCE_CHRF_SYMMETRIC]
-
-
-class CachedCHRF(CHRF):
-
-    @lru_cache(maxsize=LRU_CACHE_SIZE_CHRF)
-    def extract_char_ngrams(self, s: str, n: int) -> Counter:
-        """
-        Yields counts of character n-grams from string s of order n.
-        """
-        return Counter([s[i:i + n] for i in range(len(s) - n + 1)])
-
-    def cache_info(self) -> str:
-        return self.extract_char_ngrams.cache_info()
-
-    def cache_clear(self) -> None:
-        self.extract_char_ngrams.cache_clear()
-
-
-class CachedBLEU(BLEU):
-
-    @lru_cache(maxsize=LRU_CACHE_SIZE_BLEU)
-    @staticmethod
-    def extract_ngrams(line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
-        """Extracts all the ngrams (min_order <= n <= max_order) from a sequence of tokens.
-        :param line: A segment containing a sequence of words.
-        :param min_order: Minimum n-gram length (default: 1).
-        :param max_order: Maximum n-gram length (default: NGRAM_ORDER).
-        :return: a dictionary containing ngrams and counts
-        """
-
-        ngrams = Counter()  # type: Counter
-        tokens = line.split()
-        for n in range(min_order, max_order + 1):
-            for i in range(0, len(tokens) - n + 1):
-                ngram = ' '.join(tokens[i: i + n])
-                ngrams[ngram] += 1
-
-        return ngrams
-
-    def cache_info(self) -> str:
-        return CachedBLEU.extract_ngrams.cache_info()
-
-    def cache_clear(self) -> None:
-        CachedBLEU.extract_ngrams.cache_clear()
 
 
 # variable needs to be instantiated globally because of a limitation of METEOR external java processes
@@ -124,7 +79,6 @@ class MBR(object):
         :param symmetric:
         """
         self.cached = None
-        self.scorer_class = None
         self.scorer = None
         self.args = None
 
@@ -144,18 +98,16 @@ class MBR(object):
             else:
                 chrf_beta = 2
 
-            self.scorer_class = CachedCHRF
             self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
 
-            self.scorer = CachedCHRF(self.args)
+            self.scorer = cached_metrics.CachedCHRF(self.args)
             self.cached = True
 
         elif self.utility_function_name == "sentence-bleu":
             self.args = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
                                            short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
 
-            self.scorer_class = CachedBLEU
-            self.scorer = CachedBLEU(self.args)
+            self.scorer = cached_metrics.CachedBLEU(self.args)
             self.cached = True
 
         elif self.utility_function_name == "sentence-ter":
