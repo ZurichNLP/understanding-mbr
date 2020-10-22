@@ -48,11 +48,11 @@ class CachedCHRF(CHRF):
         """
         return Counter([s[i:i + n] for i in range(len(s) - n + 1)])
 
-    def cache_info(self):
+    def cache_info(self) -> str:
         return self.extract_char_ngrams.cache_info()
 
-    def cache_clear(self):
-        return self.extract_char_ngrams.cache_clear()
+    def cache_clear(self) -> None:
+        self.extract_char_ngrams.cache_clear()
 
 
 class CachedBLEU(BLEU):
@@ -75,11 +75,11 @@ class CachedBLEU(BLEU):
 
         return ngrams
 
-    def cache_info(self):
+    def cache_info(self) -> str:
         return self.extract_ngrams.cache_info()
 
-    def cache_clear(self):
-        return self.extract_ngrams.cache_clear()
+    def cache_clear(self) -> None:
+        self.extract_ngrams.cache_clear()
 
 
 # variable needs to be instantiated globally because of a limitation of METEOR external java processes
