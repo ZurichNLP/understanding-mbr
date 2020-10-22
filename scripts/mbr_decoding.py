@@ -53,6 +53,9 @@ class CachedCHRF(CHRF):
     def cache_info(self):
         return self.extract_char_ngrams.cache_info()
 
+    def cache_clear(self):
+        return self.extract_char_ngrams.cache_clear()
+
 
 class CachedBLEU(BLEU):
 
@@ -77,6 +80,9 @@ class CachedBLEU(BLEU):
 
     def cache_info(self):
         return self.extract_ngrams.cache_info()
+
+    def cache_clear(self):
+        return self.extract_ngrams.cache_clear()
 
 
 # variables need to be instantiated globally because of a limitation of METEOR external java processes
@@ -237,16 +243,23 @@ def get_maximum_utility_sample(samples: List[str],
     return samples[maximum_utility_index], np.max(average_utilities)
 
 
-def log_cache_usage(utility_function_name: str) -> None:
+def empty_cache(utility_function_name: str,
+                log_before_emptying: bool = False) -> None:
     """
 
     :param utility_function_name:
+    :param log_before_emptying:
     :return:
     """
-    scorer = CACHED_SCORER_LOOKUP[utility_function_name]
+    if utility_function_name in CACHED_SCORER_LOOKUP.keys():
 
-    logging.debug("Scorer cache info:")
-    logging.debug(scorer.cache_info())
+        scorer = CACHED_SCORER_LOOKUP[utility_function_name]
+
+        if log_before_emptying:
+            logging.debug("Scorer cache info:")
+            logging.debug(scorer.cache_info())
+
+        scorer.cache_clear()
 
 
 def main():
@@ -290,11 +303,12 @@ def main():
                                                          utility_function=utility_function,
                                                          symmetric=symmetric_utility)
 
+        # after each set of samples, empty cache, log if dry run
+        empty_cache(utility_function_name=utility_function_name,
+                    log_before_emptying=args.dry_run)
+
         output = output.strip()
         output_handle.write("%f\t%s\n" % (utility, output))
-
-    if utility_function_name in CACHED_SCORER_LOOKUP.keys():
-        log_cache_usage(utility_function_name)
 
 
 if __name__ == "__main__":
