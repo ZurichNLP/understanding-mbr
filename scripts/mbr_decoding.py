@@ -17,7 +17,8 @@ from sacrebleu import CHRF, BLEU, TER, DEFAULT_TOKENIZER
 import eval_meteor
 
 
-LRU_CACHE_SIZE = 600
+LRU_CACHE_SIZE_CHRF = 600
+LRU_CACHE_SIZE_BLEU = 200
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
@@ -43,7 +44,7 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
 
 class CachedCHRF(CHRF):
 
-    @lru_cache(maxsize=LRU_CACHE_SIZE)
+    @lru_cache(maxsize=LRU_CACHE_SIZE_CHRF)
     def extract_char_ngrams(self, s: str, n: int) -> Counter:
         """
         Yields counts of character n-grams from string s of order n.
@@ -59,7 +60,7 @@ class CachedCHRF(CHRF):
 
 class CachedBLEU(BLEU):
 
-    @lru_cache(maxsize=LRU_CACHE_SIZE)
+    @lru_cache(maxsize=LRU_CACHE_SIZE_BLEU)
     def extract_ngrams(self, line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
         """Extracts all the ngrams (min_order <= n <= max_order) from a sequence of tokens.
         :param line: A segment containing a sequence of words.
@@ -248,7 +249,7 @@ class MBR(object):
         :return:
         """
         if self.cached:
-            self.scorer = self.scorer.cache_clear()
+            self.scorer.cache_clear()
 
 
 def main():
