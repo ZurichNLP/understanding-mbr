@@ -61,7 +61,8 @@ class CachedCHRF(CHRF):
 class CachedBLEU(BLEU):
 
     @lru_cache(maxsize=LRU_CACHE_SIZE_BLEU)
-    def extract_ngrams(self, line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
+    @staticmethod
+    def extract_ngrams(line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
         """Extracts all the ngrams (min_order <= n <= max_order) from a sequence of tokens.
         :param line: A segment containing a sequence of words.
         :param min_order: Minimum n-gram length (default: 1).
@@ -79,10 +80,10 @@ class CachedBLEU(BLEU):
         return ngrams
 
     def cache_info(self) -> str:
-        return self.extract_ngrams.cache_info()
+        return CachedBLEU.extract_ngrams.cache_info()
 
     def cache_clear(self) -> None:
-        self.extract_ngrams.cache_clear()
+        CachedBLEU.extract_ngrams.cache_clear()
 
 
 # variable needs to be instantiated globally because of a limitation of METEOR external java processes

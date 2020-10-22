@@ -153,7 +153,7 @@ id_mbr=$(
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/mbr_generic.sh \
-    $base $src $trg $model_name $dry_run $utility_functions
+    $base $src $trg $model_name $dry_run "$utility_functions"
 )
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN
@@ -166,7 +166,7 @@ id_evaluate=$(
     --dependency=afterok:$id_mbr \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/evaluate_generic.sh \
-    $base $src $trg $model_name $utility_functions
+    $base $src $trg $model_name "$utility_functions"
 )
 
 echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub_sub/MAIN
@@ -179,7 +179,7 @@ id_lengths=$(
     --dependency=afterok:$id_evaluate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/lengths_generic.sh \
-    $base $src $trg $model_name $utility_functions
+    $base $src $trg $model_name "$utility_functions"
 )
 
 echo "  id_lengths: $id_lengths | $logs_sub_sub/slurm-$id_lengths.out"  | tee -a $logs_sub_sub/MAIN
