@@ -20,21 +20,19 @@ model_name="dry_run"
 
 sub_folders="data shared_models prepared models translations samples mbr lengths evaluations"
 
-echo "WARNING: About to delete the following folders related to $src-$trg/$model_name:"
+echo "Could delete the following folders related to $src-$trg/$model_name:"
 
 for sub_folder in $sub_folders; do
   echo "$base/$sub_folder/$src-$trg/$model_name"
 done
 
-read -p "Are you sure? (y/n)" -n 1 -r
+read -p "Delete? (y/n) " -n 1 -r
 echo    # (optional) move to a new line
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    exit 0
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    for sub_folder in $sub_folders; do
+      rm -r $base/$sub_folder/$src-$trg/$model_name
+    done
 fi
-
-for sub_folder in $sub_folders; do
-  rm -r $base/$sub_folder/$src-$trg/$model_name
-done
 
 
 train_additional_args=""

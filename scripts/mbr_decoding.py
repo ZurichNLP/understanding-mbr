@@ -226,6 +226,14 @@ class MBR(object):
         if self.cached:
             logging.debug(self.scorer.cache_info())
 
+    def cache_clear(self) -> None:
+        """
+
+        :return:
+        """
+        if self.cached:
+            logging.debug(self.scorer.cache_clear())
+
 
 def main():
 
@@ -247,6 +255,10 @@ def main():
     mbr_decoder = None
 
     for line_index, line in enumerate(input_handle):
+
+        # try to garbage collect actively to delete cache
+
+        mbr_decoder.cache_clear()
 
         # new MBR object for each set of samples, for caching
 
