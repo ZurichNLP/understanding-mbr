@@ -268,7 +268,7 @@ def main():
 
     utility_function = UTILITY_LOOKUP[utility_function_name]
 
-    for line in input_handle:
+    for line_index, line in enumerate(input_handle):
         jobj = json.loads(line)
         samples = jobj["translations"]
 
@@ -278,9 +278,12 @@ def main():
                                                      "fewer translations than --num-samples!"
 
         # remove samples if they are the empty string or whitespace-only
+
         samples = [sample for sample in samples if sample.strip() != ""]
 
-        if args.dry_run:
+        # in dry run mode, do actual computation for the first example, then toy numbers
+
+        if args.dry_run and line_index > 0:
             output, utility = samples[0], 0.0
         else:
             output, utility = get_maximum_utility_sample(samples=samples,
