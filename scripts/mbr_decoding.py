@@ -17,6 +17,8 @@ from sacrebleu import CHRF, BLEU, TER, DEFAULT_TOKENIZER
 import eval_meteor
 
 
+LRU_CACHE_SIZE = 600
+
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
 UTILITY_SENTENCE_TER = "sentence-ter"
@@ -41,7 +43,7 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
 
 class CachedCHRF(CHRF):
 
-    @lru_cache(maxsize=128)
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def extract_char_ngrams(self, s: str, n: int) -> Counter:
         """
         Yields counts of character n-grams from string s of order n.
@@ -57,7 +59,7 @@ class CachedCHRF(CHRF):
 
 class CachedBLEU(BLEU):
 
-    @lru_cache(maxsize=128)
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def extract_ngrams(self, line, min_order=1, max_order=BLEU.NGRAM_ORDER) -> Counter:
         """Extracts all the ngrams (min_order <= n <= max_order) from a sequence of tokens.
         :param line: A segment containing a sequence of words.
@@ -230,7 +232,7 @@ class MBR(object):
         if self.cached:
             logging.debug(self.scorer.cache_info())
 
-    def cache_clear(self) -> None:
+    def replace_scorer(self) -> None:
         """
 
         :return:
@@ -239,6 +241,14 @@ class MBR(object):
             self.scorer = self.scorer_class(self.args)
             logging.debug("Cache info after clearing:")
             self.scorer.cache_info()
+
+    def cache_clear(self) -> None:
+        """
+
+        :return:
+        """
+        if self.cached:
+            self.scorer = self.scorer.cache_clear()
 
 
 def main():
@@ -263,7 +273,7 @@ def main():
 
     for line_index, line in enumerate(input_handle):
 
-        # new scorer cache for each set of samples, for caching
+        # new scorer cache for each set of samples
 
         mbr_decoder.cache_clear()
 
