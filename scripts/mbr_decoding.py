@@ -258,7 +258,8 @@ def main():
 
         # try to garbage collect actively to delete cache
 
-        mbr_decoder.cache_clear()
+        if mbr_decoder is not None:
+            mbr_decoder.cache_clear()
 
         # new MBR object for each set of samples, for caching
 
