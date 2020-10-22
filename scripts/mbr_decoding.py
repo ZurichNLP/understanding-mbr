@@ -160,7 +160,7 @@ class MBR(object):
         elif self.utility_function_name == "sentence-ter":
 
             self.args = argparse.Namespace(normalized=False, no_punct=False,
-                                          asian_support=False, case_sensitive=False)
+                                           asian_support=False, case_sensitive=False)
             self.scorer = TER(self.args)
             self.cached = False
 
@@ -233,16 +233,6 @@ class MBR(object):
         if self.cached:
             logging.debug(self.scorer.cache_info())
 
-    def replace_scorer(self) -> None:
-        """
-
-        :return:
-        """
-        if self.cached:
-            self.scorer = self.scorer_class(self.args)
-            logging.debug("Cache info after clearing:")
-            self.scorer.cache_info()
-
     def cache_clear(self) -> None:
         """
 
@@ -270,7 +260,7 @@ def main():
         utility_function_name = args.utility_function
 
     mbr_decoder = MBR(utility_function_name=utility_function_name,
-                          symmetric=symmetric_utility)
+                      symmetric=symmetric_utility)
 
     for line_index, line in enumerate(input_handle):
 

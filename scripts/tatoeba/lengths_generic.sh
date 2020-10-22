@@ -17,7 +17,7 @@ utility_functions=$5
 scripts=$base/scripts
 
 seeds="1 2"
-corpora="dev test"
+corpora="test" # dev
 
 source $base/venvs/sockeye3-cpu/bin/activate
 
@@ -45,7 +45,13 @@ mkdir -p $lengths_sub_sub
 
 # compute lengths of training data
 
-input=$data_sub_sub/train.clean.trg
+# first tokenize final training data
+
+input_untokenized=$data_sub_sub/train.clean.trg
+input=$data_sub_sub/train.clean.trg.tok
+
+cat $input_untokenized | python $scripts/tokenize_v13a.py > $input
+
 output=$lengths_sub_sub/train.length
 
 . $scripts/tatoeba/lengths_more_generic.sh
@@ -58,7 +64,7 @@ for corpus in $corpora; do
 
     for length_penalty_alpha in 0.0 1.0; do
 
-        input=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
+        input=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg.tok
         output=$lengths_sub_sub/$corpus.beam.$length_penalty_alpha.top.length
 
         . $scripts/tatoeba/lengths_more_generic.sh
@@ -70,7 +76,7 @@ for corpus in $corpora; do
 
     for seed in $seeds; do
 
-        input=$samples_sub_sub/$corpus.sample.top.$seed.trg
+        input=$samples_sub_sub/$corpus.sample.top.$seed.trg.tok
         output=$lengths_sub_sub/$corpus.sample.top.$seed.length
 
         . $scripts/tatoeba/lengths_more_generic.sh
@@ -85,7 +91,7 @@ for corpus in $corpora; do
 
             for utility_function in $utility_functions; do
 
-                input=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text
+                input=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text.tok
                 output=$lengths_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.length
 
                 . $scripts/tatoeba/lengths_more_generic.sh
@@ -103,7 +109,7 @@ for corpus in $corpora; do
 
             for utility_function in $utility_functions; do
 
-                input=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text
+                input=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text.tok
                 output=$lengths_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.length
 
                 . $scripts/tatoeba/lengths_more_generic.sh

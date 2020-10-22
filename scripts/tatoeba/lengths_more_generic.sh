@@ -12,6 +12,8 @@ for unused in pseudo_loop; do
       continue
     fi
 
+    # simple generic tokenization
+
     cat $input | python $base/scripts/compute_lengths.py --output $output
 
 done
