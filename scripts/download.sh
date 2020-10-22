@@ -71,6 +71,8 @@ git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
 
 pip install nltk
 
+pip install scipy
+
 # meteor dependencies
 
 python -c "import nltk;nltk.download('wordnet')"

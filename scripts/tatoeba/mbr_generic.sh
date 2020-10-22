@@ -34,7 +34,7 @@ mkdir -p $mbr_sub_sub
 source $base/venvs/sockeye3-cpu/bin/activate
 
 seeds="1 2"
-corpora="dev test" #  variations
+corpora="test" #  dev variations
 
 if [[ $dry_run == "true" ]]; then
     num_parts=2

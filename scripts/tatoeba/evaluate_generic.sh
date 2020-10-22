@@ -16,7 +16,7 @@ utility_functions=$5
 scripts=$base/scripts
 
 seeds="1 2"
-corpora="dev test" # variations
+corpora="test" #  dev variations
 
 . $scripts/tatoeba/evaluate_bleu_chrf_generic.sh
 

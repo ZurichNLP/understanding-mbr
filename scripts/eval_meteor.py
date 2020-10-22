@@ -4,7 +4,6 @@ import argparse
 import threading
 import logging
 import numpy
-import sys
 
 from subprocess import Popen, PIPE
 

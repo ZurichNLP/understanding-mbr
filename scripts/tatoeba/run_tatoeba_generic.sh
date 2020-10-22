@@ -24,7 +24,7 @@ if [ -z "$train_additional_args" ]; then
 fi
 
 if [ -z "$utility_functions" ]; then
-    utility_functions="sentence-chrf-symmetric"
+    utility_functions="sentence-chrf-balanced"
 fi
 
 if [ -z "$preprocess_copy_noise_probability" ]; then
@@ -40,7 +40,7 @@ fi
 DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic"
 
 SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
-SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=32 --time=24:00:00 --mem=64G --partition=generic"
+SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=32 --time=48:00:00 --mem=64G --partition=generic"
 SLURM_ARGS_HPC="--cpus-per-task=32 --time=72:00:00 --mem=256G --partition=hpc"
 SLURM_ARGS_VOLTA_TRAIN="--qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
 SLURM_ARGS_VOLTA_TRANSLATE="--qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
@@ -170,3 +170,16 @@ id_evaluate=$(
 )
 
 echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub_sub/MAIN
+
+# compute lengths (depends on mbr)
+
+id_lengths=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    --dependency=afterok:$id_mbr \
+    $SLURM_LOG_ARGS \
+    $scripts/tatoeba/lengths_generic.sh \
+    $base $src $trg $model_name $utility_functions
+)
+
+echo "  id_lengths: $id_lengths | $logs_sub_sub/slurm-$id_lengths.out"  | tee -a $logs_sub_sub/MAIN

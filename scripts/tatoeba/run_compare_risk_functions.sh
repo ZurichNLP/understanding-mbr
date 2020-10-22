@@ -15,7 +15,7 @@ LANG_PAIRS=(
     "deu fin"
 )
 
-utility_functions="sentence-bleu sentence-bleu-symmetric sentence-ter sentence-ter-symmetric sentence-chrf sentence-chrf-symmetric sentence-meteor sentence-meteor-symmetric"
+utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
 
 # compare risk functions + no label smoothing
 
@@ -24,6 +24,7 @@ utility_functions="sentence-bleu sentence-bleu-symmetric sentence-ter sentence-t
 model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
+mbr_execute_on_generic="true"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
