@@ -169,7 +169,7 @@ class MBR(object):
             self.scorer = SCORER_METEOR
             self.cached = False
 
-    def score(self, hyp: str, ref: str) -> Union[float, np.ndarray]:
+    def score_single(self, hyp: str, ref: str) -> float:
         """
         Computes a single score between two strings.
 
@@ -177,10 +177,14 @@ class MBR(object):
         :param ref:
         :return:
         """
+        return self.scorer.sentence_score(hyp, [ref]).score
+
+    def score(self, hyp: str, ref: str) -> Union[float, np.ndarray]:
+
         if self.symmetric:
             return self.score_symmetric(hyp, ref)
 
-        return self.scorer.sentence_score(hyp, [ref]).score
+        return self.score_single(hyp, ref)
 
     def score_symmetric(self, hyp: str, ref: str) -> np.ndarray:
         """
@@ -189,8 +193,8 @@ class MBR(object):
         :param ref:
         :return:
         """
-        forward = self.score(hyp, ref)
-        backward = self.score(ref, hyp)
+        forward = self.score_single(hyp, ref)
+        backward = self.score_single(ref, hyp)
 
         # harmonic mean of forward and backward values
 
