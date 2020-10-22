@@ -34,6 +34,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 fi
 
+utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
 
 train_additional_args=""
 preprocess_copy_noise_probability="0.0"
