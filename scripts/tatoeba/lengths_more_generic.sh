@@ -12,6 +12,6 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    cat $input | $base/scripts/compute_lengths.py --output $output
+    cat $input | python $base/scripts/compute_lengths.py --output $output
 
 done
