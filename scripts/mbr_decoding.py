@@ -239,8 +239,9 @@ def main():
         else:
             output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples)
 
-            # always log cache info for dry run
+        # always log cache info for dry run
 
+        if args.dry_run:
             mbr_decoder.cache_info()
 
         output = output.strip()
