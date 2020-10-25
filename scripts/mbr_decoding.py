@@ -9,6 +9,7 @@ import numpy as np
 from scipy import stats
 from typing import Tuple, List, Union
 from sacrebleu import TER, DEFAULT_TOKENIZER
+from methodtools import lru_cache
 
 # local dependencies
 
@@ -16,8 +17,7 @@ import eval_meteor
 import cached_metrics
 
 
-LRU_CACHE_SIZE_CHRF = 600
-LRU_CACHE_SIZE_BLEU = 200
+LRU_CACHE_SIZE = 100
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
@@ -73,7 +73,7 @@ class MBR(object):
         :param utility_function_name:
         :param symmetric:
         """
-        self.cached = None
+        self.cached_scorer = None
         self.scorer = None
         self.args = None
 
@@ -96,29 +96,32 @@ class MBR(object):
             self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
 
             self.scorer = cached_metrics.CachedCHRF(self.args)
-            self.cached = True
+            self.cached_scorer = True
 
         elif self.utility_function_name == "sentence-bleu":
             self.args = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
                                            short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
 
             self.scorer = cached_metrics.CachedBLEU(self.args)
-            self.cached = True
+            self.cached_scorer = True
 
         elif self.utility_function_name == "sentence-ter":
 
             self.args = argparse.Namespace(normalized=False, no_punct=False,
                                            asian_support=False, case_sensitive=False)
             self.scorer = TER(self.args)
-            self.cached = False
+            self.cached_scorer = False
 
         else:
             self.scorer = eval_meteor.MeteorScorer()
-            self.cached = False
+            self.cached_scorer = False
 
+    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def score_single(self, hyp: str, ref: str) -> float:
         """
         Computes a single score between two strings.
+
+        This LRU cache will only be filled for symmetric risk functions.
 
         :param hyp:
         :param ref:
@@ -182,7 +185,11 @@ class MBR(object):
 
         :return:
         """
-        if self.cached:
+        logging.debug("General cache:")
+        logging.debug(self.score_single.cache_info())
+
+        if self.cached_scorer:
+            logging.debug("Scorer cache:")
             logging.debug(self.scorer.cache_info())
 
     def cache_clear(self) -> None:
@@ -190,8 +197,10 @@ class MBR(object):
 
         :return:
         """
-        if self.cached:
+        if self.cached_scorer:
             self.scorer.cache_clear()
+
+        self.score_single.cache_clear()
 
 
 def main():
@@ -250,7 +259,7 @@ def main():
     # log contents of last cache if not dry run
 
     if not args.dry_run:
-        logging.debug("Last MBR decoder cache info, if scorer is cached:")
+        logging.debug("Last MBR decoder cache info:")
         mbr_decoder.cache_info()
 
 
