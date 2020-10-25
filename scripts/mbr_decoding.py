@@ -9,15 +9,12 @@ import numpy as np
 from scipy import stats
 from typing import Tuple, List, Union
 from sacrebleu import TER, DEFAULT_TOKENIZER
-from methodtools import lru_cache
 
 # local dependencies
 
 import eval_meteor
 import cached_metrics
 
-
-LRU_CACHE_SIZE = 100
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
@@ -116,7 +113,6 @@ class MBR(object):
             self.scorer = eval_meteor.MeteorScorer()
             self.cached_scorer = False
 
-    @lru_cache(maxsize=LRU_CACHE_SIZE)
     def score_single(self, hyp: str, ref: str) -> float:
         """
         Computes a single score between two strings.
@@ -185,9 +181,6 @@ class MBR(object):
 
         :return:
         """
-        logging.debug("General cache:")
-        logging.debug(self.score_single.cache_info())
-
         if self.cached_scorer:
             logging.debug("Scorer cache:")
             logging.debug(self.scorer.cache_info())
@@ -199,8 +192,6 @@ class MBR(object):
         """
         if self.cached_scorer:
             self.scorer.cache_clear()
-
-        self.score_single.cache_clear()
 
 
 def main():
