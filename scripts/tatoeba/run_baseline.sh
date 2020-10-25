@@ -16,4 +16,7 @@ train_additional_args="--label-smoothing 0.0"
 
 mbr_execute_on_generic="true"
 
+utility_functions="sentence-meteor-symmetric"
+
+
 . $scripts/tatoeba/run_tatoeba_generic.sh
