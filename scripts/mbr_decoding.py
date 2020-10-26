@@ -250,7 +250,6 @@ def main():
     # log contents of last cache if not dry run
 
     if not args.dry_run:
-        logging.debug("Last MBR decoder cache info:")
         mbr_decoder.cache_info()
 
 

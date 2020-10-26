@@ -24,7 +24,10 @@ utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-
 model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
-mbr_execute_on_generic="true"
+
+# means that mbr can run for 3 days at most
+
+mbr_execute_on_generic="false"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

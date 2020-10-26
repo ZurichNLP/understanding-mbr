@@ -18,6 +18,7 @@ def parse_args():
     parser.add_argument("--model-prefix", type=str, help="Path where model file should be stored.", required=True)
     parser.add_argument("--input", type=str, help="Path to input text (for instance, truecased).", required=True)
     parser.add_argument("--vocab-size", type=int, help="Desired vocabulary size.", required=True)
+    parser.add_argument("--input-sentence-size", type=int, help="Max lines of data to learn model from.", required=True)
     parser.add_argument("--character-coverage", type=float, help="Coverage of all unique characters.", required=True)
 
     args = parser.parse_args()
@@ -41,7 +42,9 @@ def main():
                                    unk_id=UNK_ID,
                                    bos_id=BOS_ID,
                                    eos_id=EOS_ID,
-                                   hard_vocab_limit=False)
+                                   hard_vocab_limit=False,
+                                   input_sentence_size=args.input_sentence_size,
+                                   shuffle_input_sentence=True)
 
 
 if __name__ == '__main__':

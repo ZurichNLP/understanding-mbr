@@ -50,6 +50,8 @@ MEDIUM_TRAINSIZE=500000
 LARGE_TRAINSIZE=1000000
 LARGEST_TRAINSIZE=10000000
 
+SENTENCEPIECE_MAX_LINES=10000000
+
 # measure time
 
 SECONDS=0
@@ -172,7 +174,8 @@ for lang in src trg; do
         --model-prefix $shared_models_sub/$lang.sentencepiece \
         --input $data_sub/train.normalized.$lang \
         --vocab-size $sentencepiece_vocab_size \
-        --character-coverage $character_coverage
+        --character-coverage $character_coverage \
+        --input-sentence-size=$SENTENCEPIECE_MAX_LINES
 
     else
       echo "Sentencepiece model exists: $shared_models_sub/$lang.sentencepiece.model"
