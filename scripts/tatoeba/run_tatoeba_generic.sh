@@ -93,8 +93,10 @@ date | tee -a $logs_sub_sub/MAIN
 echo "##############################################" | tee -a $logs_sub_sub/MAIN
 echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
+echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
+echo "MBR EXECUTE LONGER: $mbr_execute_longer" | tee -a $logs_sub_sub/MAIN
 echo "UTILITY FUNCTIONS: $utility_functions" | tee -a $logs_sub_sub/MAIN
 echo "DRY RUN: $dry_run" | tee -a $logs_sub_sub/MAIN
 
