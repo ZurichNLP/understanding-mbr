@@ -14,8 +14,6 @@ model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
 
-mbr_execute_on_generic="true"
-
 utility_functions="sentence-chrf-balanced"
 
 

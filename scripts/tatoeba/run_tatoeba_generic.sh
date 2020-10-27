@@ -8,10 +8,11 @@
 #
 # optional:
 # $train_additional_args
+# $preprocess_execute_more_mem
 # $preprocess_copy_noise_probability
 # $dry_run
 # $utility_functions
-# $mbr_execute_on_generic
+# $mbr_execute_longer
 
 # if variables are undefined, set to avoid confusion
 
@@ -23,6 +24,10 @@ if [ -z "$train_additional_args" ]; then
     train_additional_args=""
 fi
 
+if [ -z "$preprocess_execute_more_mem" ]; then
+    preprocess_execute_more_mem="false"
+fi
+
 if [ -z "$utility_functions" ]; then
     utility_functions="sentence-chrf-balanced"
 fi
@@ -31,8 +36,8 @@ if [ -z "$preprocess_copy_noise_probability" ]; then
     preprocess_copy_noise_probability="0.0"
 fi
 
-if [ -z "$mbr_execute_on_generic" ]; then
-    mbr_execute_on_generic="false"
+if [ -z "$mbr_execute_longer" ]; then
+    mbr_execute_longer="false"
 fi
 
 # SLURM job args
@@ -40,22 +45,34 @@ fi
 DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic"
 
 SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
+SLURM_ARGS_GENERIC_MEM="--cpus-per-task=2 --time=24:00:00 --mem=32G --partition=generic"
 SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=32 --time=24:00:00 --mem=32G --partition=generic"
-SLURM_ARGS_HPC="--cpus-per-task=32 --time=72:00:00 --mem=32G --partition=generic"
+SLURM_ARGS_GENERIC_LARGE_LONG="--cpus-per-task=32 --time=72:00:00 --mem=32G --partition=generic"
+SLURM_ARGS_HPC="--cpus-per-task=32 --time=72:00:00 --mem=32G --partition=hpc"
 SLURM_ARGS_VOLTA_TRAIN="--qos=vesta --time=72:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
 SLURM_ARGS_VOLTA_TRANSLATE="--qos=vesta --time=12:00:00 --gres gpu:Tesla-V100-32GB:1 --cpus-per-task 1 --mem 16g"
 
-if [[ $mbr_execute_on_generic == "true" ]]; then
-  SLURM_ARGS_HPC=$SLURM_ARGS_GENERIC_LARGE
+if [[ $preprocess_execute_more_mem == "true" ]]; then
+  SLURM_ARGS_PREPROCESS=$SLURM_ARGS_GENERIC_MEM
+else
+  SLURM_ARGS_PREPROCESS=$SLURM_ARGS_GENERIC
+fi
+
+if [[ $mbr_execute_longer == "true" ]]; then
+  SLURM_ARGS_MBR=$SLURM_ARGS_GENERIC_LARGE_LONG
+else
+  SLURM_ARGS_MBR=$SLURM_ARGS_GENERIC_LARGE
 fi
 
 # if dry run, then all args use generic instances
 
 if [[ $dry_run == "true" ]]; then
   SLURM_ARGS_GENERIC=$DRY_RUN_SLURM_ARGS
+  SLURM_ARGS_PREPROCESS=$DRY_RUN_SLURM_ARGS
   SLURM_ARGS_HPC=$DRY_RUN_SLURM_ARGS
   SLURM_ARGS_VOLTA_TRAIN=$DRY_RUN_SLURM_ARGS
   SLURM_ARGS_VOLTA_TRANSLATE=$DRY_RUN_SLURM_ARGS
+  SLURM_ARGS_MBR=$DRY_RUN_SLURM_ARGS
 fi
 
 module load volta cuda/10.2
@@ -97,7 +114,7 @@ echo "  id_download: $id_download | $logs_sub_sub/slurm-$id_download.out" | tee 
 
 id_preprocess=$(
     $scripts/sbatch_bare.sh \
-    $SLURM_ARGS_GENERIC \
+    $SLURM_ARGS_PREPROCESS \
     --dependency=afterok:$id_download \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/preprocess_generic.sh \
@@ -149,7 +166,7 @@ echo "  id_translate: $id_translate | $logs_sub_sub/slurm-$id_translate.out"  | 
 
 id_mbr=$(
     $scripts/sbatch_bare.sh \
-    $SLURM_ARGS_HPC \
+    $SLURM_ARGS_MBR \
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/mbr_generic.sh \

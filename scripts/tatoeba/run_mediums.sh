@@ -25,7 +25,6 @@ model_name="no_label_smoothing"
 # without label smoothing
 
 train_additional_args="--label-smoothing 0.0"
-mbr_execute_on_generic="true"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

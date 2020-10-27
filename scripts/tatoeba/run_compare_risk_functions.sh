@@ -25,9 +25,13 @@ model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
 
+# needs high-memory preprocess instance
+
+preprocess_execute_more_mem="true"
+
 # means that mbr can run for 3 days at most
 
-mbr_execute_on_generic="false"
+mbr_execute_longer="true"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
