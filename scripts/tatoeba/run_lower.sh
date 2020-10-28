@@ -9,13 +9,13 @@ scripts=$base/scripts
 
 LANG_PAIRS=(
     "bel rus"
-#    "deu lat"
-#    "eng ido"
-#    "epo fas"
-#    "fra lat"
-#    "kaz rus"
-#    "lat por"
-#    "tur uig"
+    "deu lat"
+    "eng ido"
+    "epo fas"
+    "fra lat"
+    "kaz rus"
+    "lat por"
+    "tur uig"
 )
 
 model_name="no_label_smoothing"

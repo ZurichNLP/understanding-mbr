@@ -11,8 +11,10 @@ scripts=$base/scripts
 
 LANG_PAIRS=(
     "dan epo"
+    "aze-eng"
     "tur uig"
     "deu fin"
+    "bel rus"
 )
 
 utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
