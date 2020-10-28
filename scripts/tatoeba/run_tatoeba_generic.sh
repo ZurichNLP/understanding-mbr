@@ -202,3 +202,16 @@ id_lengths=$(
 )
 
 echo "  id_lengths: $id_lengths | $logs_sub_sub/slurm-$id_lengths.out"  | tee -a $logs_sub_sub/MAIN
+
+# compute counts (depends on lengths)
+
+id_counts=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    --dependency=afterok:$id_lengths \
+    $SLURM_LOG_ARGS \
+    $scripts/tatoeba/counts_generic.sh \
+    $base $src $trg $model_name "$utility_functions"
+)
+
+echo "  id_counts: $id_counts | $logs_sub_sub/slurm-$id_counts.out"  | tee -a $logs_sub_sub/MAIN
