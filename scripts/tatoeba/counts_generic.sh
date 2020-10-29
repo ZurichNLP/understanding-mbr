@@ -56,6 +56,13 @@ output=$counts_sub_sub/train.count
 
 for corpus in $corpora; do
 
+    # compute counts of reference translations
+
+    input=$data_sub_sub/$corpus.trg.tok
+    output=$counts_sub_sub/$corpus.length
+
+    . $scripts/tatoeba/counts_more_generic.sh
+
     # beam top translations
 
     for length_penalty_alpha in 0.0 1.0; do
