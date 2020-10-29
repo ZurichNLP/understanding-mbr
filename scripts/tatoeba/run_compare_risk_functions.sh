@@ -11,8 +11,7 @@ scripts=$base/scripts
 
 LANG_PAIRS=(
     "dan epo"
-    "aze-eng"
-    "tur uig"
+    "aze eng"
     "deu fin"
     "bel rus"
 )
