@@ -11,9 +11,9 @@ summaries_sub=$summaries/tatoeba
 mkdir -p $summaries_sub
 
 if [[ -d $lengths ]]; then
-    tar -czf $summaries_sub/lengths.tar.gz $lengths
+    (cd $base && tar -czf $summaries_sub/lengths.tar.gz lengths)
 fi
 
 if [[ -d $counts ]]; then
-    tar -czf $summaries_sub/counts.tar.gz $counts
+    (cd $base && tar -czf $summaries_sub/counts.tar.gz counts)
 fi
