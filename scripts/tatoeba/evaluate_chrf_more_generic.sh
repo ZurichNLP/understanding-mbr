@@ -12,7 +12,7 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    cat $hyp | sacrebleu $ref --metrics chrf > $output
+    cat $hyp | sacrebleu $ref --metrics chrf -w 2 > $output
 
     echo "$output"
     cat $output

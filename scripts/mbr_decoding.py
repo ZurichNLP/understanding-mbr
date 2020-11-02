@@ -90,7 +90,7 @@ class MBR(object):
             else:
                 chrf_beta = 2
 
-            self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=True, short=False)
+            self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=False, short=False)
 
             self.scorer = cached_metrics.CachedCHRF(self.args)
             self.cached_scorer = True
