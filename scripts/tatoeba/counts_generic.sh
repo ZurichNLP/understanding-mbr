@@ -59,7 +59,7 @@ for corpus in $corpora; do
     # compute counts of reference translations
 
     input=$data_sub_sub/$corpus.trg.tok
-    output=$counts_sub_sub/$corpus.length
+    output=$counts_sub_sub/$corpus.count
 
     . $scripts/tatoeba/counts_more_generic.sh
 
