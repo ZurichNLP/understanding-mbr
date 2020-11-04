@@ -16,7 +16,7 @@ def parse_args():
 
     parser.add_argument("--src-lang", type=str, help="Source language (ISO 639-2).", required=True)
     parser.add_argument("--trg-lang", type=str, help="Target language (ISO 639-2).", required=True)
-    parser.add_argument("--echo", type=str, help="Echo the test set to STDOUT if there is a match.", required=True)
+    parser.add_argument("--echo", action="store_true", help="Echo the test set to STDOUT if there is a match.", required=False)
 
     args = parser.parse_args()
 
