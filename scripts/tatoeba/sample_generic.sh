@@ -56,7 +56,6 @@ for corpus in $corpora; do
                 echo "$num_lines_input != $num_lines_output"
                 echo "Repeating step."
             fi
-
         fi
 
         # 100 samples, nbest size 100, beam size 100
@@ -85,6 +84,35 @@ for corpus in $corpora; do
         cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | \
             python $scripts/extract_top_translations_from_nbest.py > \
             $samples_sub_sub/$corpus.sample.top.$seed.trg
+
+    done
+
+    # for first seed samples, extract additional single samples from nbest list
+    # HARDCODED: assumes seeds are 1 and 2
+
+    for pos in {3..100}; do
+
+        if [[ -s $samples_sub_sub/$corpus.sample.top.$pos.trg ]]; then
+            echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$pos.trg"
+
+            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.top.$pos.trg | wc -l)
+
+            if [[ $num_lines_input == $num_lines_output ]]; then
+                echo "output exists and number of lines are equal to input:"
+                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.top.$pos.trg"
+                echo "$num_lines_input == $num_lines_output"
+                echo "Skipping."
+                continue
+            else
+                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.top.$pos.trg"
+                echo "$num_lines_input != $num_lines_output"
+                echo "Repeating step."
+            fi
+        fi
+
+        cat $samples_sub_sub/$corpus.sample.nbest.1.trg | \
+            python $scripts/extract_translation_at_index_from_nbest.py --pos $pos > \
+            $samples_sub_sub/$corpus.sample.top.$pos.trg
 
     done
 done

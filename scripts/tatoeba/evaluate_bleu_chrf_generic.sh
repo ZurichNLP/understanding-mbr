@@ -9,6 +9,7 @@
 # $seeds
 # $corpora
 # $utility_functions
+# $sample_positions
 
 scripts=$base/scripts
 
@@ -62,7 +63,7 @@ for corpus in $corpora; do
     # sample top (single sample), different seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in $seeds; do
+    for seed in $sample_positions; do
 
         hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
         output_prefix=$evaluations_sub_sub/$corpus.sample.top.$seed
