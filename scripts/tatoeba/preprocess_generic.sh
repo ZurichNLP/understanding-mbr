@@ -232,7 +232,7 @@ else
   slice_size=$DEVTEST_MAXSIZE
 fi
 
-paste $data_sub/train.clean.src $data_sub/train.clean.trg | cat -n | shuf -n $slice_size > $data_sub/trainslice.pieces.both
+paste $data_sub/train.clean.src $data_sub/train.clean.trg | shuf -n $slice_size > $data_sub/trainslice.pieces.both
 
 cut -f1 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.src
 cut -f2 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.trg
