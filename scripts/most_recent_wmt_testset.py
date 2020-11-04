@@ -16,7 +16,8 @@ def parse_args():
 
     parser.add_argument("--src-lang", type=str, help="Source language (ISO 639-2).", required=True)
     parser.add_argument("--trg-lang", type=str, help="Target language (ISO 639-2).", required=True)
-    parser.add_argument("--echo", action="store_true", help="Echo the test set to STDOUT if there is a match.", required=False)
+    parser.add_argument("--echo", action="store_true", help="Echo the test set to STDOUT if there is a match.",
+                        required=False)
 
     args = parser.parse_args()
 
@@ -58,13 +59,12 @@ def find_most_recent_key(src_query_lang: str, trg_query_lang: str) -> Union[str,
     newest_match = None
 
     for wmt_key in WMT_KEYS:
-        for dataset in sacrebleu.dataset.DATASETS[wmt_key]:
-            for langpair_key in dataset.keys():
-                if "-" in langpair_key:
-                    src_lang, trg_lang = langpair_key.split("-")
+        for langpair_key in sacrebleu.dataset.DATASETS[wmt_key].keys():
+            if "-" in langpair_key:
+                src_lang, trg_lang = langpair_key.split("-")
 
-                    if src_lang == src_query_lang and trg_lang == trg_query_lang:
-                        newest_match = wmt_key
+                if src_lang == src_query_lang and trg_lang == trg_query_lang:
+                    newest_match = wmt_key
 
     return newest_match
 
