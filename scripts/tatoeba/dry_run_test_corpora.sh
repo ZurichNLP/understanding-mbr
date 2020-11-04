@@ -4,6 +4,7 @@ base=/net/cephfs/scratch/mathmu/map-volatility
 scripts=$base/scripts
 
 # German -> French
+# this is a langpair for which a WMT testset is available
 
 src=deu
 trg=fra

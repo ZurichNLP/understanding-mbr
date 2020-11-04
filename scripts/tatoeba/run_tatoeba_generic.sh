@@ -97,7 +97,7 @@ fi
 
 # find out if a WMT testset would be available (does not mean that it is used). Returns "true" if available, "false" if not)
 
-wmt_testset_available=$(python3 $base/scripts/most_recent_wmt_testset.py --src-lang $src --trg-lang $trg)
+wmt_testset_available=$(python3 $base/scripts/most_recent_wmt_testset.py --src-lang $src --trg-lang $trg --quiet)
 
 if [[ $wmt_testset_available == "false" ]]; then
     if [[ $corpora == *"wmt"* ]]; then
