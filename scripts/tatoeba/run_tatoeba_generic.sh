@@ -114,6 +114,7 @@ echo "##############################################" | tee -a $logs_sub_sub/MAI
 echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
 echo "WMT TESTSET AVAILABLE: $wmt_testset_available" | tee -a $logs_sub_sub/MAIN
+echo "TEST CORPORA: $corpora" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN

@@ -15,7 +15,6 @@ LANG_PAIRS=(
     "fra lat"
     "kaz rus"
     "lat por"
-    "tur uig"
 )
 
 model_name="no_label_smoothing"
