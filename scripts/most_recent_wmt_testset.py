@@ -76,8 +76,8 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(args)
 
-    src_query_lang_alpha_2 = convert_alpha2_to_alpha3(args.src_lang)
-    trg_query_lang_alpha_2 = convert_alpha2_to_alpha3(args.trg_lang)
+    src_query_lang_alpha_2 = convert_alpha3_to_alpha2(args.src_lang)
+    trg_query_lang_alpha_2 = convert_alpha3_to_alpha2(args.trg_lang)
 
     most_recent_key = find_most_recent_key(src_query_lang=src_query_lang_alpha_2, trg_query_lang=trg_query_lang_alpha_2)
 
