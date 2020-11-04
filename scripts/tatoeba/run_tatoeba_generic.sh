@@ -13,11 +13,31 @@
 # $dry_run
 # $utility_functions
 # $mbr_execute_longer
+# $corpora
+
+module load volta cuda/10.2
+
+scripts=$base/scripts
+logs=$base/logs
+
+source $base/venvs/sockeye3-cpu/bin/activate
+
+logs_sub=$logs/${src}-${trg}
+logs_sub_sub=$logs_sub/$model_name
+
+SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
+SLURM_LOG_ARGS="-o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN"
+
+mkdir -p $logs_sub_sub
 
 # if variables are undefined, set to avoid confusion
 
 if [ -z "$dry_run" ]; then
     dry_run="false"
+fi
+
+if [ -z "$corpora" ]; then
+    corpora="test"
 fi
 
 if [ -z "$train_additional_args" ]; then
@@ -75,24 +95,25 @@ if [[ $dry_run == "true" ]]; then
   SLURM_ARGS_MBR=$DRY_RUN_SLURM_ARGS
 fi
 
-module load volta cuda/10.2
+# find out if a WMT testset would be available (does not mean that it is used). Returns "true" if available, "false" if not)
 
-scripts=$base/scripts
-logs=$base/logs
+wmt_testset_available=$(python3 $base/scripts/most_recent_wmt_testset.py --src-lang $src --trg-lang $trg)
 
-logs_sub=$logs/${src}-${trg}
-logs_sub_sub=$logs_sub/$model_name
+if [[ $wmt_testset_available == "false" ]]; then
+    if [[ $corpora == *"wmt"* ]]; then
+        echo "Requested corpora include 'wmt', but no WMT testset available for this language pair."
+        exit 1
+    fi
+fi
 
-SLURM_DEFAULT_FILE_PATTERN="slurm-%j.out"
-SLURM_LOG_ARGS="-o $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN -e $logs_sub_sub/$SLURM_DEFAULT_FILE_PATTERN"
-
-mkdir -p $logs_sub_sub
+# log key info
 
 echo "##############################################" | tee -a $logs_sub_sub/MAIN
 date | tee -a $logs_sub_sub/MAIN
 echo "##############################################" | tee -a $logs_sub_sub/MAIN
 echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
+echo "WMT TESTSET AVAILABLE: $wmt_testset_available" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
@@ -107,7 +128,7 @@ id_download=$(
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/download_corpus_generic.sh \
-    $base $src $trg $model_name
+    $base $src $trg $model_name $wmt_testset_available
 )
 
 echo "  id_download: $id_download | $logs_sub_sub/slurm-$id_download.out" | tee -a $logs_sub_sub/MAIN
@@ -120,7 +141,8 @@ id_preprocess=$(
     --dependency=afterok:$id_download \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/preprocess_generic.sh \
-    $base $src $trg $model_name $preprocess_copy_noise_probability $dry_run
+    $base $src $trg $model_name $preprocess_copy_noise_probability \
+    $dry_run $wmt_testset_available
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
@@ -159,7 +181,7 @@ id_translate=$(
     --dependency=afterany:$id_train \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/translate_generic.sh \
-    $base $src $trg $model_name $dry_run
+    $base $src $trg $model_name $dry_run "$corpora"
 )
 
 echo "  id_translate: $id_translate | $logs_sub_sub/slurm-$id_translate.out"  | tee -a $logs_sub_sub/MAIN
@@ -172,7 +194,7 @@ id_mbr=$(
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/mbr_generic.sh \
-    $base $src $trg $model_name $dry_run "$utility_functions"
+    $base $src $trg $model_name $dry_run "$utility_functions" "$corpora"
 )
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN
@@ -185,7 +207,7 @@ id_evaluate=$(
     --dependency=afterok:$id_mbr \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/evaluate_generic.sh \
-    $base $src $trg $model_name "$utility_functions"
+    $base $src $trg $model_name "$utility_functions" "$corpora"
 )
 
 echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub_sub/MAIN
@@ -198,7 +220,7 @@ id_lengths=$(
     --dependency=afterok:$id_evaluate \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/lengths_generic.sh \
-    $base $src $trg $model_name "$utility_functions"
+    $base $src $trg $model_name "$utility_functions" "$corpora"
 )
 
 echo "  id_lengths: $id_lengths | $logs_sub_sub/slurm-$id_lengths.out"  | tee -a $logs_sub_sub/MAIN
@@ -211,7 +233,7 @@ id_counts=$(
     --dependency=afterok:$id_lengths \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/counts_generic.sh \
-    $base $src $trg $model_name "$utility_functions"
+    $base $src $trg $model_name "$utility_functions" "$corpora"
 )
 
 echo "  id_counts: $id_counts | $logs_sub_sub/slurm-$id_counts.out"  | tee -a $logs_sub_sub/MAIN

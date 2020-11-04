@@ -7,6 +7,7 @@
 # $model_name
 # $dry_run
 # $utility_functions
+# $corpora
 
 base=$1
 src=$2
@@ -14,6 +15,7 @@ trg=$3
 model_name=$4
 dry_run=$5
 utility_functions=$6
+corpora=$7
 
 scripts=$base/scripts
 
@@ -34,7 +36,6 @@ mkdir -p $mbr_sub_sub
 source $base/venvs/sockeye3-cpu/bin/activate
 
 seeds="1 2"
-corpora="test" #  dev variations
 
 if [[ $dry_run == "true" ]]; then
     num_parts=2

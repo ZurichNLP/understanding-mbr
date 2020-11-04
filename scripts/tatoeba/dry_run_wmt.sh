@@ -3,10 +3,10 @@
 base=/net/cephfs/scratch/mathmu/map-volatility
 scripts=$base/scripts
 
-# French -> Latin
+# German -> French
 
-src=fra
-trg=lat
+src=deu
+trg=fra
 
 # dry runs of all steps
 
@@ -36,7 +36,7 @@ fi
 
 utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
 
-corpora="test"
+corpora="test wmt"
 train_additional_args=""
 preprocess_copy_noise_probability="0.0"
 

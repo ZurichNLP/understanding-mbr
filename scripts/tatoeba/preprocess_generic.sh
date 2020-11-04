@@ -7,6 +7,7 @@
 # $model_name
 # $preprocess_copy_noise_probability
 # $dry_run
+# $wmt_testset_available
 
 base=$1
 src=$2
@@ -14,6 +15,7 @@ trg=$3
 model_name=$4
 preprocess_copy_noise_probability=$5
 dry_run=$6
+wmt_testset_available=$7
 
 data=$base/data
 venvs=$base/venvs
@@ -52,6 +54,16 @@ LARGEST_TRAINSIZE=10000000
 
 SENTENCEPIECE_MAX_LINES=10000000
 
+DEFAULT_CORPORA_EXCEPT_TRAIN="dev test"
+
+if [[ $wmt_testset_available == "true" ]]; then
+    corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN wmt"
+else
+    corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN"
+fi
+
+all_corpora="$corpora_except_train train"
+
 # measure time
 
 SECONDS=0
@@ -66,7 +78,7 @@ fi
 
 # truncate dev and/or test data to $DEVTEST_MAXSIZE if too large
 
-for corpus in dev test; do
+for corpus in $corpora_except_train; do
     num_lines_src=$(cat $data_sub/$corpus.src | wc -l)
 
     if [[ $num_lines_src -gt $DEVTEST_MAXSIZE ]]; then
@@ -81,7 +93,7 @@ done
 
 if [[ $dry_run == "true" ]]; then
     for lang in src trg; do
-        for corpus in dev test; do
+        for corpus in $corpora_except_train; do
             mv $data_sub/$corpus.$lang $data_sub/$corpus.$lang.big
             head -n $DRY_RUN_DEVTEST_SIZE $data_sub/$corpus.$lang.big > $data_sub/$corpus.$lang
         done
@@ -95,7 +107,7 @@ echo "data_sub: $data_sub"
 
 # prenormalization for train data
 
-for corpus in train dev test; do
+for corpus in $all_corpora; do
     for lang in src trg; do
         cat $data_sub/$corpus.$lang | \
         perl -CS -pe 'tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;' | \
@@ -104,7 +116,7 @@ for corpus in train dev test; do
     done
 done
 
-# langid filter
+# langid filter for train data
 
 paste $data_sub/train.prenorm.src $data_sub/train.prenorm.trg | \
     python $scripts/bitext-match-lang.py -s ${src} -t ${trg} > $data_sub/train.langchecked.both
@@ -112,7 +124,7 @@ paste $data_sub/train.prenorm.src $data_sub/train.prenorm.trg | \
 cut -f1 $data_sub/train.langchecked.both > $data_sub/train.langchecked.src
 cut -f2 $data_sub/train.langchecked.both > $data_sub/train.langchecked.trg
 
-# normalize data
+# normalize train data
 
 for lang in src trg; do
     cat $data_sub/train.langchecked.$lang | \
@@ -123,7 +135,9 @@ for lang in src trg; do
         $data_sub/train.normalized.$lang
 done
 
-for corpus in dev test; do
+# normalize dev / test data
+
+for corpus in $corpora_except_train; do
     for lang in src trg; do
         cat $data_sub/$corpus.prenorm.$lang | \
         ${TOKENIZER}/replace-unicode-punctuation.perl | \
@@ -183,19 +197,9 @@ for lang in src trg; do
     fi
 done
 
-# create subnum variations of test set
+# apply SP model to train, test and dev
 
-python $scripts/create_variations.py \
-    --input-src $data_sub/test.normalized.src \
-    --input-trg $data_sub/test.normalized.trg \
-    --output-src $data_sub/variations.normalized.src \
-    --output-trg $data_sub/variations.normalized.trg \
-    --output-variation-counts $data_sub/variations.count \
-    --num-range 10
-
-# apply SP model to train, test and dev + variations
-
-for corpus in train dev test variations; do
+for corpus in $all_corpora; do
     for lang in src trg; do
         cat $data_sub/$corpus.normalized.$lang | \
             python $scripts/tatoeba/apply_sentencepiece.py \

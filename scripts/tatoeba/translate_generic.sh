@@ -6,12 +6,14 @@
 # $trg
 # $model_name
 # $dry_run
+# $corpora
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
 dry_run=$5
+corpora=$6
 
 scripts=$base/scripts
 
@@ -21,9 +23,6 @@ else
     source $base/venvs/sockeye3/bin/activate
 fi
 
-# do not translate variations for now
-
-corpora="dev test" # variations"
 seeds="1 2"
 
 . $scripts/tatoeba/beam_top_generic.sh
