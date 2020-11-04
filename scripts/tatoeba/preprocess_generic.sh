@@ -224,6 +224,26 @@ python $scripts/introduce_copy_noise.py \
     --output-trg $data_sub/train.clean.trg \
     --copy-noise-probability $preprocess_copy_noise_probability
 
+# sample a slice of the final, preprocessed training data for analysis purposes
+
+if [[ $dry_run == "true" ]]; then
+  slice_size=$DRY_RUN_DEVTEST_SIZE
+else
+  slice_size=$DEVTEST_MAXSIZE
+fi
+
+paste $data_sub/train.clean.src $data_sub/train.clean.trg | cat -n | shuf -n $slice_size > $data_sub/trainslice.pieces.both
+
+cut -f1 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.src
+cut -f2 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.trg
+
+rm $data_sub/trainslice.pieces.both
+
+# postprocess the slice
+
+for lang in src trg; do
+  cat $data_sub/trainslice.pieces.$lang | sed 's/ //g;s/▁/ /g' > $data_sub/trainslice.$lang
+done
 
 # sizes
 echo "Sizes of all files:"

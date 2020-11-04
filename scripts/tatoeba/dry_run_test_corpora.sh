@@ -34,6 +34,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 fi
 
-corpora="test wmt"
+corpora="test wmt trainslice"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
