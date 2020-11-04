@@ -34,6 +34,4 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 fi
 
-utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
-
 . $scripts/tatoeba/run_tatoeba_generic.sh
