@@ -30,14 +30,10 @@ read -p "Delete? (y/n) " -n 1 -r
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     for sub_folder in $sub_folders; do
-      rm -r $base/$sub_folder/$src-$trg/$model_name
+      rm -rf $base/$sub_folder/$src-$trg/$model_name
     done
 fi
 
-utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
-
 corpora="test wmt"
-train_additional_args=""
-preprocess_copy_noise_probability="0.0"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
