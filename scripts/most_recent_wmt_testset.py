@@ -18,6 +18,8 @@ def parse_args():
     parser.add_argument("--trg-lang", type=str, help="Target language (ISO 639-2).", required=True)
     parser.add_argument("--echo", action="store_true", help="Echo the test set to STDOUT if there is a match.",
                         required=False)
+    parser.add_argument("--quiet", action="store_true", help="Do not log to STDERR.",
+                        required=False)
 
     args = parser.parse_args()
 
@@ -73,7 +75,11 @@ def main():
 
     args = parse_args()
 
-    logging.basicConfig(level=logging.DEBUG)
+    if args.quiet:
+        level = logging.WARNING
+    else:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
     logging.debug(args)
 
     src_query_lang_alpha_2 = convert_alpha3_to_alpha2(args.src_lang)
@@ -86,8 +92,7 @@ def main():
     all_codes = [args.src_lang, src_query_lang_alpha_2, args.trg_lang, trg_query_lang_alpha_2]
 
     logging.debug("Most recent WMT testset: %s" % most_recent_key)
-    logging.debug("Language codes")
-    logging.debug(str(all_codes))
+    logging.debug("Language codes: %s" % str(all_codes))
 
     if args.echo:
         if most_recent_key is None:
