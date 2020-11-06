@@ -63,16 +63,19 @@ for corpus in $corpora; do
 
     done
 
-    # sample top (single sample), different seeds
+    # sample top (single sample), different absolute positions from 1 to 100 * num_seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in $sample_positions; do
+    for seed in $seeds; do
+        for pos in {1..100}; do
 
-        untokenized_hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
-        output=$evaluations_sub_sub/$corpus.sample.top.$seed.meteor
+            let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-        . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+            untokenized_hyp=$samples_sub_sub/$corpus.sample.top.$absolute_pos.trg
+            output=$evaluations_sub_sub/$corpus.sample.top.$absolute_pos.meteor
 
+            . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+        done
     done
 
     # MBR decoding with samples (5 .. 100), different seeds, different utility functions

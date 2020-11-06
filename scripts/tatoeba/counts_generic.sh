@@ -76,16 +76,19 @@ for corpus in $corpora; do
 
     done
 
-    # sample top (single sample), different seeds
+     # sample top (single sample), different absolute positions from 1 to 100 * num_seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in $sample_positions; do
+    for seed in $seeds; do
+        for pos in {1..100}; do
 
-        input=$samples_sub_sub/$corpus.sample.top.$seed.trg.tok
-        output=$counts_sub_sub/$corpus.sample.top.$seed.count
+            let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-        . $scripts/tatoeba/counts_more_generic.sh
+            input=$samples_sub_sub/$corpus.sample.top.$absolute_pos.trg.tok
+            output=$counts_sub_sub/$corpus.sample.top.$absolute_pos.count
 
+            . $scripts/tatoeba/counts_more_generic.sh
+        done
     done
 
     # MBR decoding with samples (5 .. 100), different seeds, different utility functions

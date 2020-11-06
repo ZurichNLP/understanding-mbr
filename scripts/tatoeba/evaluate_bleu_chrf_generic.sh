@@ -58,24 +58,35 @@ for corpus in $corpora; do
 
         . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
+        output=$output_prefix.chrf_balanced
+
+        . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+
     done
 
-    # sample top (single sample), different seeds
+    # sample top (single sample), different absolute positions from 1 to 100 * num_seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in $sample_positions; do
+    for seed in $seeds; do
+        for pos in {1..100}; do
 
-        hyp=$samples_sub_sub/$corpus.sample.top.$seed.trg
-        output_prefix=$evaluations_sub_sub/$corpus.sample.top.$seed
+            let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-        output=$output_prefix.bleu
+            hyp=$samples_sub_sub/$corpus.sample.top.$absolute_pos.trg
+            output_prefix=$evaluations_sub_sub/$corpus.sample.top.$absolute_pos
 
-        . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+            output=$output_prefix.bleu
 
-        output=$output_prefix.chrf
+            . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-        . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+            output=$output_prefix.chrf
 
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+            output=$output_prefix.chrf_balanced
+
+            . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+        done
     done
 
     # MBR decoding with samples (5 .. 100), different seeds, different utility functions
@@ -96,6 +107,10 @@ for corpus in $corpora; do
                 output=$output_prefix.chrf
 
                 . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+                output=$output_prefix.chrf_balanced
+
+                . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
 
             done
         done
@@ -120,6 +135,10 @@ for corpus in $corpora; do
                 output=$output_prefix.chrf
 
                 . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+                output=$output_prefix.chrf_balanced
+
+                . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
             done
         done
     done

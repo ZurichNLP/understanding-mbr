@@ -52,9 +52,13 @@ MEDIUM_TRAINSIZE=500000
 LARGE_TRAINSIZE=1000000
 LARGEST_TRAINSIZE=10000000
 
+TRAIN_SLICE_SMALL=1000
+TRAIN_SLICE_MEDIUM=2500
+TRAIN_SLICE_LARGE=5000
+
 SENTENCEPIECE_MAX_LINES=10000000
 
-DEFAULT_CORPORA_EXCEPT_TRAIN="dev test"
+DEFAULT_CORPORA_EXCEPT_TRAIN="dev test trainslice"
 
 if [[ $wmt_testset_available == "true" ]]; then
     corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN wmt"
@@ -75,6 +79,41 @@ if [[ -f $data_sub/test.pieces.src ]]; then
     echo "Skipping. Delete files to repeat step."
     exit 0
 fi
+
+# set aside a held-out slice of the training data (size of slice depending on total size)
+
+# determine $train_slice_size
+
+num_lines=$(cat $data_sub/train.src | wc -l)
+
+if [[ $num_lines -gt ${LARGEST_TRAINSIZE} ]]; then
+    train_slice_size=$TRAIN_SLICE_LARGE
+elif [[ $num_lines -gt ${LARGE_TRAINSIZE} ]]; then
+    train_slice_size=$TRAIN_SLICE_LARGE
+elif [[ $num_lines -gt ${MEDIUM_TRAINSIZE} ]]; then
+    train_slice_size=$TRAIN_SLICE_LARGE
+elif [[ $num_lines -gt ${SMALL_TRAINSIZE} ]]; then
+    train_slice_size=$TRAIN_SLICE_MEDIUM
+elif [[ $num_lines -gt ${SMALLEST_TRAINSIZE} ]]; then
+    train_slice_size=$TRAIN_SLICE_SMALL
+else
+    echo "Warning: training data size too small"
+    exit 0
+fi
+
+echo "train_slice_size=$train_slice_size"
+
+paste $data_sub/train.src $data_sub/train.trg | shuf > $data_sub/train.shuffled.both
+
+head -n $train_slice_size $data_sub/train.shuffled.both | cut -f1 > $data_sub/trainslice.src
+head -n $train_slice_size $data_sub/train.shuffled.both | cut -f2 > $data_sub/trainslice.trg
+
+# remove first $train_slice_size pairs from the training data and restore per-language files
+
+sed -i -e 1,${train_slice_size}d $data_sub/train.shuffled.both
+
+cut -f1 $data_sub/train.shuffled.both > $data_sub/train.src
+cut -f2 $data_sub/train.shuffled.both > $data_sub/train.trg
 
 # truncate dev and/or test data to $DEVTEST_MAXSIZE if too large
 
@@ -223,27 +262,6 @@ python $scripts/introduce_copy_noise.py \
     --output-src $data_sub/train.clean.src \
     --output-trg $data_sub/train.clean.trg \
     --copy-noise-probability $preprocess_copy_noise_probability
-
-# sample a slice of the final, preprocessed training data for analysis purposes
-
-if [[ $dry_run == "true" ]]; then
-  slice_size=$DRY_RUN_DEVTEST_SIZE
-else
-  slice_size=$DEVTEST_MAXSIZE
-fi
-
-paste $data_sub/train.clean.src $data_sub/train.clean.trg | shuf -n $slice_size > $data_sub/trainslice.pieces.both
-
-cut -f1 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.src
-cut -f2 $data_sub/trainslice.pieces.both > $data_sub/trainslice.pieces.trg
-
-rm $data_sub/trainslice.pieces.both
-
-# postprocess the slice
-
-for lang in src trg; do
-  cat $data_sub/trainslice.pieces.$lang | sed 's/ //g;s/▁/ /g' > $data_sub/trainslice.$lang
-done
 
 # sizes
 echo "Sizes of all files:"

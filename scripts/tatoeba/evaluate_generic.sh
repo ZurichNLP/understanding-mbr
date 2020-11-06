@@ -23,7 +23,3 @@ seeds="1 2"
 . $scripts/tatoeba/evaluate_bleu_chrf_generic.sh
 
 . $scripts/tatoeba/evaluate_meteor_generic.sh
-
-# does not seem worth it - do not evaluate for now
-
-# . $scripts/tatoeba/evaluate_subnum_generic.sh

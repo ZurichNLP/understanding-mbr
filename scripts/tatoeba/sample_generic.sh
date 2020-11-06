@@ -62,57 +62,61 @@ for corpus in $corpora; do
 
         OMP_NUM_THREADS=1 python -m sockeye.translate \
                 -i $data_sub_sub/$corpus.pieces.src \
-                -o $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg \
+                -o $samples_sub_sub/$corpus.sample_ordered.nbest.$seed.pieces.trg \
                 -m $models_sub_sub \
                 --sample \
                 --beam-size 100 \
                 --nbest-size 100 \
                 --seed $seed \
-                --length-penalty-alpha 1.0 \
+                --length-penalty-alpha 0.0 \
                 --device-ids 0 \
                 --batch-size $batch_size \
                 --disable-device-locking $dry_run_additional_args
 
-         # undo pieces in nbest JSON structures
+        # shuffle nbest list of samples before doing anything else
+
+        cat $samples_sub_sub/$corpus.sample_ordered.nbest.$seed.pieces.trg | \
+            python $base/scripts/shuffle_nbest_translations.py > \
+            $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg
+
+        # undo pieces in nbest JSON structures
 
         python $base/scripts/remove_pieces_from_nbest.py \
             --input $samples_sub_sub/$corpus.sample.nbest.$seed.pieces.trg > \
             $samples_sub_sub/$corpus.sample.nbest.$seed.trg
 
-        # extract first sample of each translation JSON line as single_sample
-
-        cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | \
-            python $scripts/extract_top_translations_from_nbest.py > \
-            $samples_sub_sub/$corpus.sample.top.$seed.trg
-
     done
 
-    # for first seed samples, extract additional single samples from nbest list
-    # HARDCODED: assumes seeds are 1 and 2
+    for seed in $seeds; do
 
-    for pos in {3..100}; do
+        # extract samples at specific indexes of each translation JSON line as single_samples
 
-        if [[ -s $samples_sub_sub/$corpus.sample.top.$pos.trg ]]; then
-            echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$pos.trg"
+        for pos in {1..100}; do
 
-            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.top.$pos.trg | wc -l)
+            let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-            if [[ $num_lines_input == $num_lines_output ]]; then
-                echo "output exists and number of lines are equal to input:"
-                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.top.$pos.trg"
-                echo "$num_lines_input == $num_lines_output"
-                echo "Skipping."
-                continue
-            else
-                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.top.$pos.trg"
-                echo "$num_lines_input != $num_lines_output"
-                echo "Repeating step."
+            if [[ -s $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg ]]; then
+                echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg"
+
+                num_lines_output=$(cat $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg | wc -l)
+
+                if [[ $num_lines_input == $num_lines_output ]]; then
+                    echo "output exists and number of lines are equal to input:"
+                    echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg"
+                    echo "$num_lines_input == $num_lines_output"
+                    echo "Skipping."
+                    continue
+                else
+                    echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg"
+                    echo "$num_lines_input != $num_lines_output"
+                    echo "Repeating step."
+                fi
             fi
-        fi
 
-        cat $samples_sub_sub/$corpus.sample.nbest.1.trg | \
-            python $scripts/extract_translation_at_index_from_nbest.py --pos $pos > \
-            $samples_sub_sub/$corpus.sample.top.$pos.trg
+            cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | \
+                python $scripts/extract_translation_at_index_from_nbest.py --pos $absolute_pos > \
+                $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg
 
+        done
     done
 done

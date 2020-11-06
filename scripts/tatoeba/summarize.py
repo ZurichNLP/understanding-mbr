@@ -200,6 +200,9 @@ def read_metric_values(metric, filepath):
     elif metric == "chrf":
         metric_names = ["CHRF"]
         metric_values = [read_chrf(filepath)]
+    elif metric == "chrf_balanced":
+        metric_names = ["CHRF_BALANCED"]
+        metric_values = [read_chrf(filepath)]
     elif metric == "meteor":
         metric_names = ["METEOR"]
         metric_values = [read_meteor(filepath)]
@@ -396,18 +399,12 @@ def main():
                     "BLEU",
                     "CHRF",
                     "METEOR",
-                    "SUBNUM_RANGE_BLEU",
-                    "SUBNUM_RANGE_TER",
-                    "SUBNUM_RANGE_METEOR",
-                    "SUBNUM_RANGE_RATIO"]
+                    "CHRF_BALANCED"]
 
     metric_names = ["BLEU",
                     "CHRF",
                     "METEOR",
-                    "SUBNUM_RANGE_BLEU",
-                    "SUBNUM_RANGE_TER",
-                    "SUBNUM_RANGE_METEOR",
-                    "SUBNUM_RANGE_RATIO"]
+                    "CHRF_BALANCED"]
 
     print("\t".join(header_names))
 

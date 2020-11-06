@@ -52,7 +52,9 @@ mkdir -p $lengths_sub_sub
 input_untokenized=$data_sub_sub/train.clean.trg
 input=$data_sub_sub/train.clean.trg.tok
 
-cat $input_untokenized | python $scripts/tokenize_v13a.py > $input
+if [[ ! -f $input ]]; then
+  cat $input_untokenized | python $scripts/tokenize_v13a.py > $input
+fi
 
 output=$lengths_sub_sub/train.length
 
@@ -80,16 +82,19 @@ for corpus in $corpora; do
 
     done
 
-    # sample top (single sample), different seeds
+    # sample top (single sample), different absolute positions from 1 to 100 * num_seeds
     # e.g. dev.sample.top.1.trg
 
-    for seed in $sample_positions; do
+    for seed in $seeds; do
+        for pos in {1..100}; do
 
-        input=$samples_sub_sub/$corpus.sample.top.$seed.trg.tok
-        output=$lengths_sub_sub/$corpus.sample.top.$seed.length
+            let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-        . $scripts/tatoeba/lengths_more_generic.sh
+            input=$samples_sub_sub/$corpus.sample.top.$absolute_pos.trg.tok
+            output=$lengths_sub_sub/$corpus.sample.top.$absolute_pos.length
 
+            . $scripts/tatoeba/lengths_more_generic.sh
+        done
     done
 
     # MBR decoding with samples (5 .. 100), different seeds, different utility functions

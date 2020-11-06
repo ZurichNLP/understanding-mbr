@@ -5,7 +5,7 @@ scripts=$base/scripts
 
 # run some lower Tatoeba languages from
 # https://github.com/Helsinki-NLP/Tatoeba-Challenge/blob/master/subsets/lower.md
-# that have at least 1k dev and test data
+# that have at least 1k dev and test data, and Xk training data
 
 LANG_PAIRS=(
     "bel rus"

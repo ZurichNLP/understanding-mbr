@@ -17,6 +17,8 @@ data=$base/data
 
 mkdir -p $data
 
+source $base/venvs/sockeye3-cpu/bin/activate
+
 data_sub=$data/${src}-${trg}
 data_sub_sub=$data_sub/$model_name
 
