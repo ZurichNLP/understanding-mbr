@@ -114,7 +114,7 @@ for corpus in $corpora; do
             fi
 
             cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | \
-                python $scripts/extract_translation_at_index_from_nbest.py --pos $absolute_pos > \
+                python $scripts/extract_translation_at_index_from_nbest.py --pos $pos > \
                 $samples_sub_sub/$corpus.sample.top.$absolute_pos.trg
 
         done

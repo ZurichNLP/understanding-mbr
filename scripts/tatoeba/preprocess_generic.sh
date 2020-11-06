@@ -115,6 +115,8 @@ sed -i -e 1,${train_slice_size}d $data_sub/train.shuffled.both
 cut -f1 $data_sub/train.shuffled.both > $data_sub/train.src
 cut -f2 $data_sub/train.shuffled.both > $data_sub/train.trg
 
+rm $data_sub/train.shuffled.both
+
 # truncate dev and/or test data to $DEVTEST_MAXSIZE if too large
 
 for corpus in $corpora_except_train; do
