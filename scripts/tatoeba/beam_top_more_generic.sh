@@ -8,13 +8,14 @@
 # $length_penalty_alpha
 # $models_sub_sub
 # $dry_run
+# $beam_size
 
 if [[ $dry_run == "true" ]]; then
+    # redefine beam size
     beam_size=1
     batch_size=2
     dry_run_additional_args="--use-cpu"
 else
-    beam_size=10
     batch_size=64
     dry_run_additional_args=""
 fi

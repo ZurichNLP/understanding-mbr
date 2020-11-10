@@ -21,17 +21,21 @@ translations_sub_sub=$translations_sub/$model_name
 
 mkdir -p $translations_sub_sub
 
+beam_sizes="5 10"
+
 # beam translation
 
 for corpus in $corpora; do
 
     for length_penalty_alpha in 0.0 1.0; do
 
-        input=$data_sub_sub/$corpus.pieces.src
-        output_pieces=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.pieces.trg
-        output=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
+        for beam_size in $beam_sizes; do
 
-        . $base/scripts/tatoeba/beam_top_more_generic.sh
+            input=$data_sub_sub/$corpus.pieces.src
+            output_pieces=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.pieces.trg
+            output=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.trg
 
+            . $base/scripts/tatoeba/beam_top_more_generic.sh
+        done
     done
 done

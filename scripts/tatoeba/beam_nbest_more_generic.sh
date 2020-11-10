@@ -9,6 +9,7 @@
 # $length_penalty_alpha
 # $models_sub_sub
 # $dry_run
+# $num_samples
 
 if [[ $dry_run == "true" ]]; then
     batch_size=2
@@ -39,14 +40,14 @@ for unused in pseudo_loop; do
       fi
     fi
 
-    # produce nbest list of size 100
+    # produce nbest list of size $num_samples
 
     OMP_NUM_THREADS=1 python -m sockeye.translate \
             -i $input \
             -o $output_pieces \
             -m $models_sub_sub \
-            --beam-size 100 \
-            --nbest-size 100 \
+            --beam-size $num_samples \
+            --nbest-size $num_samples \
             --length-penalty-alpha $length_penalty_alpha \
             --device-ids 0 \
             --batch-size $batch_size \

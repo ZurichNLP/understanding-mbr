@@ -27,11 +27,13 @@ for corpus in $corpora; do
 
     for length_penalty_alpha in 0.0 1.0; do
 
-        input=$data_sub_sub/$corpus.pieces.src
-        output_pieces=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.pieces.trg
-        output=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.trg
+        for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-        . $base/scripts/tatoeba/beam_nbest_more_generic.sh
+          input=$data_sub_sub/$corpus.pieces.src
+          output_pieces=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.pieces.trg
+          output=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
 
+          . $base/scripts/tatoeba/beam_nbest_more_generic.sh
+        done
     done
 done

@@ -10,6 +10,7 @@
 # $corpora
 # $utility_functions
 # $sample_positions
+# $beam_sizes
 
 source $base/venvs/sockeye3-cpu/bin/activate
 
@@ -56,11 +57,13 @@ for corpus in $corpora; do
 
    for length_penalty_alpha in 0.0 1.0; do
 
-        untokenized_hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
-        output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.meteor
+       for beam_size in $beam_sizes; do
 
-        . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+            untokenized_hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.trg
+            output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.meteor
 
+            . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+        done
     done
 
     # sample top (single sample), different absolute positions from 1 to 100 * num_seeds

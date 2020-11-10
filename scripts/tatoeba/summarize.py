@@ -41,18 +41,17 @@ def walklevel(some_dir, level=1):
 
 def parse_beam_top(parts: List[str]):
     """
-    Structure:  $corpus.beam.$length_penalty_alpha.top.$metric
-    Example:    dev.beam.1.0.top.bleu
+    Structure:  $corpus.beam.$length_penalty_alpha.top.$beam_size.$metric
+    Example:    dev.beam.1.0.top.5.bleu
 
     :param parts:
     :return:
     """
-    corpus, sample_origin, length_penalty_alpha_a, length_penalty_alpha_b, decoding_method, metric = parts
+    corpus, sample_origin, length_penalty_alpha_a, length_penalty_alpha_b, decoding_method, num_samples, metric = parts
 
     length_penalty_alpha = ".".join([length_penalty_alpha_a, length_penalty_alpha_b])
 
     seed = "-"
-    num_samples = "10"
     utility_function = "-"
 
     return corpus, decoding_method, sample_origin, num_samples, seed, length_penalty_alpha, utility_function, metric

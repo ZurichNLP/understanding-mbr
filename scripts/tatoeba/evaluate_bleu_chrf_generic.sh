@@ -10,6 +10,7 @@
 # $corpora
 # $utility_functions
 # $sample_positions
+# $beam_sizes
 
 scripts=$base/scripts
 
@@ -47,21 +48,23 @@ for corpus in $corpora; do
 
     for length_penalty_alpha in 0.0 1.0; do
 
-        hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.trg
-        output_prefix=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top
+        for beam_size in $beam_sizes; do
 
-        output=$output_prefix.bleu
+            hyp=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.trg
+            output_prefix=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size
 
-        . $scripts/tatoeba/evaluate_bleu_more_generic.sh
+            output=$output_prefix.bleu
 
-        output=$output_prefix.chrf
+            . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-        . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+            output=$output_prefix.chrf
 
-        output=$output_prefix.chrf_balanced
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
-        . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+            output=$output_prefix.chrf_balanced
 
+            . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+        done
     done
 
     # sample top (single sample), different absolute positions from 1 to 100 * num_seeds
