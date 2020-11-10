@@ -9,6 +9,14 @@ export TMPDIR="/var/tmp"
 
 mkdir -p $venvs
 
+echo "pyenv known versions"
+
+pyenv versions
+
+echo "Executing: pyenv local 3.6.12"
+
+pyenv local 3.6.12
+
 virtualenv -p python3 $venvs/fairseq3
 
 # different venv for Sockeye
