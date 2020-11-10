@@ -27,15 +27,18 @@ CUDA_VERSION=102
 
 ## Method A: install from PyPi
 
-wget https://raw.githubusercontent.com/awslabs/sockeye/master/requirements/requirements.gpu-cu${CUDA_VERSION}.txt
-pip install sockeye --no-deps -r requirements.gpu-cu${CUDA_VERSION}.txt
-rm requirements.gpu-cu${CUDA_VERSION}.txt
+#wget https://raw.githubusercontent.com/awslabs/sockeye/master/requirements/requirements.gpu-cu${CUDA_VERSION}.txt
+#pip install sockeye --no-deps -r requirements.gpu-cu${CUDA_VERSION}.txt
+#rm requirements.gpu-cu${CUDA_VERSION}.txt
 
-pip install matplotlib mxboard
+# Method B: install from local source, custom repo
 
-pip install mxnet-cu102mkl==1.6.0.post0
+git clone https://github.com/bricksdont/sockeye $tools/sockeye
 
-pip install nltk
+(cd $tools/sockeye && git checkout mbr_experiments )
+(cd $tools/sockeye && pip install . --no-deps -r requirements/requirements.gpu-cu${CUDA_VERSION}.txt )
+
+pip install matplotlib mxboard seaborn nltk
 
 # install Moses scripts for preprocessing
 
@@ -51,25 +54,22 @@ deactivate
 
 source $venvs/sockeye3-cpu/bin/activate
 
-wget https://raw.githubusercontent.com/awslabs/sockeye/master/requirements/requirements.txt
-pip install sockeye --no-deps -r requirements.txt
-rm requirements.txt
+# Method A
 
-pip install matplotlib mxboard
+#wget https://raw.githubusercontent.com/awslabs/sockeye/master/requirements/requirements.txt
+#pip install sockeye --no-deps -r requirements.txt
+#rm requirements.txt
+
+
+# Method B
+
+(cd $tools/sockeye && pip install . --no-deps -r requirements/requirements.txt )
+
+pip install matplotlib mxboard seaborn nltk scipy methodtools requests
 
 # install BPE library
 
 pip install subword-nmt
-
-# install sacrebleu for evaluation
-
-git clone https://github.com/ales-t/sacrebleu $tools/sacrebleu
-
-(cd $tools/sacrebleu && git checkout add-ter && git pull)
-
-(cd $tools/sacrebleu && pip install --upgrade .)
-
-pip install nltk scipy methodtools
 
 # meteor dependencies
 
@@ -82,6 +82,3 @@ pip install sentencepiece
 # lang id packages
 
 pip install pycld2 iso-639 pycountry
-
-pip install requests
-
