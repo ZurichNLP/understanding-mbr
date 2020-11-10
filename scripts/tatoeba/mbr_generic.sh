@@ -19,6 +19,10 @@ corpora=$7
 
 scripts=$base/scripts
 
+data=$base/data
+data_sub=$data/${src}-${trg}
+data_sub_sub=$data_sub/$model_name
+
 samples=$base/samples
 samples_sub=$samples/${src}-${trg}
 samples_sub_sub=$samples_sub/$model_name
@@ -49,7 +53,13 @@ SECONDS=0
 
 #################
 
+# for now, no oracle
+
+oracle="false"
+
 for corpus in $corpora; do
+
+    ref=$data_sub_sub/$corpus.trg
 
     # MBR with sampled translations
 

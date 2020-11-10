@@ -7,6 +7,14 @@
 # $num_samples
 # $utility_function
 # $dry_run
+# $ref
+# $oracle
+
+if [[ $oracle == "true" ]]; then
+    ref_argument="--references $ref"
+else
+    ref_argument=""
+fi
 
 # pseudo loop to check if file exists
 
@@ -44,7 +52,7 @@ for unused in useless_loop_var; do
                 --output $parts_prefix.$part \
                 --utility-function $utility_function \
                 --num-samples $num_samples \
-                --dry-run &
+                --dry-run $ref_argument &
         done
 
         wait
@@ -62,7 +70,7 @@ for unused in useless_loop_var; do
                 --input $input.$part \
                 --output $parts_prefix.$part \
                 --utility-function $utility_function \
-                --num-samples $num_samples &
+                --num-samples $num_samples $ref_argument &
         done
 
         wait
