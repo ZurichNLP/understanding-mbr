@@ -16,5 +16,4 @@ train_additional_args="--label-smoothing 0.0"
 
 utility_functions="sentence-chrf-balanced"
 
-
 . $scripts/tatoeba/run_tatoeba_generic.sh

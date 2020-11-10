@@ -40,7 +40,7 @@ git clone https://github.com/bricksdont/sockeye $tools/sockeye
 (cd $tools/sockeye && git checkout mbr_experiments )
 (cd $tools/sockeye && pip install . --no-deps --no-cache-dir -r requirements/requirements.gpu-cu${CUDA_VERSION}.txt )
 
-pip install matplotlib mxboard seaborn nltk
+pip install matplotlib mxboard seaborn nltk requests
 
 # install Moses scripts for preprocessing
 
