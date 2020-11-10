@@ -24,6 +24,7 @@ else
 fi
 
 seeds="1 2"
+beam_sizes="5 10"
 
 . $scripts/tatoeba/beam_top_generic.sh
 

@@ -6,6 +6,7 @@
 # $trg
 # $model_name
 # $corpora
+# $beam_sizes
 
 data=$base/data
 data_sub=$data/${src}-${trg}
@@ -20,8 +21,6 @@ translations_sub=$translations/${src}-${trg}
 translations_sub_sub=$translations_sub/$model_name
 
 mkdir -p $translations_sub_sub
-
-beam_sizes="5 10"
 
 # beam translation
 

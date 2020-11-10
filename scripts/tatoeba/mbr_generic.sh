@@ -99,20 +99,23 @@ for corpus in $corpora; do
 
     for length_penalty_alpha in 0.0 1.0; do
 
-        # divide inputs into up to 32 parts
-
-        mkdir -p $mbr_sub_sub/beam_parts
-
-        cp $translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.trg $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
-
-        python $scripts/split.py --parts $num_parts --input $mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.trg
-
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+
+             # divide inputs into up to 32 parts
+
+            mkdir -p $mbr_sub_sub/beam_parts.$num_samples
+
+            cp $translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg \
+               $mbr_sub_sub/beam_parts.$num_samples/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
+
+            python $scripts/split.py \
+                --parts $num_parts \
+                --input $mbr_sub_sub/beam_parts.$num_samples/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
 
             for utility_function in $utility_functions; do
 
-                input=$mbr_sub_sub/beam_parts/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
-                parts_prefix=$mbr_sub_sub/beam_parts/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
+                input=$mbr_sub_sub/beam_parts.$num_samples/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
+                parts_prefix=$mbr_sub_sub/beam_parts.$num_samples/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
 
                 # $scripts/tatoeba/mbr_more_generic.sh will add ".text" to this path as the final result file
 
