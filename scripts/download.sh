@@ -16,7 +16,9 @@ source $venvs/sockeye3/bin/activate
 
 mkdir -p $tools/meteor
 
-wget wget http://www.cs.cmu.edu/~alavie/METEOR/download/meteor-1.5.tar.gz -P $tools/meteor
+if [[ ! -f $tools/meteor/meteor-1.5.tar.gz ]]; then
+  wget http://www.cs.cmu.edu/~alavie/METEOR/download/meteor-1.5.tar.gz -P $tools/meteor
+fi
 
 tar -xzvf $tools/meteor/meteor-1.5.tar.gz -C $tools/meteor --strip=1
 
@@ -36,7 +38,7 @@ CUDA_VERSION=102
 git clone https://github.com/bricksdont/sockeye $tools/sockeye
 
 (cd $tools/sockeye && git checkout mbr_experiments )
-(cd $tools/sockeye && pip install . --no-deps -r requirements/requirements.gpu-cu${CUDA_VERSION}.txt )
+(cd $tools/sockeye && pip install . --no-deps --no-cache-dir -r requirements/requirements.gpu-cu${CUDA_VERSION}.txt )
 
 pip install matplotlib mxboard seaborn nltk
 
@@ -62,7 +64,7 @@ source $venvs/sockeye3-cpu/bin/activate
 
 # Method B
 
-(cd $tools/sockeye && pip install . --no-deps -r requirements/requirements.txt )
+(cd $tools/sockeye && pip install . --no-deps --no-cache-dir -r requirements/requirements.txt )
 
 pip install matplotlib mxboard seaborn nltk scipy methodtools requests
 
