@@ -3,11 +3,12 @@
 import argparse
 import logging
 import json
+import itertools
 
 import numpy as np
 
 from scipy import stats
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Optional
 from sacrebleu import TER, DEFAULT_TOKENIZER
 
 # local dependencies
@@ -54,6 +55,9 @@ def parse_args():
                         required=False, default=0)
     parser.add_argument("--dry-run", action="store_true", help="Do not compute actual scores, mockup for dry runs.",
                         required=False, default=False)
+    parser.add_argument("--references", type=str, help="Reference translations, one translation per line. If given,"
+                                                       "perform MBR in oracle mode.",
+                        required=False, default=None)
 
     args = parser.parse_args()
 
@@ -117,8 +121,6 @@ class MBR(object):
         """
         Computes a single score between two strings.
 
-        This LRU cache will only be filled for symmetric risk functions.
-
         :param hyp:
         :param ref:
         :return:
@@ -126,6 +128,12 @@ class MBR(object):
         return self.scorer.sentence_score(hyp, [ref]).score
 
     def score(self, hyp: str, ref: str) -> Union[float, np.ndarray]:
+        """
+
+        :param hyp:
+        :param ref:
+        :return:
+        """
 
         if self.symmetric:
             return self.score_symmetric(hyp, ref)
@@ -147,10 +155,12 @@ class MBR(object):
         return stats.hmean([forward, backward])
 
     def get_maximum_utility_sample(self,
-                                   samples: List[str]) -> Tuple[str, float]:
+                                   samples: List[str],
+                                   reference: Optional[str] = None) -> Tuple[str, float]:
         """
 
         :param samples: Sampled target translations for one single source input sentence
+        :param reference: Actual reference translation to compare to samples (oracle mode).
 
         :return: The best-performing sample and its utility score.
         """
@@ -159,16 +169,24 @@ class MBR(object):
 
         for sample in samples:
 
-            utilities = []
+            if reference is None:
 
-            for pseudo_reference in samples:
-                utility = self.score(sample, pseudo_reference)
-                utilities.append(utility)
+                # without reference, compute mean utility among pool of samples
 
-            if len(utilities) == 0:
-                average_utility = 0.0
+                utilities = []
+
+                for pseudo_reference in samples:
+                    utility = self.score(sample, pseudo_reference)
+                    utilities.append(utility)
+
+                if len(utilities) == 0:
+                    average_utility = 0.0
+                else:
+                    average_utility = np.mean(utilities)
             else:
-                average_utility = np.mean(utilities)
+                # with reference, operate in oracle mode and compare to the actual reference
+
+                average_utility = self.score(sample, reference)
 
             average_utilities.append(average_utility)
 
@@ -204,6 +222,15 @@ def main():
     input_handle = open(args.input, "r")
     output_handle = open(args.output, "w")
 
+    if args.references is not None:
+        ref_handle = open(args.references, "r")
+        zip_function = zip
+    else:
+        ref_handle = []
+        zip_function = itertools.zip_longest
+
+    input_handles = [input_handle, ref_handle]
+
     if "symmetric" in args.utility_function:
         symmetric_utility = True
         utility_function_name = args.utility_function.replace("-symmetric", "")
@@ -214,13 +241,15 @@ def main():
     mbr_decoder = MBR(utility_function_name=utility_function_name,
                       symmetric=symmetric_utility)
 
-    for line_index, line in enumerate(input_handle):
+    for line_index, line_tuple in enumerate(zip_function(*input_handles)):
+
+        input_line, ref_line = line_tuple
 
         # new scorer cache for each set of samples
 
         mbr_decoder.cache_clear()
 
-        jobj = json.loads(line)
+        jobj = json.loads(input_line)
         samples = jobj["translations"]
 
         if args.num_samples > -1:
@@ -237,7 +266,7 @@ def main():
         if args.dry_run and line_index > 0:
             output, utility = samples[0], 0.0
         else:
-            output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples)
+            output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples, reference=ref_line)
 
         # always log cache info for dry run
 

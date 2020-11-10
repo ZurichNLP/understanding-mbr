@@ -60,24 +60,19 @@ source $venvs/sockeye3-cpu/bin/activate
 #pip install sockeye --no-deps -r requirements.txt
 #rm requirements.txt
 
-
 # Method B
 
 (cd $tools/sockeye && pip install . --no-deps -r requirements/requirements.txt )
 
 pip install matplotlib mxboard seaborn nltk scipy methodtools requests
 
-# install BPE library
+# install BPE library and sentencepiece for subword regularization
 
-pip install subword-nmt
+pip install subword-nmt sentencepiece
 
 # meteor dependencies
 
 python -c "import nltk;nltk.download('wordnet')"
-
-# install sentencepiece for subword regularization
-
-pip install sentencepiece
 
 # lang id packages
 
