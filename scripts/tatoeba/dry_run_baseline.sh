@@ -18,7 +18,7 @@ model_name="dry_run"
 
 # delete files for this model to rerun everything
 
-sub_folders="data shared_models prepared models translations samples mbr lengths evaluations"
+sub_folders="data shared_models prepared models translations samples mbr lengths evaluations counts"
 
 echo "Could delete the following folders related to $src-$trg/$model_name:"
 
