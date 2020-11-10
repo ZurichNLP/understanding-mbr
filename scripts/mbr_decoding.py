@@ -96,7 +96,7 @@ class MBR(object):
             self.cached_scorer = True
 
         elif self.utility_function_name == "sentence-bleu":
-            self.args = argparse.Namespace(smooth_method="floor", smooth_value=None, force=False,
+            self.args = argparse.Namespace(smooth_method="floor", smooth_value=0.01, force=False,
                                            short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
 
             self.scorer = cached_metrics.CachedBLEU(self.args)
@@ -152,7 +152,7 @@ class MBR(object):
 
         :param samples: Sampled target translations for one single source input sentence
 
-        :return:
+        :return: The best-performing sample and its utility score.
         """
 
         average_utilities = []
