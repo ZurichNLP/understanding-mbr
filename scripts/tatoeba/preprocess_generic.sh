@@ -68,6 +68,8 @@ fi
 
 all_corpora="$corpora_except_train train"
 
+echo "data_sub: $data_sub"
+
 # measure time
 
 SECONDS=0
@@ -103,7 +105,9 @@ fi
 
 echo "train_slice_size=$train_slice_size"
 
-paste $data_sub/train.src $data_sub/train.trg | shuf > $data_sub/train.shuffled.both
+paste $data_sub/train.src $data_sub/train.trg > $data_sub/train.both
+
+shuf $data_sub/train.both > $data_sub/train.shuffled.both
 
 head -n $train_slice_size $data_sub/train.shuffled.both | cut -f1 > $data_sub/trainslice.src
 head -n $train_slice_size $data_sub/train.shuffled.both | cut -f2 > $data_sub/trainslice.trg
@@ -115,7 +119,7 @@ sed -i -e 1,${train_slice_size}d $data_sub/train.shuffled.both
 cut -f1 $data_sub/train.shuffled.both > $data_sub/train.src
 cut -f2 $data_sub/train.shuffled.both > $data_sub/train.trg
 
-rm $data_sub/train.shuffled.both
+rm $data_sub/train.both $data_sub/train.shuffled.both
 
 # truncate dev and/or test data to $DEVTEST_MAXSIZE if too large
 
@@ -143,8 +147,6 @@ if [[ $dry_run == "true" ]]; then
         head -n $DRY_RUN_TRAIN_SIZE $data_sub/train.$lang.big > $data_sub/train.$lang
     done
 fi
-
-echo "data_sub: $data_sub"
 
 # prenormalization for train data
 
