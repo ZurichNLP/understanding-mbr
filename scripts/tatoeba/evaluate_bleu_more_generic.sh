@@ -12,7 +12,7 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    cat $hyp | sacrebleu $ref -w 2 > $output
+    cat $hyp | sacrebleu $ref -w 3 > $output
 
     echo "$output"
     cat $output

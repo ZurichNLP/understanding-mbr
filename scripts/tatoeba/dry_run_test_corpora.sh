@@ -35,6 +35,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     done
 fi
 
+# needs high-memory preprocess instance
+
+preprocess_execute_more_mem="true"
+
 corpora="test wmt trainslice"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
