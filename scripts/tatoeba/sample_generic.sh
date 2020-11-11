@@ -8,12 +8,13 @@
 # $corpora
 # $seeds
 # $dry_run
+# $nbest_batch_size
 
 if [[ $dry_run == "true" ]]; then
     batch_size=2
     dry_run_additional_args="--use-cpu"
 else
-    batch_size=14
+    batch_size=$nbest_batch_size
     dry_run_additional_args=""
 fi
 

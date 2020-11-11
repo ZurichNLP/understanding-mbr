@@ -6,6 +6,7 @@
 # $trg
 # $model_name
 # $corpora
+# $nbest_batch_size
 
 data=$base/data
 data_sub=$data/${src}-${trg}
