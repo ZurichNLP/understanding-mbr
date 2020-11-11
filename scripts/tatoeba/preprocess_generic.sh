@@ -100,7 +100,7 @@ elif [[ $num_lines -gt ${SMALLEST_TRAINSIZE} ]]; then
     train_slice_size=$TRAIN_SLICE_SMALL
 else
     echo "Warning: training data size too small"
-    exit 0
+    exit 1
 fi
 
 echo "train_slice_size=$train_slice_size"
@@ -207,7 +207,7 @@ elif [[ $num_lines -gt ${SMALLEST_TRAINSIZE} ]]; then
     sentencepiece_vocab_size=1000
 else
     echo "Warning: training data size too small"
-    exit 0
+    exit 1
 fi
 
 echo "sentencepiece_vocab_size=$sentencepiece_vocab_size"
