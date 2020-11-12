@@ -11,9 +11,9 @@ scripts=$base/scripts
 
 LANG_PAIRS=(
     "dan epo"
-#    "aze eng"
-#    "deu fin"
-#    "bel rus"
+    "aze eng"
+    "deu fin"
+    "bel rus"
 )
 
 utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-symmetric"
@@ -34,7 +34,7 @@ preprocess_execute_more_mem="true"
 
 mbr_execute_longer="true"
 
-corpora="test"
+corpora="test trainslice"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
