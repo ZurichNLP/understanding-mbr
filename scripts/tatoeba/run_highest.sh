@@ -6,18 +6,21 @@ scripts=$base/scripts
 # run some highest Tatoeba languages from
 # https://github.com/Helsinki-NLP/Tatoeba-Challenge/blob/master/subsets/highest.md
 # that have at least 2k dev and test data
+# AND that have a WMT testset
 
 LANG_PAIRS=(
-    "ara eng"
-    "bul ita"
+#    "ara eng"
+#    "bul ita"
     "ces eng"
-    "dan spa"
-    "deu fin"
-    "ell rus"
-    "eng heb"
-    "fin swe"
-    "fra zho"
-    "hbs nor"
+    "eng deu"
+    "deu fra"
+#    "dan spa"
+#    "deu fin"
+#    "ell rus"
+#    "eng heb"
+#    "fin swe"
+#    "fra zho"
+#    "hbs nor"
 )
 
 model_name="no_label_smoothing"
@@ -29,6 +32,8 @@ train_additional_args="--label-smoothing 0.0"
 # needs high-memory preprocess instance
 
 preprocess_execute_more_mem="true"
+
+corpora="test trainslice wmt"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

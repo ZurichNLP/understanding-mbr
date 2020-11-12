@@ -11,9 +11,9 @@ scripts=$base/scripts
 # this results in *24* models already
 
 #LANG_PAIRS=(
-#    "eng mar"
-#    "tur uig"
-#    "deu fin"
+#    "dan epo"
+#    "bel rus"
+#    "deu fra"
 #)
 
 LANG_PAIRS=(
