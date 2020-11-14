@@ -62,9 +62,9 @@ fi
 
 # SLURM job args
 
-DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G --partition=generic"
+DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=16G --partition=generic"
 
-SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=8G --partition=generic"
+SLURM_ARGS_GENERIC="--cpus-per-task=2 --time=24:00:00 --mem=16G --partition=generic"
 SLURM_ARGS_GENERIC_MEM="--cpus-per-task=2 --time=24:00:00 --mem=32G --partition=generic"
 SLURM_ARGS_GENERIC_LARGE="--cpus-per-task=32 --time=24:00:00 --mem=32G --partition=generic"
 SLURM_ARGS_GENERIC_LARGE_LONG="--cpus-per-task=32 --time=72:00:00 --mem=32G --partition=generic"
