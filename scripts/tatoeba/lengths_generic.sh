@@ -48,13 +48,13 @@ mkdir -p $lengths_sub_sub
 
 # compute lengths of training data
 
-# first tokenize final training data
+# first depiece and tokenize final training data
 
 input_untokenized=$data_sub_sub/train.clean.trg
 input=$data_sub_sub/train.clean.trg.tok
 
 if [[ ! -f $input ]]; then
-  cat $input_untokenized | python $scripts/tokenize_v13a.py > $input
+  cat $input_untokenized | sed 's/ //g;s/▁/ /g' | python $scripts/tokenize_v13a.py > $input
 fi
 
 output=$lengths_sub_sub/train.length

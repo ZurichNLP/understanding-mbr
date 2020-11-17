@@ -48,7 +48,7 @@ mkdir -p $counts_sub_sub
 
 # compute counts for training data
 
-# first tokenize final training data
+# work off of depieced + tokenized final training data
 
 input=$data_sub_sub/train.clean.trg.tok
 output=$counts_sub_sub/train.count
