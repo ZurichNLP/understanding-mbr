@@ -26,7 +26,9 @@ train_additional_args="--label-smoothing 0.0"
 
 # TODO: will need high-memory preprocess instance once deu-fra is uncommented
 
-#preprocess_execute_more_mem="true"
+# preprocess_execute_more_mem="true"
+
+corpora="test trainslice"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
