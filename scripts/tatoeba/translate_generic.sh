@@ -25,7 +25,7 @@ fi
 
 seeds="1 2"
 beam_sizes="5 10"
-nbest_batch_size=12
+nbest_batch_size=10
 
 # fail with non-zero status if there is no model checkpoint,
 # to signal to downstream dependencies that they cannot be satisfied
