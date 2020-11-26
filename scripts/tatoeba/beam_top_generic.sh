@@ -7,6 +7,7 @@
 # $model_name
 # $corpora
 # $beam_sizes
+# $top_batch_size
 
 data=$base/data
 data_sub=$data/${src}-${trg}

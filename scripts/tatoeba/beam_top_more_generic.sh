@@ -9,14 +9,15 @@
 # $models_sub_sub
 # $dry_run
 # $beam_size
+# $top_batch_size
 
 if [[ $dry_run == "true" ]]; then
-    # redefine beam size
+    # redefine params
     beam_size=1
     batch_size=2
     dry_run_additional_args="--use-cpu"
 else
-    batch_size=64
+    batch_size=$top_batch_size
     dry_run_additional_args=""
 fi
 
