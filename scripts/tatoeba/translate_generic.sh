@@ -25,7 +25,7 @@ fi
 
 seeds="1 2"
 beam_sizes="5 10"
-top_batch_size=16
+top_batch_size=64
 nbest_batch_size=10
 
 # fail with non-zero status if there is no model checkpoint,
