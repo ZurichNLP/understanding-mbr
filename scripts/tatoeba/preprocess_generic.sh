@@ -8,6 +8,7 @@
 # $preprocess_copy_noise_probability
 # $dry_run
 # $wmt_testset_available
+# $create_slice_dev
 
 base=$1
 src=$2
@@ -16,6 +17,7 @@ model_name=$4
 preprocess_copy_noise_probability=$5
 dry_run=$6
 wmt_testset_available=$7
+create_slice_dev=$8
 
 data=$base/data
 venvs=$base/venvs
@@ -58,12 +60,19 @@ TRAIN_SLICE_LARGE=5000
 
 SENTENCEPIECE_MAX_LINES=10000000
 
-DEFAULT_CORPORA_EXCEPT_TRAIN="dev test trainslice"
+DEFAULT_CORPORA_EXCEPT_TRAIN="dev test slice-test"
+DEFAULT_SLICE_CORPORA="slice-test"
 
-if [[ $wmt_testset_available == "true" ]]; then
-    corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN wmt"
+if [[ $create_slice_dev == "true" ]]; then
+    corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN slice-dev"
+    slice_corpora="$DEFAULT_SLICE_CORPORA slice-dev"
 else
     corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN"
+    slice_corpora="$DEFAULT_SLICE_CORPORA"
+fi
+
+if [[ $wmt_testset_available == "true" ]]; then
+    corpora_except_train="$corpora_except_train wmt"
 fi
 
 all_corpora="$corpora_except_train train"
@@ -82,7 +91,8 @@ if [[ -f $data_sub/test.pieces.src ]]; then
     exit 0
 fi
 
-# set aside a held-out slice of the training data (size of slice depending on total size)
+# set aside held-out slices of the training data (size of slice depending on total size)
+# for testing (always) and development (optional)
 
 # determine $train_slice_size
 
@@ -105,16 +115,25 @@ fi
 
 echo "train_slice_size=$train_slice_size"
 
-paste $data_sub/train.src $data_sub/train.trg > $data_sub/train.both
+for slice_corpus in $slice_corpora; do
 
-shuf $data_sub/train.both > $data_sub/train.shuffled.both
+    if [[ ! -f $data_sub/train.shuffled.both ]]; then
 
-head -n $train_slice_size $data_sub/train.shuffled.both | cut -f1 > $data_sub/trainslice.src
-head -n $train_slice_size $data_sub/train.shuffled.both | cut -f2 > $data_sub/trainslice.trg
+        paste $data_sub/train.src $data_sub/train.trg > $data_sub/train.both
 
-# remove first $train_slice_size pairs from the training data and restore per-language files
+        shuf $data_sub/train.both > $data_sub/train.shuffled.both
+    fi
 
-sed -i -e 1,${train_slice_size}d $data_sub/train.shuffled.both
+    head -n $train_slice_size $data_sub/train.shuffled.both | cut -f1 > $data_sub/$slice_corpus.src
+    head -n $train_slice_size $data_sub/train.shuffled.both | cut -f2 > $data_sub/$slice_corpus.trg
+
+    # remove first $train_slice_size pairs from the training data
+
+    sed -i -e 1,${train_slice_size}d $data_sub/train.shuffled.both
+
+done
+
+# restore per-language files
 
 cut -f1 $data_sub/train.shuffled.both > $data_sub/train.src
 cut -f2 $data_sub/train.shuffled.both > $data_sub/train.trg

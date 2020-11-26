@@ -14,6 +14,7 @@
 # $utility_functions
 # $mbr_execute_longer
 # $corpora
+# $create_slice_dev
 
 module load volta cuda/10.2
 
@@ -46,6 +47,10 @@ fi
 
 if [ -z "$preprocess_execute_more_mem" ]; then
     preprocess_execute_more_mem="false"
+fi
+
+if [ -z "$create_slice_dev" ]; then
+    create_slice_dev="false"
 fi
 
 if [ -z "$utility_functions" ]; then
@@ -142,7 +147,7 @@ id_preprocess=$(
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg $model_name $preprocess_copy_noise_probability \
-    $dry_run $wmt_testset_available
+    $dry_run $wmt_testset_available $create_slice_dev
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
@@ -168,7 +173,7 @@ id_train=$(
     --dependency=afterok:$id_prepare \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/train_generic.sh \
-    $base $src $trg $model_name "$train_additional_args" $dry_run
+    $base $src $trg $model_name "$train_additional_args" $dry_run $create_slice_dev
 )
 
 echo "  id_train: $id_train | $logs_sub_sub/slurm-$id_train.out"  | tee -a $logs_sub_sub/MAIN

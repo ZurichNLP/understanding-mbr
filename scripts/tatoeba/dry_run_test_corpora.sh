@@ -39,6 +39,8 @@ fi
 
 preprocess_execute_more_mem="true"
 
-corpora="test wmt trainslice"
+create_slice_dev="true"
+
+corpora="test wmt slice-dev slice-test"
 
 . $scripts/tatoeba/run_tatoeba_generic.sh
