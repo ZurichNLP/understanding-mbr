@@ -8,7 +8,7 @@
 # $model_name
 # $additional_args
 # $dry_run
-# $create_slice_dev
+# $train_dev_corpus
 
 base=$1
 src=$2
@@ -16,7 +16,7 @@ trg=$3
 model_name=$4
 additional_args=$5
 dry_run=$6
-create_slice_dev=$7
+train_dev_corpus=$7
 
 data=$base/data
 data_sub=$data/${src}-${trg}
@@ -125,18 +125,12 @@ else
     dry_run_additional_args="--decode-and-evaluate-device-id 0"
 fi
 
-if [[ $create_slice_dev == "true" ]]; then
-  dev_name="slice-dev"
-else
-  dev_name="dev"
-fi
-
 ##################################################
 
 python -m sockeye.train \
 -d $prepared_sub_sub \
--vs $data_sub_sub/$dev_name.pieces.src \
--vt $data_sub_sub/$dev_name.pieces.trg \
+-vs $data_sub_sub/$train_dev_corpus.pieces.src \
+-vt $data_sub_sub/$train_dev_corpus.pieces.trg \
 --output $models_sub_sub \
 --seed 1 \
 --batch-type word \

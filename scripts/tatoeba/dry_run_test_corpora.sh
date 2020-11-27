@@ -39,7 +39,7 @@ fi
 
 preprocess_execute_more_mem="true"
 
-create_slice_dev="true"
+preprocess_create_slice_dev="true"
 
 corpora="test wmt slice-dev slice-test"
 

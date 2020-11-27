@@ -14,7 +14,8 @@
 # $utility_functions
 # $mbr_execute_longer
 # $corpora
-# $create_slice_dev
+# $preprocess_create_slice_dev
+# $train_dev_corpus
 
 module load volta cuda/10.2
 
@@ -45,12 +46,20 @@ if [ -z "$train_additional_args" ]; then
     train_additional_args=""
 fi
 
+if [ -z "$train_dev_corpus" ]; then
+    train_dev_corpus="dev"
+fi
+
 if [ -z "$preprocess_execute_more_mem" ]; then
     preprocess_execute_more_mem="false"
 fi
 
-if [ -z "$create_slice_dev" ]; then
-    create_slice_dev="false"
+if [ -z "$preprocess_create_slice_dev" ]; then
+    if [[ $train_dev_corpus == "slice-dev" ]]; then
+        preprocess_create_slice_dev="true"
+    else
+        preprocess_create_slice_dev="false"
+    fi
 fi
 
 if [ -z "$utility_functions" ]; then
@@ -120,7 +129,9 @@ echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
 echo "WMT TESTSET AVAILABLE: $wmt_testset_available" | tee -a $logs_sub_sub/MAIN
 echo "TEST CORPORA: $corpora" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
+echo "PREPROCESS CREATE DEV SLICE: $preprocess_create_slice_dev" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
+echo "TRAIN DEV CORPUS: $train_dev_corpus" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
 echo "MBR EXECUTE LONGER: $mbr_execute_longer" | tee -a $logs_sub_sub/MAIN
 echo "UTILITY FUNCTIONS: $utility_functions" | tee -a $logs_sub_sub/MAIN
@@ -147,7 +158,7 @@ id_preprocess=$(
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg $model_name $preprocess_copy_noise_probability \
-    $dry_run $wmt_testset_available $create_slice_dev
+    $dry_run $wmt_testset_available $preprocess_create_slice_dev
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
@@ -173,7 +184,7 @@ id_train=$(
     --dependency=afterok:$id_prepare \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/train_generic.sh \
-    $base $src $trg $model_name "$train_additional_args" $dry_run $create_slice_dev
+    $base $src $trg $model_name "$train_additional_args" $dry_run $train_dev_corpus
 )
 
 echo "  id_train: $id_train | $logs_sub_sub/slurm-$id_train.out"  | tee -a $logs_sub_sub/MAIN
