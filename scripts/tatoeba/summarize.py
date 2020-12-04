@@ -320,7 +320,7 @@ def get_model_names() -> List[str]:
 
     :return:
     """
-    model_names = ['baseline', 'no_label_smoothing', 'dry_run']
+    model_names = ['baseline', 'no_label_smoothing', 'dry_run', 'slice_dev', 'slice_dev+optimize']
 
     noise_probabilities = "0.001 0.005 0.01 0.05 0.075 0.1 0.25 0.5".split(" ")
 

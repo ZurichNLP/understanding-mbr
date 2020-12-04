@@ -40,20 +40,20 @@ for corpus in $corpora; do
 
     for seed in $seeds; do
 
-        if [[ -s $samples_sub_sub/$corpus.sample.top.$seed.trg ]]; then
-            echo "Samples exist: $samples_sub_sub/$corpus.sample.top.$seed.trg"
+        if [[ -s $samples_sub_sub/$corpus.sample.nbest.$seed.trg ]]; then
+            echo "Nbest samples exist: $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
 
             num_lines_input=$(cat $data_sub_sub/$corpus.pieces.src | wc -l)
-            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.top.$seed.trg | wc -l)
+            num_lines_output=$(cat $samples_sub_sub/$corpus.sample.nbest.$seed.trg | wc -l)
 
             if [[ $num_lines_input == $num_lines_output ]]; then
                 echo "output exists and number of lines are equal to input:"
-                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.top.$seed.trg"
+                echo "$data_sub_sub/$corpus.pieces.src == $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
                 echo "$num_lines_input == $num_lines_output"
                 echo "Skipping."
                 continue
             else
-                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.top.$seed.trg"
+                echo "$data_sub_sub/$corpus.pieces.src != $samples_sub_sub/$corpus.sample.nbest.$seed.trg"
                 echo "$num_lines_input != $num_lines_output"
                 echo "Repeating step."
             fi
