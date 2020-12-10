@@ -5,15 +5,15 @@ scripts=$base/scripts
 
 # run some highest Tatoeba languages from
 # https://github.com/Helsinki-NLP/Tatoeba-Challenge/blob/master/subsets/highest.md
-# that have at least 2k dev and test data
+# that have at least 2k dev and test data (does not hold for ara-deu)
 # AND that have a WMT testset
 
 LANG_PAIRS=(
 #    "ara eng"
 #    "bul ita"
     "ces eng"
-    "eng deu"
-    "deu fra"
+    "ara deu"
+#    "deu fra"
 #    "dan spa"
 #    "deu fin"
 #    "ell rus"
@@ -33,7 +33,7 @@ train_additional_args="--label-smoothing 0.0"
 
 preprocess_execute_more_mem="true"
 
-corpora="test slice-test wmt"
+corpora="test slice-test" #  wmt" (not available for ara-deu)
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

@@ -17,8 +17,8 @@ scripts=$base/scripts
 #)
 
 LANG_PAIRS=(
-    "eng mar"
-    "eng deu"
+    # "eng mar"
+    "ara deu"
 )
 
 noise_probabilities="0.001 0.005 0.01 0.05 0.075 0.1 0.25 0.5"
