@@ -34,7 +34,7 @@ preprocess_execute_more_mem="true"
 
 mbr_execute_longer="true"
 
-corpora="test trainslice"
+corpora="test slice-test"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

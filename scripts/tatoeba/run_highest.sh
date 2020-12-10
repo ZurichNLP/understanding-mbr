@@ -33,7 +33,7 @@ train_additional_args="--label-smoothing 0.0"
 
 preprocess_execute_more_mem="true"
 
-corpora="test trainslice wmt"
+corpora="test slice-test wmt"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)

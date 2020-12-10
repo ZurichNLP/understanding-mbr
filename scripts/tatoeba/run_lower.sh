@@ -23,6 +23,8 @@ model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
 
+corpora="test slice-test"
+
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
     src=${PAIR[0]}

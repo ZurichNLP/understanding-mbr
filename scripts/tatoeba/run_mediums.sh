@@ -9,15 +9,15 @@ scripts=$base/scripts
 
 LANG_PAIRS=(
     "aze eng"
-    "bel eng"
-    "bre fra"
+#    "bel eng"
+#    "bre fra"
     "dan epo"
-    "deu epo"
+#    "deu epo"
     "deu nds"
-    "deu tat"
-    "eng epo"
+#    "deu tat"
+#    "eng epo"
     "eng mar"
-    "eng tuk"
+#    "eng tuk"
 )
 
 model_name="no_label_smoothing"
@@ -25,6 +25,8 @@ model_name="no_label_smoothing"
 # without label smoothing
 
 train_additional_args="--label-smoothing 0.0"
+
+corpora="test slice-test"
 
 for PAIR in "${LANG_PAIRS[@]}"; do
     PAIR=($PAIR)
