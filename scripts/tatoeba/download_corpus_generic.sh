@@ -6,12 +6,14 @@
 # $trg
 # $model_name
 # $wmt_testset_available
+# $download_robustness_data
 
 base=$1
 src=$2
 trg=$3
 model_name=$4
 wmt_testset_available=$5
+download_robustness_data=$6
 
 data=$base/data
 
@@ -30,22 +32,54 @@ fi
 
 mkdir -p $data_sub_sub
 
-wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar -P $data_sub_sub
+if [[ $download_robustness_data == "true" ]]; then
 
-# untar entire corpus
+    # download data from domain robustness paper, for another OOD experiment
 
-tar -xvf $data_sub_sub/${src}-${trg}.tar -C $data_sub_sub --strip=2
+    wget -N https://files.ifi.uzh.ch/cl/archiv/2019/clcontra/opus_robustness_data_v2.tar.xz -P $data_sub_sub
 
-rm $data_sub_sub/${src}-${trg}.tar
+    tar -xvf $data_sub_sub/opus_robustness_data_v2.tar.xz -C $data_sub_sub
 
-# unzip train parts
+    mv $data_sub_sub/opus_robustness_data/* $data_sub_sub/
 
-gunzip $data_sub_sub/train.id.gz
+    rm -r $data_sub_sub/opus_robustness_data
 
-gunzip $data_sub_sub/train.src.gz
-gunzip $data_sub_sub/train.trg.gz
+    # link medical as main train, dev and test
 
-rm -f $data_sub_sub/train.id.gz $data_sub_sub/train.src.gz $data_sub_sub/train.trg.gz
+    for corpus in train dev test; do
+        ln -s $data_sub_sub/medical/$corpus.de $data_sub_sub/$corpus.src
+        ln -s $data_sub_sub/medical/$corpus.en $data_sub_sub/$corpus.trg
+    done
+
+    # link remaining domains as additional test corpora
+
+    for domain in it koran law subtitles; do
+        ln -s $data_sub_sub/$domain/test.de $data_sub_sub/$domain.src
+        ln -s $data_sub_sub/$domain/test.en $data_sub_sub/$domain.trg
+    done
+
+else
+
+    # download data from Tatoeba
+
+    wget https://object.pouta.csc.fi/Tatoeba-Challenge/${src}-${trg}.tar -P $data_sub_sub
+
+    # untar entire corpus
+
+    tar -xvf $data_sub_sub/${src}-${trg}.tar -C $data_sub_sub --strip=2
+
+    rm $data_sub_sub/${src}-${trg}.tar
+
+    # unzip train parts
+
+    gunzip $data_sub_sub/train.id.gz
+
+    gunzip $data_sub_sub/train.src.gz
+    gunzip $data_sub_sub/train.trg.gz
+
+    rm -f $data_sub_sub/train.id.gz $data_sub_sub/train.src.gz $data_sub_sub/train.trg.gz
+
+fi
 
 if [[ $wmt_testset_available == "true" ]]; then
 

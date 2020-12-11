@@ -7,6 +7,7 @@
 # $model_name
 #
 # optional:
+# $download_robustness_data
 # $train_additional_args
 # $preprocess_execute_more_mem
 # $preprocess_copy_noise_probability
@@ -40,6 +41,10 @@ fi
 
 if [ -z "$corpora" ]; then
     corpora="test"
+fi
+
+if [ -z "$download_robustness_data" ]; then
+    download_robustness_data="false"
 fi
 
 if [ -z "$train_additional_args" ]; then
@@ -128,6 +133,7 @@ echo "LANGPAIR: ${src}-${trg}" | tee -a $logs_sub_sub/MAIN
 echo "MODEL NAME: $model_name" | tee -a $logs_sub_sub/MAIN
 echo "WMT TESTSET AVAILABLE: $wmt_testset_available" | tee -a $logs_sub_sub/MAIN
 echo "TEST CORPORA: $corpora" | tee -a $logs_sub_sub/MAIN
+echo "DOWNLOAD ROBUSTNESS DATA: $download_robustness_data" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS CREATE DEV SLICE: $preprocess_create_slice_dev" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
@@ -144,12 +150,12 @@ id_download=$(
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/download_corpus_generic.sh \
-    $base $src $trg $model_name $wmt_testset_available
+    $base $src $trg $model_name $wmt_testset_available $download_robustness_data
 )
 
 echo "  id_download: $id_download | $logs_sub_sub/slurm-$id_download.out" | tee -a $logs_sub_sub/MAIN
 
-# preprocess: create subnum variations, normalize, SPM, maybe insert copy noise (depends on download)
+# preprocess: Hold out data, normalize, SPM, maybe insert copy noise (depends on download)
 
 id_preprocess=$(
     $scripts/sbatch_bare.sh \
@@ -215,7 +221,7 @@ id_mbr=$(
 
 echo "  id_mbr: $id_mbr | $logs_sub_sub/slurm-$id_mbr.out"  | tee -a $logs_sub_sub/MAIN
 
-# evaluate BLEU and variation range (depends on mbr)
+# evaluate BLEU and other metrics (depends on mbr)
 
 id_evaluate=$(
     $scripts/sbatch_bare.sh \
