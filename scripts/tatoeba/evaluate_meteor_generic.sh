@@ -63,6 +63,10 @@ for corpus in $corpora; do
             output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.meteor
 
             . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+            output=$evaluations_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.meteor_balanced
+
+            . $scripts/tatoeba/evaluate_meteor_balanced_more_generic.sh
         done
     done
 
@@ -78,6 +82,10 @@ for corpus in $corpora; do
             output=$evaluations_sub_sub/$corpus.sample.top.$absolute_pos.meteor
 
             . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+            output=$evaluations_sub_sub/$corpus.sample.top.$absolute_pos.meteor_balanced
+
+            . $scripts/tatoeba/evaluate_meteor_balanced_more_generic.sh
         done
     done
 
@@ -93,6 +101,10 @@ for corpus in $corpora; do
                 output=$evaluations_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.meteor
 
                 . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.meteor_balanced
+
+                . $scripts/tatoeba/evaluate_meteor_balanced_more_generic.sh
 
             done
         done
@@ -111,6 +123,10 @@ for corpus in $corpora; do
                 output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.meteor
 
                 . $scripts/tatoeba/evaluate_meteor_more_generic.sh
+
+                output=$evaluations_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.meteor_balanced
+
+                . $scripts/tatoeba/evaluate_meteor_balanced_more_generic.sh
 
             done
         done
