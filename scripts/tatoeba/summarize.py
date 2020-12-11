@@ -205,6 +205,9 @@ def read_metric_values(metric, filepath):
     elif metric == "meteor":
         metric_names = ["METEOR"]
         metric_values = [read_meteor(filepath)]
+    elif metric == "meteor_balanced":
+        metric_names = ["METEOR_BALANCED"]
+        metric_values = [read_meteor(filepath)]
     else:
         metric_names = ["SUBNUM_RANGE_BLEU", "SUBNUM_RANGE_TER", "SUBNUM_RANGE_METEOR", "SUBNUM_RANGE_RATIO"]
         metric_values = read_subnum_average(filepath)
@@ -398,12 +401,14 @@ def main():
                     "BLEU",
                     "CHRF",
                     "METEOR",
-                    "CHRF_BALANCED"]
+                    "CHRF_BALANCED",
+                    "METEOR_BALANCED"]
 
     metric_names = ["BLEU",
                     "CHRF",
                     "METEOR",
-                    "CHRF_BALANCED"]
+                    "CHRF_BALANCED",
+                    "METEOR_BALANCED"]
 
     print("\t".join(header_names))
 
