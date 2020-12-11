@@ -19,6 +19,7 @@ import cached_metrics
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
+UTILITY_SENTENCE_METEOR_BALANCED = "sentence-meteor-balanced"
 UTILITY_SENTENCE_TER = "sentence-ter"
 UTILITY_SENTENCE_CHRF = "sentence-chrf"
 UTILITY_SENTENCE_CHRF_BALANCED = "sentence-chrf-balanced"
@@ -30,6 +31,7 @@ UTILITY_SENTENCE_CHRF_SYMMETRIC = "sentence-chrf-symmetric"
 
 UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_METEOR,
+                     UTILITY_SENTENCE_METEOR_BALANCED,
                      UTILITY_SENTENCE_TER,
                      UTILITY_SENTENCE_CHRF,
                      UTILITY_SENTENCE_CHRF_BALANCED,
@@ -114,7 +116,12 @@ class MBR(object):
             self.cached_scorer = False
 
         else:
-            self.scorer = eval_meteor.MeteorScorer()
+            if self.utility_function_name.endswith("balanced"):
+                meteor_alpha = 0.5
+            else:
+                meteor_alpha = 0.85
+
+            self.scorer = eval_meteor.MeteorScorer(meteor_alpha=meteor_alpha)
             self.cached_scorer = False
 
     def score_single(self, hyp: str, ref: str) -> float:

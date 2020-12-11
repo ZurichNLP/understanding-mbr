@@ -105,16 +105,23 @@ class MeteorResult:
 
 class MeteorScorer(object):
 
-    def __init__(self, meteor_path: str = METEOR_DEFAULT_PATH, quiet: bool = True) -> None:
+    def __init__(self,
+                 meteor_path: str = METEOR_DEFAULT_PATH,
+                 quiet: bool = True,
+                 meteor_alpha: float = 0.85) -> None:
         """
 
         """
+
+        parameters = "%f 0.2 0.6 0.75" % meteor_alpha
+
         arguments = [
             'java -Xmx2G -jar %s/meteor-*.jar' % meteor_path,
             '-',  # blank refs
             '-',  # blank hyps
             '-stdio',  # standard I/O
             '-l other',  # do not assume supported language
+            '-p %s' % parameters # configurable preference for recall or precision
         ]
 
         self.processor = ExternalProcessor(
