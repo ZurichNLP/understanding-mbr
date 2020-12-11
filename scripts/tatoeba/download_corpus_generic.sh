@@ -44,18 +44,26 @@ if [[ $download_robustness_data == "true" ]]; then
 
     rm -r $data_sub_sub/opus_robustness_data
 
-    # link medical as main train, dev and test
+    # copy medical as main train, dev and test
 
     for corpus in train dev test; do
-        ln -s $data_sub_sub/medical/$corpus.de $data_sub_sub/$corpus.src
-        ln -s $data_sub_sub/medical/$corpus.en $data_sub_sub/$corpus.trg
+        cp $data_sub_sub/medical/$corpus.de $data_sub_sub/$corpus.src
+        cp $data_sub_sub/medical/$corpus.en $data_sub_sub/$corpus.trg
     done
 
-    # link remaining domains as additional test corpora
+    # copy remaining domains as additional test corpora
 
     for domain in it koran law subtitles; do
-        ln -s $data_sub_sub/$domain/test.de $data_sub_sub/$domain.src
-        ln -s $data_sub_sub/$domain/test.en $data_sub_sub/$domain.trg
+        cp $data_sub_sub/$domain/test.de $data_sub_sub/$domain.src
+        cp $data_sub_sub/$domain/test.en $data_sub_sub/$domain.trg
+    done
+
+    # remove unnecessary files
+
+    rm $data_sub_sub/deduplicate.py $data_sub_sub/opus_robustness_data_v2.tar.xz
+
+    for domain in all it medical law koran subtitles; do
+        rm -r $data_sub_sub/$domain
     done
 
 else
