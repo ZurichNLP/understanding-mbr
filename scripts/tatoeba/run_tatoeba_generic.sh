@@ -17,6 +17,7 @@
 # $corpora
 # $preprocess_create_slice_dev
 # $train_dev_corpus
+# $preprocess_additional_test_corpora
 
 module load volta cuda/10.2
 
@@ -57,6 +58,10 @@ fi
 
 if [ -z "$preprocess_execute_more_mem" ]; then
     preprocess_execute_more_mem="false"
+fi
+
+if [ -z "$preprocess_additional_test_corpora" ]; then
+    preprocess_additional_test_corpora=""
 fi
 
 if [ -z "$preprocess_create_slice_dev" ]; then
@@ -164,7 +169,8 @@ id_preprocess=$(
     $SLURM_LOG_ARGS \
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg $model_name $preprocess_copy_noise_probability \
-    $dry_run $wmt_testset_available $preprocess_create_slice_dev
+    $dry_run $wmt_testset_available $preprocess_create_slice_dev \
+    $preprocess_additional_test_corpora
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN

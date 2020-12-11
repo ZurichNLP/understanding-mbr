@@ -60,7 +60,7 @@ if [[ $download_robustness_data == "true" ]]; then
 
     # remove unnecessary files
 
-    rm $data_sub_sub/deduplicate.py $data_sub_sub/opus_robustness_data_v2.tar.xz
+    rm $data_sub_sub/deduplicate.py $data_sub_sub/opus_robustness_data_v2.tar.xz $data_sub_sub/generate_all.sh
 
     for domain in all it medical law koran subtitles; do
         rm -r $data_sub_sub/$domain

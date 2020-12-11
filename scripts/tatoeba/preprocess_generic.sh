@@ -9,6 +9,7 @@
 # $dry_run
 # $wmt_testset_available
 # $create_slice_dev
+# $preprocess_additional_test_corpora
 
 base=$1
 src=$2
@@ -18,6 +19,7 @@ preprocess_copy_noise_probability=$5
 dry_run=$6
 wmt_testset_available=$7
 create_slice_dev=$8
+preprocess_additional_test_corpora=$9
 
 data=$base/data
 venvs=$base/venvs
@@ -43,7 +45,7 @@ source $venvs/sockeye3-cpu/bin/activate
 MOSES=$base/tools/moses-scripts/scripts
 TOKENIZER=$MOSES/tokenizer
 
-DRY_RUN_TRAIN_SIZE=12000
+DRY_RUN_TRAIN_SIZE=14000
 DRY_RUN_DEVTEST_SIZE=2
 
 DEVTEST_MAXSIZE=5000
@@ -63,6 +65,8 @@ SENTENCEPIECE_MAX_LINES=10000000
 DEFAULT_CORPORA_EXCEPT_TRAIN="dev test slice-test"
 DEFAULT_SLICE_CORPORA="slice-test"
 
+# hold out training data for development only if requested
+
 if [[ $create_slice_dev == "true" ]]; then
     corpora_except_train="$DEFAULT_CORPORA_EXCEPT_TRAIN slice-dev"
     slice_corpora="$DEFAULT_SLICE_CORPORA slice-dev"
@@ -71,9 +75,16 @@ else
     slice_corpora="$DEFAULT_SLICE_CORPORA"
 fi
 
+# if wmt test set available, preprocess it regardless of whether it is going
+# to be used later
+
 if [[ $wmt_testset_available == "true" ]]; then
     corpora_except_train="$corpora_except_train wmt"
 fi
+
+# add any additional test corpora
+
+corpora_except_train="$corpora_except_train $preprocess_additional_test_corpora"
 
 all_corpora="$corpora_except_train train"
 

@@ -19,6 +19,7 @@ model_name="dry_run"
 download_robustness_data="true"
 
 corpora="test slice-test it law koran subtitles"
+preprocess_additional_test_corpora="it law koran subtitles"
 
 # delete files for this model to rerun everything
 
