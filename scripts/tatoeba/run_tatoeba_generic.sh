@@ -170,7 +170,7 @@ id_preprocess=$(
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg $model_name $preprocess_copy_noise_probability \
     $dry_run $wmt_testset_available $preprocess_create_slice_dev \
-    $preprocess_additional_test_corpora
+    "$preprocess_additional_test_corpora"
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
