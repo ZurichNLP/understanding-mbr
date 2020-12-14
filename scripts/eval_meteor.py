@@ -121,7 +121,7 @@ class MeteorScorer(object):
             '-',  # blank hyps
             '-stdio',  # standard I/O
             '-l other',  # do not assume supported language
-            '-p %s' % parameters # configurable preference for recall or precision
+            '-p "%s"' % parameters # configurable preference for recall or precision
         ]
 
         self.processor = ExternalProcessor(
