@@ -42,13 +42,14 @@ def convert_alpha2_to_alpha3(alpha_2: str) -> str:
     lang_object = pycountry.languages.get(alpha_2=alpha_2)
 
     # conversion sometimes fails because of language coverage, but also mismatch in lang codes such as this one;
+    # jv != jw
     # pycountry object: Language(alpha_2='jv', alpha_3='jav', name='Javanese', scope='I', type='L')
     # cld2 detection output:
     # >>> cld2.detect("diuwbdw738732", bestEffort=True)
     # (True, 9, (('JAVANESE', 'jw', 88, 512.0), ('Unknown', 'un', 0, 0.0), ('Unknown', 'un', 0, 0.0)))
 
     if lang_object is None:
-        return "NONE"
+        return "UNKNOWN"
 
     return lang_object.alpha_3
 

@@ -11,26 +11,26 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--source", type=str, help="Path to tokenized source sentences.", required=True)
-    parser.add_argument("--hypothesis", type=str, help="Path to translations by system, tokenized.", required=True)
+    parser.add_argument("--target", type=str, help="Path to tokenized target sentences.", required=True)
 
     args = parser.parse_args()
 
     return args
 
 
-def measure_overlap(source_tokens: List[str], hyp_tokens: List[str]) -> float:
+def measure_overlap(source_tokens: List[str], target_tokens: List[str]) -> float:
     """
 
     :param source_tokens:
-    :param hyp_tokens:
+    :param target_tokens:
     :return:
     """
 
-    hyp_length = len(hyp_tokens)
+    target_length = len(target_tokens)
 
-    intersection = set(source_tokens) & set(hyp_tokens)
+    intersection = set(source_tokens) & set(target_tokens)
 
-    return len(intersection) / hyp_length
+    return len(intersection) / target_length
 
 
 def main():
@@ -41,14 +41,14 @@ def main():
 
     overlaps = []
 
-    with open(args.source, "r") as source_handle, open(args.hypothesis) as hyp_handle:
+    with open(args.source, "r") as source_handle, open(args.target) as target_handle:
 
-        for line_source, line_hyp in zip(source_handle, hyp_handle):
+        for line_source, line_target in zip(source_handle, target_handle):
 
             source_tokens = line_source.strip().split(" ")
-            hyp_tokens = line_hyp.strip().split(" ")
+            target_tokens = line_target.strip().split(" ")
 
-            overlap = measure_overlap(source_tokens, hyp_tokens)
+            overlap = measure_overlap(source_tokens, target_tokens)
             overlaps.append(overlap)
 
     average_overlap = np.mean(overlaps)
