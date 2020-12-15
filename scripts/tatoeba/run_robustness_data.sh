@@ -8,7 +8,7 @@ scripts=$base/scripts
 src=deu
 trg=eng
 
-model_name="no_label_smoothing"
+model_name="domain_robustness"
 
 # without label smoothing
 
