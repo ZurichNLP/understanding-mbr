@@ -18,6 +18,9 @@ import cached_metrics
 
 
 UTILITY_SENTENCE_BLEU = "sentence-bleu"
+UTILITY_SENTENCE_BLEU_FLOOR = "sentence-bleu-floor"
+UTILITY_SENTENCE_BLEU_ADD_K = "sentence-bleu-add-k"
+UTILITY_SENTENCE_BLEU_EXP = "sentence-bleu-exp"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
 UTILITY_SENTENCE_METEOR_BALANCED = "sentence-meteor-balanced"
 UTILITY_SENTENCE_TER = "sentence-ter"
@@ -25,17 +28,26 @@ UTILITY_SENTENCE_CHRF = "sentence-chrf"
 UTILITY_SENTENCE_CHRF_BALANCED = "sentence-chrf-balanced"
 
 UTILITY_SENTENCE_BLEU_SYMMETRIC = "sentence-bleu-symmetric"
+UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC = "sentence-bleu-floor-symmetric"
+UTILITY_SENTENCE_BLEU_ADD_K_SYMMETRIC = "sentence-bleu-add-k-symmetric"
+UTILITY_SENTENCE_BLEU_EXP_SYMMETRIC = "sentence-bleu-exp-symmetric"
 UTILITY_SENTENCE_METEOR_SYMMETRIC = "sentence-meteor-symmetric"
 UTILITY_SENTENCE_TER_SYMMETRIC = "sentence-ter-symmetric"
 UTILITY_SENTENCE_CHRF_SYMMETRIC = "sentence-chrf-symmetric"
 
 UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
+                     UTILITY_SENTENCE_BLEU_FLOOR,
+                     UTILITY_SENTENCE_BLEU_ADD_K,
+                     UTILITY_SENTENCE_BLEU_EXP,
                      UTILITY_SENTENCE_METEOR,
                      UTILITY_SENTENCE_METEOR_BALANCED,
                      UTILITY_SENTENCE_TER,
                      UTILITY_SENTENCE_CHRF,
                      UTILITY_SENTENCE_CHRF_BALANCED,
                      UTILITY_SENTENCE_BLEU_SYMMETRIC,
+                     UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC,
+                     UTILITY_SENTENCE_BLEU_ADD_K_SYMMETRIC,
+                     UTILITY_SENTENCE_BLEU_EXP_SYMMETRIC,
                      UTILITY_SENTENCE_METEOR_SYMMETRIC,
                      UTILITY_SENTENCE_TER_SYMMETRIC,
                      UTILITY_SENTENCE_CHRF_SYMMETRIC]
@@ -101,8 +113,21 @@ class MBR(object):
             self.scorer = cached_metrics.CachedCHRF(self.args)
             self.cached_scorer = True
 
-        elif self.utility_function_name == "sentence-bleu":
-            self.args = argparse.Namespace(smooth_method="floor", smooth_value=0.01, force=False,
+        elif "bleu" in self.utility_function_name:
+            if self.utility_function_name.endswith("floor"):
+                smooth_method = "floor"
+                smooth_value = 0.01
+            elif self.utility_function_name.endswith("exp"):
+                smooth_method = "exp"
+                smooth_value = None
+            elif self.utility_function_name.endswith("add-k"):
+                smooth_method = "add-k"
+                smooth_value = 1
+            else:
+                smooth_method = "none"
+                smooth_value = None
+
+            self.args = argparse.Namespace(smooth_method=smooth_method, smooth_value=smooth_value, force=False,
                                            short=False, lc=False, tokenize=DEFAULT_TOKENIZER)
 
             self.scorer = cached_metrics.CachedBLEU(self.args)
