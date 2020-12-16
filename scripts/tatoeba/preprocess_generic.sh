@@ -208,7 +208,7 @@ for lang in src trg; do
         $data_sub/train.normalized.$lang
 done
 
-# normalize dev / test data
+# normalize dev / test data + other test corpora
 
 for corpus in $corpora_except_train; do
     for lang in src trg; do
@@ -220,6 +220,19 @@ for corpus in $corpora_except_train; do
             $data_sub/$corpus.normalized.$lang
     done
 done
+
+# remove sentences from dev if source or target is empty
+# (otherwise leads to potential Sockeye error)
+
+for lang in src trg; do
+    mv $data_sub/dev.normalized.$lang $data_sub/dev.before_remove_empty.$lang
+done
+
+python $scripts/remove_if_source_or_target_empty.py \
+    --input-src $data_sub/dev.before_remove_empty.src \
+    --input-trg $data_sub/dev.before_remove_empty.trg \
+    --output-src $data_sub/dev.normalized.src \
+    --output-trg $data_sub/dev.normalized.trg
 
 # determine $sentencepiece_vocab_size
 
