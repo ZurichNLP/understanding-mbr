@@ -121,7 +121,7 @@ def main():
             overlap = m.measure(line_input, line_compare)
             overlaps.append(overlap)
 
-    overlaps_array = numpy.asarray(overlaps, dtype="int32")
+    overlaps_array = numpy.asarray(overlaps, dtype="float32")
 
     numpy.save(args.output, overlaps_array)
 
