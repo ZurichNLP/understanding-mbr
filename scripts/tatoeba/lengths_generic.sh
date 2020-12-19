@@ -65,6 +65,15 @@ output=$lengths_sub_sub/train.length
 
 for corpus in $corpora; do
 
+    # retokenize reference translations differently (than METEOR)
+
+    tokenized_ref=$data_sub_sub/$corpus.trg.tok
+
+    cat $data_sub_sub/$corpus.pieces.trg | \
+        sed 's/ //g;s/▁/ /g' | \
+        python $scripts/tokenize_v13a.py \
+        > $tokenized_ref
+
     # compute lengths of reference translations
 
     input=$data_sub_sub/$corpus.trg.tok

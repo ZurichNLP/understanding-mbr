@@ -18,6 +18,7 @@
 # $preprocess_create_slice_dev
 # $train_dev_corpus
 # $preprocess_additional_test_corpora
+# $preprocess_langid
 
 module load volta cuda/10.2
 
@@ -70,6 +71,10 @@ if [ -z "$preprocess_create_slice_dev" ]; then
     else
         preprocess_create_slice_dev="false"
     fi
+fi
+
+if [ -z "$preprocess_langid" ]; then
+    preprocess_langid="true"
 fi
 
 if [ -z "$utility_functions" ]; then
@@ -170,7 +175,7 @@ id_preprocess=$(
     $scripts/tatoeba/preprocess_generic.sh \
     $base $src $trg $model_name $preprocess_copy_noise_probability \
     $dry_run $wmt_testset_available $preprocess_create_slice_dev \
-    "$preprocess_additional_test_corpora"
+    "$preprocess_additional_test_corpora" $preprocess_langid
 )
 
 echo "  id_preprocess: $id_preprocess | $logs_sub_sub/slurm-$id_preprocess.out" | tee -a $logs_sub_sub/MAIN
@@ -240,7 +245,7 @@ id_evaluate=$(
 
 echo "  id_evaluate: $id_evaluate | $logs_sub_sub/slurm-$id_evaluate.out"  | tee -a $logs_sub_sub/MAIN
 
-# compute lengths (depends on mbr)
+# compute lengths (depends on evaluate)
 
 id_lengths=$(
     $scripts/sbatch_bare.sh \
@@ -265,3 +270,16 @@ id_counts=$(
 )
 
 echo "  id_counts: $id_counts | $logs_sub_sub/slurm-$id_counts.out"  | tee -a $logs_sub_sub/MAIN
+
+# compute overlaps (depends on lengths, no interaction with counts)
+
+id_overlaps=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    --dependency=afterok:$id_lengths \
+    $SLURM_LOG_ARGS \
+    $scripts/tatoeba/overlaps_generic.sh \
+    $base $src $trg $model_name "$utility_functions" "$corpora"
+)
+
+echo "  id_overlaps: $id_overlaps | $logs_sub_sub/slurm-$id_overlaps.out"  | tee -a $logs_sub_sub/MAIN

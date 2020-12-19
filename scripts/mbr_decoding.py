@@ -58,15 +58,13 @@ def parse_args():
 
     parser.add_argument("--input", type=str, help="Samples of translations. Expect one JSON per line with nbest list.")
     parser.add_argument("--output", type=str, help="File to write best samples.", required=True)
+
     parser.add_argument("--utility-function", type=str, help="Utility function to compare average risk of samples",
                         required=True, choices=UTILITY_FUNCTIONS)
     parser.add_argument("--num-samples", type=int, help="How many samples to use for MBR (default: all translations "
                                                         "found in --input).",
                         required=False, default=-1)
-    parser.add_argument("--sample-start-index", type=int,
-                        help="From each nbest list take a slice of --num-samples samples, but start at this index "
-                             "(default: 0).",
-                        required=False, default=0)
+
     parser.add_argument("--dry-run", action="store_true", help="Do not compute actual scores, mockup for dry runs.",
                         required=False, default=False)
     parser.add_argument("--references", type=str, help="Reference translations, one translation per line. If given,"
@@ -167,6 +165,11 @@ class MBR(object):
         :return:
         """
 
+        # no actual computation if one input is empty or whitespace-only
+
+        if hyp.strip() == "" or ref.strip() == "":
+            return 0.0
+
         if self.symmetric:
             return self.score_symmetric(hyp, ref)
 
@@ -188,13 +191,13 @@ class MBR(object):
 
     def get_maximum_utility_sample(self,
                                    samples: List[str],
-                                   reference: Optional[str] = None) -> Tuple[str, float]:
+                                   reference: Optional[str] = None) -> Tuple[str, float, List[float]]:
         """
 
         :param samples: Sampled target translations for one single source input sentence
         :param reference: Actual reference translation to compare to samples (oracle mode).
 
-        :return: The best-performing sample and its utility score.
+        :return: The best-performing sample, its utility score and all utility scores.
         """
 
         average_utilities = []
@@ -208,14 +211,14 @@ class MBR(object):
                 utilities = []
 
                 for pseudo_reference in samples:
+
                     utility = self.score(sample, pseudo_reference)
                     utilities.append(utility)
 
-                if len(utilities) == 0:
-                    average_utility = 0.0
-                else:
-                    average_utility = np.mean(utilities)
+                average_utility = np.mean(utilities)
+
             else:
+
                 # with reference, operate in oracle mode and compare to the actual reference
 
                 average_utility = self.score(sample, reference)
@@ -224,7 +227,7 @@ class MBR(object):
 
         maximum_utility_index = int(np.argmax(average_utilities))
 
-        return samples[maximum_utility_index], np.max(average_utilities)
+        return samples[maximum_utility_index], np.max(average_utilities), average_utilities
 
     def cache_info(self) -> None:
         """
@@ -275,6 +278,7 @@ def main():
 
     for line_index, line_tuple in enumerate(zip_function(*input_handles)):
 
+        # noinspection PyTupleAssignmentBalance
         input_line, ref_line = line_tuple
 
         # new scorer cache for each set of samples
@@ -282,31 +286,30 @@ def main():
         mbr_decoder.cache_clear()
 
         jobj = json.loads(input_line)
-        samples = jobj["translations"]
+        samples = [t.strip() for t in jobj["translations"]]
 
         if args.num_samples > -1:
-            samples = samples[args.sample_start_index:args.num_samples]
-            assert len(samples) >= args.num_samples, "Slicing with --sample-start-index selected " \
-                                                     "fewer translations than --num-samples!"
-
-        # remove samples if they are the empty string or whitespace-only
-
-        samples = [sample for sample in samples if sample.strip() != ""]
+            samples = samples[0:args.num_samples]
+            assert len(samples) >= args.num_samples, "Actual samples in input are fewer than --num-samples!"
 
         # in dry run mode, do actual computation for the first example, then toy numbers
 
         if args.dry_run and line_index > 0:
-            output, utility = samples[0], 0.0
+            best_sample, best_utility, utilities = samples[0], 0.0, [0.0] * len(samples)
         else:
-            output, utility = mbr_decoder.get_maximum_utility_sample(samples=samples, reference=ref_line)
+            best_sample, best_utility, utilities = mbr_decoder.get_maximum_utility_sample(samples=samples,
+                                                                                          reference=ref_line)
 
         # always log cache info for dry run
 
         if args.dry_run:
             mbr_decoder.cache_info()
 
-        output = output.strip()
-        output_handle.write("%f\t%s\n" % (utility, output))
+        jobj["utilities"] = utilities
+        jobj["best_sample"] = best_sample.strip()
+        jobj["best_utility"] = best_utility
+
+        output_handle.write(json.dumps(jobj) + "\n")
 
     # log contents of last cache if not dry run
 

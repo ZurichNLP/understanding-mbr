@@ -80,8 +80,8 @@ for unused in useless_loop_var; do
         cat $parts_prefix.{1..32} > $output
     fi
 
-    # remove MBR scores, leaving only the text
+    # extract the text of the best sample
 
-    cat $output | cut -f2 > $output.text
+    cat $output | python $scripts/extract_best_sample_from_mbr.py > $output.text
 
 done
