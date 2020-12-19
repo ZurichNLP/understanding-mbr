@@ -103,11 +103,12 @@ for corpus in $corpora; do
     # e.g. dev.mbr.sample.40.1.trg.text
 
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
+
         for seed in $seeds; do
 
-            nbest_input=$samples_sub_sub/$corpus.sample.nbest.$seed.trg
-
             for utility_function in $utility_functions; do
+
+                nbest_input=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg
 
                 input=$mbr_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text
                 output_prefix=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed
@@ -129,9 +130,9 @@ for corpus in $corpora; do
 
         for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
 
-            nbest_input=$translations_sub_sub/$corpus.beam.$length_penalty_alpha.nbest.$num_samples.trg
-
             for utility_function in $utility_functions; do
+
+                nbest_input=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg
 
                 input=$mbr_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text
                 output_prefix=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples
