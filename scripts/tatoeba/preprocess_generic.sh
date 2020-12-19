@@ -10,6 +10,7 @@
 # $wmt_testset_available
 # $create_slice_dev
 # $preprocess_additional_test_corpora
+# $preprocess_langid
 
 base=$1
 src=$2
@@ -20,6 +21,7 @@ dry_run=$6
 wmt_testset_available=$7
 create_slice_dev=$8
 preprocess_additional_test_corpora=$9
+preprocess_langid=${10}
 
 data=$base/data
 venvs=$base/venvs
@@ -191,11 +193,18 @@ done
 
 # langid filter for train data
 
-paste $data_sub/train.prenorm.src $data_sub/train.prenorm.trg | \
-    python $scripts/bitext-match-lang.py -s ${src} -t ${trg} > $data_sub/train.langchecked.both
+if [[ $preprocess_langid == "true" ]]; then
 
-cut -f1 $data_sub/train.langchecked.both > $data_sub/train.langchecked.src
-cut -f2 $data_sub/train.langchecked.both > $data_sub/train.langchecked.trg
+    paste $data_sub/train.prenorm.src $data_sub/train.prenorm.trg | \
+        python $scripts/bitext-match-lang.py -s ${src} -t ${trg} > $data_sub/train.langchecked.both
+
+    cut -f1 $data_sub/train.langchecked.both > $data_sub/train.langchecked.src
+    cut -f2 $data_sub/train.langchecked.both > $data_sub/train.langchecked.trg
+
+else
+    cp $data_sub/train.prenorm.src $data_sub/train.langchecked.src
+    cp $data_sub/train.prenorm.trg $data_sub/train.langchecked.trg
+fi
 
 # normalize train data
 

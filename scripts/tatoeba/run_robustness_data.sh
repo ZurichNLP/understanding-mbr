@@ -27,4 +27,8 @@ download_robustness_data="true"
 corpora="test slice-test it law koran subtitles"
 preprocess_additional_test_corpora="it law koran subtitles"
 
+# trust this data, no need for langid (that in this case removes ~200k sentence pairs of 1m total)
+
+preprocess_langid="false"
+
 . $scripts/tatoeba/run_tatoeba_generic.sh
