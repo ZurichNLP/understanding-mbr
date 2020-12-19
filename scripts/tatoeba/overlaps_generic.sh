@@ -105,7 +105,7 @@ for corpus in $corpora; do
     for num_samples in 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100; do
         for seed in $seeds; do
 
-            nbest_input=$translations_sub_sub/$corpus.sample.nbest.$seed.trg
+            nbest_input=$samples_sub_sub/$corpus.sample.nbest.$seed.trg
 
             for utility_function in $utility_functions; do
 
