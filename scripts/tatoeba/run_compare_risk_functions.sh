@@ -16,11 +16,11 @@ LANG_PAIRS=(
     "bel rus"
 )
 
-utility_functions="sentence-bleu sentence-bleu-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-balanced sentence-meteor-symmetric"
+utility_functions="sentence-bleu-floor sentence-bleu-floor-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-balanced sentence-meteor-symmetric"
 
 # compare risk functions + no label smoothing
 
-# if those models are trained already, do not retrain
+# if those models are trained already, they are not retrained
 
 model_name="no_label_smoothing"
 
@@ -30,7 +30,7 @@ train_additional_args="--label-smoothing 0.0"
 
 preprocess_execute_more_mem="true"
 
-# means that mbr can run for 3 days at most
+# means that mbr can run for 4 days at most
 
 mbr_execute_longer="true"
 

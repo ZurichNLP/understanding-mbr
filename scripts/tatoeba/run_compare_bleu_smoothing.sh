@@ -20,13 +20,13 @@ utility_functions="sentence-bleu sentence-bleu-symmetric sentence-bleu-floor sen
 
 # compare risk functions + no label smoothing
 
-# if those models are trained already, do not retrain
+# if those models are trained already, they are not retrained
 
 model_name="no_label_smoothing"
 
 train_additional_args="--label-smoothing 0.0"
 
-# means that mbr can run for 3 days at most
+# means that mbr can run for 4 days at most
 
 mbr_execute_longer="true"
 

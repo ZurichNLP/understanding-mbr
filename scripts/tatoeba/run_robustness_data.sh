@@ -18,7 +18,7 @@ train_additional_args="--label-smoothing 0.0"
 
 preprocess_execute_more_mem="true"
 
-# means that mbr can run for 3 days at most
+# means that mbr can run for 4 days at most (this is not enough for this many corpora!)
 
 mbr_execute_longer="true"
 
