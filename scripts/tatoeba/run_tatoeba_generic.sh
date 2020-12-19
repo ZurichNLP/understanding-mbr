@@ -146,6 +146,7 @@ echo "TEST CORPORA: $corpora" | tee -a $logs_sub_sub/MAIN
 echo "DOWNLOAD ROBUSTNESS DATA: $download_robustness_data" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS EXECUTE MORE MEM: $preprocess_execute_more_mem" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS CREATE DEV SLICE: $preprocess_create_slice_dev" | tee -a $logs_sub_sub/MAIN
+echo "PREPROCESS LANGID: $preprocess_langid" | tee -a $logs_sub_sub/MAIN
 echo "PREPROCESS COPY NOISE PROB: $preprocess_copy_noise_probability" | tee -a $logs_sub_sub/MAIN
 echo "TRAIN DEV CORPUS: $train_dev_corpus" | tee -a $logs_sub_sub/MAIN
 echo "ADDITIONAL TRAIN ARGS: $train_additional_args" | tee -a $logs_sub_sub/MAIN
