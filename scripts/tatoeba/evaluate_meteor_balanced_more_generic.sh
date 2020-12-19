@@ -24,7 +24,7 @@ for unused in pseudo_loop; do
     $METEOR \
         $untokenized_hyp.tok \
         $tokenized_ref \
-        $METEOR_PARAMS -p 0.5 0.2 0.6 0.75 2> /dev/null \
+        $METEOR_PARAMS -p "0.5 0.2 0.6 0.75" 2> /dev/null \
         > $output
 
     echo "$output"
