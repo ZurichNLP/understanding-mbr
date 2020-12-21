@@ -95,10 +95,10 @@ th, td {
 
   function stats() {
 
-    const countNormal = $("tbody tr:not([class])").length;
-    const countCopies = $(".copy:not(.hallucination)").length;
-    const countHallucinations = $(".hallucination:not(.copy)").length;
-    const countBoth = $(".copy.hallucination").length;
+    const countNormal = $("tbody tr:not(:has(td[class]))").length;
+    const countCopies = $("tr").has("td.copy:not(.hallucination)").length;
+    const countHallucinations = $("tr").has("td.hallucination:not(.copy)").length;
+    const countBoth = $("tr").has("td.copy.hallucination").length;
     const countAll = $("tbody tr").length;
 
     $("#count-normal").text(countNormal.toString());
@@ -115,6 +115,10 @@ th, td {
     });
 
     $('select').prop('selectedIndex', 0);
+
+    // trigger textFieldChanged events
+    $('#threshold-copy').trigger('keyup');
+    $('#threshold-hallucination').trigger('keyup');
   };
 
   $(document).ready(() => {
