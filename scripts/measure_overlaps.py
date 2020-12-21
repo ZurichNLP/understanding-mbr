@@ -41,7 +41,7 @@ class Measurer(object):
 
             # set weights for ngram precisions
 
-            precision_weights = [1.0, 0.8, 0.0, 0.0]
+            precision_weights = [0.55, 0.45, 0.0, 0.0]
 
             args = argparse.Namespace(smooth_method="none", smooth_value=None, force=False,
                                       short=False, lc=False, tokenize=sacrebleu.DEFAULT_TOKENIZER,
@@ -91,8 +91,8 @@ class Measurer(object):
         :param compare_string:
         :return:
         """
-        input_tokens = self.tokenize(input_string)
-        compare_tokens = self.tokenize(compare_string)
+        input_tokens = self.tokenize(input_string).split(" ")
+        compare_tokens = self.tokenize(compare_string).split(" ")
 
         input_length = len(input_tokens)
 

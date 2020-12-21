@@ -5,6 +5,7 @@ import logging
 import argparse
 
 from typing import List
+from itertools import zip_longest
 
 
 HEADER = """<!DOCTYPE html>
@@ -18,6 +19,7 @@ table {
     border-spacing: 0;
     width: 100%;
     border: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
 th, td {
@@ -92,7 +94,11 @@ def create_table(line_index: int,
 
     lists = [translations, utilities, overlaps_with_source, overlaps_with_reference_word, overlaps_with_reference_bleu2]
 
-    for sub_index, value_tuple in enumerate(zip(*lists)):
+    for sub_index, value_tuple in enumerate(zip_longest(*lists)):
+
+        if None in value_tuple:
+            break
+
         # noinspection PyTupleAssignmentBalance
         hypothesis, utility, overlap_with_source, overlap_with_reference_word, overlap_with_reference_bleu2 = value_tuple
 
@@ -128,7 +134,7 @@ def main():
 
         create_table(line_index, nbest_line, source_line, reference_line)
 
-        print("<hr>")
+        #print("<hr>")
 
     print(FOOTER)
 

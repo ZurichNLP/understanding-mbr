@@ -36,9 +36,9 @@ def main():
             tokenized_translations = []
 
             for translation in translations:
-                depieced_translation = t(translation.strip())
+                tokenized_translation = t(translation.strip())
 
-                tokenized_translations.append(depieced_translation)
+                tokenized_translations.append(tokenized_translation)
 
             jobj["translations"] = tokenized_translations
 

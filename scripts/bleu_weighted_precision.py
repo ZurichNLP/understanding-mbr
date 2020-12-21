@@ -8,9 +8,6 @@ from typing import List, Optional, Iterable, Union
 from itertools import zip_longest
 
 
-DEFAULT_PRECISION_WEIGHTS = [1.0, 1.0, 1.0, 1.0]
-
-
 class WeightedBLEU(BLEU):
 
     def __init__(self, args):
@@ -54,9 +51,6 @@ class WeightedBLEU(BLEU):
         if smooth_value is None:
             smooth_value = BLEU.SMOOTH_DEFAULTS[smooth_method]
 
-        if precision_weights is None:
-            precision_weights = DEFAULT_PRECISION_WEIGHTS
-
         precisions = [0.0 for _ in range(BLEU.NGRAM_ORDER)]
 
         smooth_mteval = 1.
@@ -92,13 +86,19 @@ class WeightedBLEU(BLEU):
         else:
             bp = 1.0
 
-        weighted_precisions = []
+        if precision_weights is None:
+            weighted_precisions = precisions
+            score_denominator = effective_order
+        else:
+            weighted_precisions = []
 
-        for weight, precision in zip(precision_weights[:effective_order], precisions[:effective_order]):
-            weighted_precisions.append(weight * precision)
+            for weight, precision in zip(precision_weights[:effective_order], precisions[:effective_order]):
+                weighted_precisions.append(weight * sacrebleu.utils.my_log(precision))
+
+            score_denominator = 1.0
 
         score = bp * math.exp(
-            sum(map(sacrebleu.utils.my_log, weighted_precisions)) / effective_order)
+            sum(weighted_precisions) / score_denominator)
 
         return BLEUScore(
             score, correct, total, precisions, bp, sys_len, ref_len)

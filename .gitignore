@@ -18,3 +18,4 @@ lengths
 counts
 .python-version
 overlaps
+*.pyc

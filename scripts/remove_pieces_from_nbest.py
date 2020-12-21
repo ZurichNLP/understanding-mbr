@@ -37,6 +37,16 @@ def main():
         for line in input_handle:
             jobj = json.loads(line)
 
+            # single best translation
+
+            translation = jobj["translation"]
+
+            depieced_translation = remove_pieces(translation)
+
+            jobj["translation"] = depieced_translation
+
+            # nbest translations
+
             translations = jobj["translations"]
 
             depieced_translations = []
