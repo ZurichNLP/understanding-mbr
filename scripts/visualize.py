@@ -39,8 +39,126 @@ th, td {
     padding: 16px;
 }
 </style>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+<script>
+
+  const textFieldChangedCopy = (e) => {
+    const textField = $(e.currentTarget);
+    const value = textField.val();
+    
+    $("tbody tr").each((i, row) => {
+      const cellValue = parseFloat($("td:nth-child(7)", row).first().text());
+      const copyCells = $("td:nth-child(3), td:nth-child(4), td:nth-child(7)", row);
+      copyCells.toggleClass("copy", cellValue > value)
+    });
+
+    stats();
+  };
+
+  const textFieldChangedHallucination = (e) => {
+    const textField = $(e.currentTarget);
+    const value = textField.val();
+
+    const hallucinationFunction = $("#function-hallucination option:selected").first().text();
+
+    console.log("hall function: " + hallucinationFunction);
+
+    var cellValueIndex;
+
+    if (hallucinationFunction === "word") {
+      cellValueIndex = 8;
+    } else {
+      cellValueIndex = 9;
+    }
+
+    $("tbody tr").each((i, row) => {
+      const cellValue = parseFloat($(`td:nth-child(${cellValueIndex})`, row).first().text());
+
+      const allCells = $("td", row);
+      allCells.removeClass("hallucination");
+
+      const copyCells = $(`td:nth-child(4), td:nth-child(5), td:nth-child(${cellValueIndex})`, row);
+      copyCells.toggleClass("hallucination", cellValue < value)
+    });
+
+    stats();
+  };
+
+  const dropdownChanged = (e) => {
+    // trigger textFieldChanged events
+    $('#threshold-copy').trigger('keyup');
+    $('#threshold-hallucination').trigger('keyup');
+  };
+
+  function stats() {
+
+    const countNormal = $("tbody tr:not([class])").length;
+    const countCopies = $(".copy:not(.hallucination)").length;
+    const countHallucinations = $(".hallucination:not(.copy)").length;
+    const countBoth = $(".copy.hallucination").length;
+    const countAll = $("tbody tr").length;
+
+    $("#count-normal").text(countNormal.toString());
+    $("#count-copies").text(countCopies.toString());
+    $("#count-hallucinations").text(countHallucinations.toString());
+    $("#count-both").text(countBoth.toString());
+    $("#count-all").text(countAll.toString());
+  };
+
+  const ResetClicked = (e) => {
+    $("input[type=number]").each(function(){
+      var $current = $(this);
+      $current.val($current.data("original-value"))
+    });
+
+    $('select').prop('selectedIndex', 0);
+  };
+
+  $(document).ready(() => {
+    $("#threshold-copy").bind('keyup', textFieldChangedCopy);
+    $("#threshold-hallucination").bind('keyup', textFieldChangedHallucination);
+    $("#function-hallucination").bind('change', dropdownChanged);
+    $("#button-reset").bind('click', ResetClicked);
+    stats();
+  });
+</script>
 </head>
 <body>
+<h1>Settings</h1>
+<div>
+  Highlight as copies if overlap with source larger than
+  <input id="threshold-copy" type="number" value="0.9" data-original-value="0.9" step="any"/>
+</div>
+<br>
+<div>
+  Highlight as hallucinations if overlap with reference lower than
+  <input id="threshold-hallucination" type="number" step="any" value="0.01" data-original-value="0.01"/>
+</div>
+<br>
+<div>
+  Highlight hallucinations with this overlap function: <select id="function-hallucination">
+  <option value="bleu2">bleu-2</option>
+  <option value="word">word</option>
+</select>
+</div>
+<br>
+<input type="button" id="button-reset" value="Reset to default values">
+<br>
+
+<!-- somehow count all tr in DOM; accumulate $("tbody tr).length? -->
+
+<h1>Statistics</h1>
+<p>Normal hypotheses: <span id="count-normal"/></p>
+<p>Copies: <span id="count-copies"/></p>
+<p>Hallucinations: <span id="count-hallucinations"/></p>
+<p>Both: <span id="count-both"/></p>
+<p><strong>Total: <span id="count-all"/></strong></p>
+<br>
+<h1>Translations</h1>
+<br>
 """
 
 COLUMN_HEADERS = ["ID", "SUB ID", "SOURCE", "HYPOTHESIS", "REFERENCE", "UTILITY", "OVERLAP_SOURCE",
@@ -182,16 +300,36 @@ class TableCreator(object):
 
             counts[hyp_type] += 1
 
-            print("  <tr%s>" % class_string)
+            print("  <tr>")
 
             cell_items = [line_index, sub_index, source_line, hypothesis, reference_line, utility, overlap_with_source,
                           overlap_with_reference_word, overlap_with_reference_bleu2]
 
-            cell_items = [truncate_if_float(c) for c in cell_items]
+            highlight = [False for _ in cell_items]
 
-            for cell_item in cell_items:
-                cell_item = str(cell_item)
-                print("    <td>%s</td>" % cell_item)
+            if hyp_type == "copy":
+                highlight_indexes = [2, 3, 6]
+            elif hyp_type == "hallucination":
+                highlight_indexes = [3, 4]
+
+                if self.highlight_type_hallucination == "word":
+                    highlight_indexes.append(7)
+                else:
+                    highlight_indexes.append(8)
+            else:
+                highlight_indexes = []
+
+            for h in highlight_indexes:
+                highlight[h] = True
+
+            cell_items = [str(truncate_if_float(c)) for c in cell_items]
+
+            for cell_index, cell_item in enumerate(cell_items):
+
+                if highlight[cell_index]:
+                    print("    <td%s>%s</td>" % (class_string, cell_item))
+                else:
+                    print("    <td>%s</td>" % cell_item)
 
             print("  </tr>")
 
