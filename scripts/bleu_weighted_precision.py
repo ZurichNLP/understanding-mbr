@@ -86,7 +86,7 @@ class WeightedBLEU(BLEU):
         else:
             bp = 1.0
 
-        if precision_weights is None or effective_order == 1:
+        if precision_weights is None:
             weighted_precisions = precisions
             score_denominator = effective_order
         else:
