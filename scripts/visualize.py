@@ -34,6 +34,14 @@ tr:nth-child(even) {
     background-color: #ADD8E6 !important;
 }
 
+.copy.hallucination {
+    background: linear-gradient(0deg, rgba(255,182,193,1) 0%, rgba(173,216,230,1) 100%);
+}
+
+div, p, input, select {
+  font-size: 20px;
+}
+
 th, td {
     text-align: left;
     padding: 16px;
@@ -127,18 +135,27 @@ th, td {
     $("#function-hallucination").bind('change', dropdownChanged);
     $("#button-reset").bind('click', ResetClicked);
     stats();
+    $("#button-reset").trigger('click');
   });
 </script>
 </head>
 <body>
-<h1>Settings</h1>
+"""
+
+INFO_TEMPLATE = """<h1>Info</h1>
+<p>Source: {source}</p>
+<p>Translations: {nbest}</p>
+<p>Reference: {reference}</p>
+<br>"""
+
+HEADER2 = """<h1>Settings</h1>
 <div>
-  Highlight as copies if overlap with source larger than
+  Highlight as <span class="copy">copies</span> if overlap with source larger than
   <input id="threshold-copy" type="number" value="0.9" data-original-value="0.9" step="any"/>
 </div>
 <br>
 <div>
-  Highlight as hallucinations if overlap with reference lower than
+  Highlight as <span class="hallucination">hallucinations</span> if overlap with reference lower than
   <input id="threshold-hallucination" type="number" step="any" value="0.01" data-original-value="0.01"/>
 </div>
 <br>
@@ -151,8 +168,6 @@ th, td {
 <br>
 <input type="button" id="button-reset" value="Reset to default values">
 <br>
-
-<!-- somehow count all tr in DOM; accumulate $("tbody tr).length? -->
 
 <h1>Statistics</h1>
 <p>Normal hypotheses: <span id="count-normal"/></p>
@@ -351,6 +366,8 @@ def main():
     logging.debug(args)
 
     print(HEADER)
+    print(INFO_TEMPLATE.format(source=args.source, nbest=args.nbest, reference=args.reference))
+    print(HEADER2)
 
     source_handle = open(args.source, "r")
     reference_handle = open(args.reference, "r")
