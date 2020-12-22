@@ -14,7 +14,7 @@ for overlap_function in word bleu-2; do
 
     output=$output_prefix.overlap_with_source_"$overlap_function"
 
-    if [[ -s $output ]]; then
+    if [[ -s "$output".npy ]]; then
       continue
     fi
 
@@ -32,7 +32,7 @@ for overlap_function in word bleu-2; do
 
     output=$output_prefix.overlap_with_reference_"$overlap_function"
 
-    if [[ -s $output ]]; then
+    if [[ -s "$output".npy ]]; then
       continue
     fi
 
