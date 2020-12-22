@@ -15,6 +15,10 @@ HEADER = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
 <style>
+body {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -22,6 +26,7 @@ table {
     border: 1px solid #ddd;
     margin-bottom: 10px;
 }
+
 tr:nth-child(even) {
     background-color: #f2f2f2
 }
