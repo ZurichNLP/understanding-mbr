@@ -52,17 +52,20 @@ mkdir -p $overlaps_sub_sub
 for corpus in $corpora; do
 
     # de-piece source and reference once (potentially different from original files without normalization etc.)
+    # second sed: removes leading whitespace
 
     source=$data_sub_sub/$corpus.depieced.src
 
     cat $data_sub_sub/$corpus.pieces.src | \
-        sed 's/ //g;s/▁/ /g' \
+        sed 's/ //g;s/▁/ /g' | \
+        sed 's/^ //g' \
         > $source
 
     reference=$data_sub_sub/$corpus.depieced.trg
 
     cat $data_sub_sub/$corpus.pieces.trg | \
-        sed 's/ //g;s/▁/ /g' \
+        sed 's/ //g;s/▁/ /g' | \
+        sed 's/^ //g' \
         > $reference
 
     # beam top translations

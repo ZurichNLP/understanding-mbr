@@ -86,11 +86,16 @@ class WeightedBLEU(BLEU):
         else:
             bp = 1.0
 
-        if precision_weights is None:
+        if precision_weights is None or effective_order == 1:
             weighted_precisions = precisions
             score_denominator = effective_order
         else:
             weighted_precisions = []
+
+            # ensure that if references are of length 1, the score has a maximum of 100
+
+            if effective_order == 1:
+                precision_weights = [1.0]
 
             for weight, precision in zip(precision_weights[:effective_order], precisions[:effective_order]):
                 weighted_precisions.append(weight * sacrebleu.utils.my_log(precision))
