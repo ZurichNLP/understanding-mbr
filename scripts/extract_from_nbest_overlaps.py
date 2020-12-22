@@ -17,10 +17,10 @@ def parse_args():
     parser.add_argument("--output", type=str, help="Where to save JSON results.", required=True)
 
     parser.add_argument("--threshold-copy", type=float, help="Threshold above which to classify as copies.",
-                        required=True)
+                        required=False, default=0.9)
     parser.add_argument("--threshold-hallucination", type=float, help="Threshold below which to classify as"
                                                                       "hallucination.",
-                        required=True)
+                        required=False, default=0.01)
 
     args = parser.parse_args()
 
