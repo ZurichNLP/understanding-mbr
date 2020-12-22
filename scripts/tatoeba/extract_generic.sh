@@ -51,7 +51,7 @@ for corpus in $corpora; do
 
         for beam_size in $beam_sizes; do
 
-            output=$extracts_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.trg.extract
+            output=$extracts_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.extract
             overlaps_source=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.overlap_with_source_word.npy
             overlaps_reference=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.overlap_with_reference_bleu-2.npy
 
@@ -67,7 +67,7 @@ for corpus in $corpora; do
 
             let "absolute_pos=(pos + (($seed - 1) * 100))"
 
-            output=$extracts_sub_sub/$corpus.sample.top.$absolute_pos.trg.extract
+            output=$extracts_sub_sub/$corpus.sample.top.$absolute_pos.extract
             overlaps_source=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos.overlap_with_source_word.npy
             overlaps_reference=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos.overlap_with_reference_bleu-2.npy
 
@@ -85,9 +85,9 @@ for corpus in $corpora; do
             for utility_function in $utility_functions; do
 
                 nbest_input=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.nbest_overlap
-                nbest_output=$extracts_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.nbest_extract
+                nbest_output=$extracts_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.nbest_extract
 
-                output=$extracts_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.trg.text.extract
+                output=$extracts_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.extract
                 overlaps_source=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.overlap_with_source_word.npy
                 overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.overlap_with_reference_bleu-2.npy
 
@@ -107,10 +107,10 @@ for corpus in $corpora; do
 
             for utility_function in $utility_functions; do
 
-                nbest_input=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.nbest_overlap
-                nbest_output=$extracts_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.nbest_extract
+                nbest_input=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.nbest_overlap
+                nbest_output=$extracts_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.nbest_extract
 
-                output=$extracts_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.trg.text.extract
+                output=$extracts_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.extract
                 overlaps_source=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.overlap_with_source_word.npy
                 overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.overlap_with_reference_bleu-2.npy
 
