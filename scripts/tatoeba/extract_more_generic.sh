@@ -17,7 +17,7 @@ for unused in pseudo_loop; do
 
     python $base/scripts/extract_from_overlaps.py \
         --overlaps-source $overlaps_source \
-        --overlaps-reference $overlaps_reference\
+        --overlaps-reference $overlaps_reference \
         --output $output \
         --threshold-copy $threshold_copy \
         --threshold-hallucination $threshold_hallucination

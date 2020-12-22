@@ -296,4 +296,4 @@ id_extract=$(
     $base $src $trg $model_name "$utility_functions" "$corpora"
 )
 
-echo "  id_extract: $id_extract | $logs_sub_sub/slurm-$id_overlaps.out"  | tee -a $logs_sub_sub/MAIN
+echo "  id_extract: $id_extract | $logs_sub_sub/slurm-$id_extract.out"  | tee -a $logs_sub_sub/MAIN
