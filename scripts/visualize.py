@@ -77,14 +77,14 @@ th, td {
 
     const hallucinationFunction = $("#function-hallucination option:selected").first().text();
 
-    console.log("hall function: " + hallucinationFunction);
-
     var cellValueIndex;
 
     if (hallucinationFunction === "word") {
       cellValueIndex = 8;
-    } else {
+    } else if (hallucinationFunction === "bleu2") {
       cellValueIndex = 9;
+    } else {
+      cellValueIndex = 10;
     }
 
     $("tbody tr").each((i, row) => {
@@ -166,7 +166,8 @@ HEADER2 = """<h1>Settings</h1>
 <br>
 <div>
   Highlight hallucinations with this overlap function: <select id="function-hallucination">
-  <option value="bleu2">bleu-2</option>
+  <option value="chrf">chrf</option>
+  <option value="bleu2">bleu2</option>
   <option value="word">word</option>
 </select>
 </div>
@@ -186,7 +187,7 @@ HEADER2 = """<h1>Settings</h1>
 """
 
 COLUMN_HEADERS = ["ID", "SUB ID", "SOURCE", "HYPOTHESIS", "REFERENCE", "UTILITY", "OVERLAP_SOURCE",
-                  "OVERLAP_REFERENCE_WORD", "OVERLAP_REFERENCE_BLEU2"]
+                  "OVERLAP_REFERENCE_WORD", "OVERLAP_REFERENCE_BLEU2", "OVERLAP_REFERENCE_CHRF"]
 
 FOOTER = """
 </body>
@@ -208,7 +209,7 @@ def parse_args():
                         required=False, default=0.01)
     parser.add_argument("--highlight-type-hallucination", type=str, help="Which overlap value to use for coloring"
                                                                          "hallucination cells",
-                        required=False, default="bleu-2", choices=["word", "bleu-2"])
+                        required=False, default="chrf", choices=["word", "bleu2", "chrf"])
 
     args = parser.parse_args()
 
@@ -253,12 +254,14 @@ class TableCreator(object):
     def get_class_string(self,
                          overlap_with_source: float,
                          overlap_with_reference_word: float,
-                         overlaps_with_reference_bleu2: float) -> Tuple[str, str]:
+                         overlaps_with_reference_bleu2: float,
+                         overlaps_with_reference_chrf: float) -> Tuple[str, str]:
         """
 
         :param overlap_with_source:
         :param overlap_with_reference_word:
         :param overlaps_with_reference_bleu2:
+        :param overlaps_with_reference_chrf:
         :return:
         """
 
@@ -267,8 +270,10 @@ class TableCreator(object):
 
         if self.highlight_type_hallucination == "word":
             compare_to = overlap_with_reference_word
-        else:
+        elif self.highlight_type_hallucination == "bleu2":
             compare_to = overlaps_with_reference_bleu2
+        else:
+            compare_to = overlaps_with_reference_chrf
 
         if compare_to <= self.highlight_threshold_hallucination:
             return ' class="hallucination"', "hallucination"
@@ -306,8 +311,10 @@ class TableCreator(object):
         overlaps_with_source = jobj["overlaps_with_source"]  # type: List[float]
         overlaps_with_reference_word = jobj["overlaps_with_reference_word"]  # type: List[float]
         overlaps_with_reference_bleu2 = jobj["overlaps_with_reference_bleu2"]  # type: List[float]
+        overlaps_with_reference_chrf = jobj["overlaps_with_reference_chrf"]  # type: List[float]
 
-        lists = [translations, utilities, overlaps_with_source, overlaps_with_reference_word, overlaps_with_reference_bleu2]
+        lists = [translations, utilities, overlaps_with_source,
+                 overlaps_with_reference_word, overlaps_with_reference_bleu2, overlaps_with_reference_chrf]
 
         counts = Counter()
 
@@ -317,17 +324,18 @@ class TableCreator(object):
                 break
 
             # noinspection PyTupleAssignmentBalance
-            hypothesis, utility, overlap_with_source, overlap_with_reference_word, overlap_with_reference_bleu2 = value_tuple
+            hypothesis, utility, overlap_with_source, overlap_with_reference_word, overlap_with_reference_bleu2, \
+                overlap_with_reference_chrf = value_tuple
 
             class_string, hyp_type = self.get_class_string(overlap_with_source, overlap_with_reference_word,
-                                                           overlap_with_reference_bleu2)
+                                                           overlap_with_reference_bleu2, overlap_with_reference_chrf)
 
             counts[hyp_type] += 1
 
             print("  <tr>")
 
             cell_items = [line_index, sub_index, source_line, hypothesis, reference_line, utility, overlap_with_source,
-                          overlap_with_reference_word, overlap_with_reference_bleu2]
+                          overlap_with_reference_word, overlap_with_reference_bleu2, overlap_with_reference_chrf]
 
             highlight = [False for _ in cell_items]
 
@@ -338,8 +346,10 @@ class TableCreator(object):
 
                 if self.highlight_type_hallucination == "word":
                     highlight_indexes.append(7)
-                else:
+                elif self.highlight_type_hallucination == "bleu2":
                     highlight_indexes.append(8)
+                else:
+                    highlight_indexes.append(9)
             else:
                 highlight_indexes = []
 

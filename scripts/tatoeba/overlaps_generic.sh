@@ -22,6 +22,8 @@ sample_positions="1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
 seeds="1 2"
 beam_sizes="5 10"
 
+overlap_functions="word bleu2 chrf"
+
 source $base/venvs/sockeye3-cpu/bin/activate
 
 data=$base/data
@@ -81,7 +83,7 @@ for corpus in $corpora; do
             output_prefix=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size
 
             # sub script will add to the prefix:
-            # ".overlap_with_{source,reference}_{word,bleu-2}"
+            # ".overlap_with_{source,reference}_{word,bleu2,chrf}"
 
             . $scripts/tatoeba/overlaps_more_generic.sh
         done
@@ -99,7 +101,7 @@ for corpus in $corpora; do
             output_prefix=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos
 
             # sub script will add to the prefix:
-            # ".overlap_with_{source,reference}_{word,bleu-2}"
+            # ".overlap_with_{source,reference}_{word,bleu2,chrf}"
 
             . $scripts/tatoeba/overlaps_more_generic.sh
         done
@@ -120,7 +122,7 @@ for corpus in $corpora; do
                 output_prefix=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed
 
                 # sub script will add to the prefix:
-                # ".overlap_with_{source,reference}_{word,bleu-2}"  ".nbest_overlap"
+                # ".overlap_with_{source,reference}_{word,bleu2,chrf}"  ".nbest_overlap"
 
                 . $scripts/tatoeba/overlaps_more_generic.sh
                 . $scripts/tatoeba/overlaps_nbest_more_generic.sh
@@ -144,7 +146,7 @@ for corpus in $corpora; do
                 output_prefix=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples
 
                 # sub script will add to the prefix:
-                # ".overlap_with_{source,reference}_{word,bleu-2}"  ".nbest_overlap"
+                # ".overlap_with_{source,reference}_{word,bleu2,chrf}"  ".nbest_overlap"
 
                 . $scripts/tatoeba/overlaps_more_generic.sh
                 . $scripts/tatoeba/overlaps_nbest_more_generic.sh

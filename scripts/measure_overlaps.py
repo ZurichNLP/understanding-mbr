@@ -7,7 +7,11 @@ import sacrebleu
 
 # local dependency
 
+# noinspection PyUnresolvedReferences
 from bleu_weighted_precision import WeightedBLEU
+
+
+OVERLAP_FUNCTIONS = ["word", "bleu2", "chrf"]
 
 
 def parse_args():
@@ -18,7 +22,7 @@ def parse_args():
 
     parser.add_argument("--output", type=str, help="Where to save numpy array of overlaps.", required=True)
     parser.add_argument("--overlap-function", type=str, help="How to compute overlap.", required=True,
-                        choices=["word", "bleu-2"])
+                        choices=OVERLAP_FUNCTIONS)
 
     args = parser.parse_args()
 
@@ -36,8 +40,8 @@ class Measurer(object):
 
         if overlap_function == "word":
             self.overlap_function = self.measure_overlap_word
-        else:
-            self.overlap_function = self.measure_overlap_bleu2
+        elif overlap_function == "bleu-2":
+            self.overlap_function = self.measure_overlap_sacrebleu
 
             # set weights for ngram precisions
 
@@ -48,6 +52,13 @@ class Measurer(object):
                                       precision_weights=precision_weights)
 
             self.scorer = WeightedBLEU(args)
+
+        else:
+            self.overlap_function = self.measure_overlap_sacrebleu
+
+            args = argparse.Namespace(chrf_order=6, chrf_beta=2, chrf_whitespace=False, short=False)
+
+            self.scorer = sacrebleu.metrics.CHRF(args)
 
         self.tokenize = sacrebleu.tokenizers.tokenizer_13a.Tokenizer13a()
 
@@ -63,9 +74,9 @@ class Measurer(object):
 
         return self.overlap_function(input_string.strip(), compare_string.strip())
 
-    def measure_overlap_bleu2(self,
-                              input_string: str,
-                              compare_string: str) -> float:
+    def measure_overlap_sacrebleu(self,
+                                  input_string: str,
+                                  compare_string: str) -> float:
         """
 
         This method is taken from Lee et al (2019):

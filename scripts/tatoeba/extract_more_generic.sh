@@ -8,6 +8,7 @@
 # $threshold_copy
 # $threshold_hallucination
 # $output
+# $overlap_function_reference
 
 for unused in pseudo_loop; do
 
@@ -20,6 +21,7 @@ for unused in pseudo_loop; do
         --overlaps-reference $overlaps_reference \
         --output $output \
         --threshold-copy $threshold_copy \
-        --threshold-hallucination $threshold_hallucination
+        --threshold-hallucination $threshold_hallucination \
+        --overlap-function-reference $overlap_function_reference
 
 done

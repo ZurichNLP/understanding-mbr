@@ -19,6 +19,7 @@ for unused in pseudo_loop; do
         --nbest-input $nbest_input \
         --nbest-output $nbest_output \
         --threshold-copy $threshold_copy \
-        --threshold-hallucination $threshold_hallucination
+        --threshold-hallucination $threshold_hallucination \
+        --overlap-function-reference
 
 done

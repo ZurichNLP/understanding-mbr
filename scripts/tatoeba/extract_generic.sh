@@ -24,6 +24,7 @@ beam_sizes="5 10"
 
 threshold_copy=0.9
 threshold_hallucination=0.01
+overlap_function_reference="chrf"
 
 source $base/venvs/sockeye3-cpu/bin/activate
 
@@ -53,7 +54,7 @@ for corpus in $corpora; do
 
             output=$extracts_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.extract
             overlaps_source=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.overlap_with_source_word.npy
-            overlaps_reference=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.overlap_with_reference_bleu-2.npy
+            overlaps_reference=$overlaps_sub_sub/$corpus.beam.$length_penalty_alpha.top.$beam_size.overlap_with_reference_$overlap_function_reference.npy
 
             . $scripts/tatoeba/extract_more_generic.sh
         done
@@ -69,7 +70,7 @@ for corpus in $corpora; do
 
             output=$extracts_sub_sub/$corpus.sample.top.$absolute_pos.extract
             overlaps_source=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos.overlap_with_source_word.npy
-            overlaps_reference=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos.overlap_with_reference_bleu-2.npy
+            overlaps_reference=$overlaps_sub_sub/$corpus.sample.top.$absolute_pos.overlap_with_reference_$overlap_function_reference.npy
 
             . $scripts/tatoeba/extract_more_generic.sh
         done
@@ -89,7 +90,7 @@ for corpus in $corpora; do
 
                 output=$extracts_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.extract
                 overlaps_source=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.overlap_with_source_word.npy
-                overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.overlap_with_reference_bleu-2.npy
+                overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.sample.$num_samples.$seed.overlap_with_reference_$overlap_function_reference.npy
 
                 . $scripts/tatoeba/extract_more_generic.sh
                 . $scripts/tatoeba/extract_nbest_more_generic.sh
@@ -112,7 +113,7 @@ for corpus in $corpora; do
 
                 output=$extracts_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.extract
                 overlaps_source=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.overlap_with_source_word.npy
-                overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.overlap_with_reference_bleu-2.npy
+                overlaps_reference=$overlaps_sub_sub/$corpus.mbr.$utility_function.beam.$length_penalty_alpha.$num_samples.overlap_with_reference_$overlap_function_reference.npy
 
                 . $scripts/tatoeba/extract_more_generic.sh
                 . $scripts/tatoeba/extract_nbest_more_generic.sh

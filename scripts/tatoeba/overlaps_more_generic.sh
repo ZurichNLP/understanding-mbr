@@ -7,10 +7,11 @@
 # $source
 # $reference
 # $output_prefix
+# $overlap_functions
 
 # overlap with source
 
-for overlap_function in word bleu-2; do
+for overlap_function in $overlap_functions; do
 
     output=$output_prefix.overlap_with_source_"$overlap_function"
 
@@ -28,7 +29,7 @@ done
 
 # overlap with reference
 
-for overlap_function in word bleu-2; do
+for overlap_function in $overlap_functions; do
 
     output=$output_prefix.overlap_with_reference_"$overlap_function"
 

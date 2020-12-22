@@ -7,6 +7,9 @@ import json
 import numpy as np
 
 
+OVERLAP_FUNCTIONS = ["word", "bleu2", "chrf"]
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
 
@@ -21,6 +24,8 @@ def parse_args():
     parser.add_argument("--threshold-hallucination", type=float, help="Threshold below which to classify as"
                                                                       "hallucination.",
                         required=False, default=0.01)
+    parser.add_argument("--overlap-function-reference", type=str, help="Overlap function to extract for reference.",
+                        required=True, choices=OVERLAP_FUNCTIONS)
 
     args = parser.parse_args()
 
@@ -53,13 +58,13 @@ def main():
         jobj = json.loads(nbest_line)
 
         overlaps_with_source = jobj["overlaps_with_source"]
-        overlaps_with_reference_bleu2 = jobj["overlaps_with_reference_bleu2"]
+        overlaps_with_reference = jobj["overlaps_with_reference_%s" % args.overlap_function_reference]
         utilities = jobj["utilities"]
 
         utilities_copy = []
         utilities_hallucination = []
 
-        for overlap_source, overlap_reference, utility in zip(overlaps_with_source, overlaps_with_reference_bleu2, utilities):
+        for overlap_source, overlap_reference, utility in zip(overlaps_with_source, overlaps_with_reference, utilities):
 
             if overlap_source > args.threshold_copy:
                 utilities_copy.append(utility)

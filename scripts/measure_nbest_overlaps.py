@@ -6,7 +6,8 @@ import logging
 
 # local dependency
 
-from measure_overlaps import Measurer
+# noinspection PyUnresolvedReferences
+from measure_overlaps import Measurer, OVERLAP_FUNCTIONS
 
 
 def parse_args():
@@ -30,8 +31,9 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(args)
 
-    m_word = Measurer(overlap_function="word")
-    m_bleu2 = Measurer(overlap_function="bleu-2")
+    measurers = {"word": Measurer(overlap_function="word"),
+                 "bleu2": Measurer(overlap_function="bleu-2"),
+                 "chrf": Measurer(overlap_function="chrf")}
 
     source_handle = open(args.source, "r")
     reference_handle = open(args.reference, "r")
@@ -45,22 +47,21 @@ def main():
         translations = jobj["translations"]
 
         overlaps_with_source = []
-        overlaps_with_reference_word = []
-        overlaps_with_reference_bleu2 = []
+        overlaps_with_reference = {"word": [], "bleu2": [], "chrf": []}
 
         for translation in translations:
 
-            overlap_with_source = m_word.measure(translation, source_line)
-            overlap_with_reference_word = m_word.measure(translation, reference_line)
-            overlap_with_reference_bleu2 = m_bleu2.measure(translation, reference_line)
-
+            overlap_with_source = measurers["word"].measure(translation, source_line)
             overlaps_with_source.append(overlap_with_source)
-            overlaps_with_reference_word.append(overlap_with_reference_word)
-            overlaps_with_reference_bleu2.append(overlap_with_reference_bleu2)
+
+            for overlap_function in OVERLAP_FUNCTIONS:
+                overlap_with_reference = measurers[overlap_function].measure(translation, reference_line)
+                overlaps_with_reference[overlap_function].append(overlap_with_reference)
 
         jobj["overlaps_with_source"] = overlaps_with_source
-        jobj["overlaps_with_reference_word"] = overlaps_with_reference_word
-        jobj["overlaps_with_reference_bleu2"] = overlaps_with_reference_bleu2
+
+        for overlap_function in OVERLAP_FUNCTIONS:
+            jobj["overlaps_with_reference_%s" % overlap_function] = overlaps_with_reference[overlap_function]
 
         output_handle.write(json.dumps(jobj) + "\n")
 
