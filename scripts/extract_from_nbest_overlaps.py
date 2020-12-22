@@ -6,6 +6,8 @@ import json
 
 import numpy as np
 
+from typing import List
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -25,6 +27,18 @@ def parse_args():
     args = parser.parse_args()
 
     return args
+
+
+def safe_mean(input_list: List[float]) -> float:
+    """
+
+    :param list_like:
+    :return:
+    """
+
+    if len(input_list) == 0:
+        return 0.0
+
 
 
 def main():
@@ -72,8 +86,12 @@ def main():
             output_jobj["all"] += 1
 
         average_utilities_all.append(np.mean(utilities))
-        average_utilities_copy.append(np.mean(utilities_copy))
-        average_utilities_hallucination.append(np.mean(utilities_hallucination))
+
+        if len(utilities_copy) > 0:
+            average_utilities_copy.append(np.mean(utilities_copy))
+
+        if len(utilities_hallucination) > 0:
+            average_utilities_hallucination.append(np.mean(utilities_hallucination))
 
     output_jobj["average_utilities_all"] = average_utilities_all
     output_jobj["average_average_utilities_copy"] = average_utilities_copy
