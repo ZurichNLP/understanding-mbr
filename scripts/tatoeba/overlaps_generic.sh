@@ -46,6 +46,9 @@ overlaps_sub_sub=$overlaps_sub/$model_name
 
 mkdir -p $overlaps_sub_sub
 
+# measure time
+
+SECONDS=0
 
 # compute overlaps of beam translations, samples and mbr
 
@@ -151,3 +154,6 @@ for corpus in $corpora; do
     done
 
 done
+
+echo "time taken:"
+echo "$SECONDS seconds"

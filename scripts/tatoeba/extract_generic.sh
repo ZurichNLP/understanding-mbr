@@ -37,6 +37,9 @@ extracts_sub_sub=$extracts_sub/$model_name
 
 mkdir -p $extracts_sub_sub
 
+# measure time
+
+SECONDS=0
 
 # extract from beam translations, samples and mbr
 
@@ -119,3 +122,6 @@ for corpus in $corpora; do
     done
 
 done
+
+echo "time taken:"
+echo "$SECONDS seconds"
