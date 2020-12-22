@@ -284,3 +284,16 @@ id_overlaps=$(
 )
 
 echo "  id_overlaps: $id_overlaps | $logs_sub_sub/slurm-$id_overlaps.out"  | tee -a $logs_sub_sub/MAIN
+
+# extract from overlaps (depends on overlaps)
+
+id_extract=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    --dependency=afterok:$id_overlaps \
+    $SLURM_LOG_ARGS \
+    $scripts/tatoeba/extract_generic.sh \
+    $base $src $trg $model_name "$utility_functions" "$corpora"
+)
+
+echo "  id_extract: $id_extract | $logs_sub_sub/slurm-$id_overlaps.out"  | tee -a $logs_sub_sub/MAIN

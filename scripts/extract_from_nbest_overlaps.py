@@ -6,8 +6,6 @@ import json
 
 import numpy as np
 
-from typing import List
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -16,7 +14,7 @@ def parse_args():
                                                         "and overlaps, as JSON.",
                         required=True)
 
-    parser.add_argument("--output", type=str, help="Where to save JSON results.", required=True)
+    parser.add_argument("--nbest-output", type=str, help="Where to save JSON results.", required=True)
 
     parser.add_argument("--threshold-copy", type=float, help="Threshold above which to classify as copies.",
                         required=False, default=0.9)
@@ -29,18 +27,6 @@ def parse_args():
     return args
 
 
-def safe_mean(input_list: List[float]) -> float:
-    """
-
-    :param list_like:
-    :return:
-    """
-
-    if len(input_list) == 0:
-        return 0.0
-
-
-
 def main():
     args = parse_args()
 
@@ -49,7 +35,7 @@ def main():
 
     nbest_handle = open(args.nbest_input, "r")
 
-    output_handle = open(args.output, "w")
+    output_handle = open(args.nbest_output, "w")
 
     output_jobj = {"copy": 0,
                    "hallucination": 0,
