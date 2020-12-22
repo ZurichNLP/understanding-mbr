@@ -178,7 +178,7 @@ HEADER2 = """<h1>Settings</h1>
 <p>Normal hypotheses: <span id="count-normal"/></p>
 <p>Copies: <span id="count-copies"/></p>
 <p>Hallucinations: <span id="count-hallucinations"/></p>
-<p>Both: <span id="count-both"/></p>
+<p>Both (count not exclusive): <span id="count-both"/></p>
 <p><strong>Total: <span id="count-all"/></strong></p>
 <br>
 <h1>Translations</h1>

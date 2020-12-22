@@ -43,7 +43,7 @@ class Measurer(object):
 
             precision_weights = [0.55, 0.45, 0.0, 0.0]
 
-            args = argparse.Namespace(smooth_method="none", smooth_value=None, force=False,
+            args = argparse.Namespace(smooth_method="floor", smooth_value=0.01, force=False,
                                       short=False, lc=False, tokenize=sacrebleu.DEFAULT_TOKENIZER,
                                       precision_weights=precision_weights)
 
