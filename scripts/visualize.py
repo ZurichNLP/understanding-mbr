@@ -4,7 +4,7 @@ import json
 import logging
 import argparse
 
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from itertools import zip_longest
 from collections import Counter
 
@@ -311,7 +311,11 @@ class TableCreator(object):
         overlaps_with_source = jobj["overlaps_with_source"]  # type: List[float]
         overlaps_with_reference_word = jobj["overlaps_with_reference_word"]  # type: List[float]
         overlaps_with_reference_bleu2 = jobj["overlaps_with_reference_bleu2"]  # type: List[float]
-        overlaps_with_reference_chrf = jobj["overlaps_with_reference_chrf"]  # type: List[float]
+
+        try:
+            overlaps_with_reference_chrf = jobj["overlaps_with_reference_chrf"]  # type: List[Optional[float]]
+        except KeyError:
+            overlaps_with_reference_chrf = [None] * len(utilities)
 
         lists = [translations, utilities, overlaps_with_source,
                  overlaps_with_reference_word, overlaps_with_reference_bleu2, overlaps_with_reference_chrf]

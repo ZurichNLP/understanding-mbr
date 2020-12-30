@@ -22,7 +22,7 @@ for preprocess_copy_noise_probability in $noise_probabilities; do
 
     # delete files for this model to rerun everything
 
-    sub_folders="data shared_models prepared models translations samples mbr lengths evaluations counts overlaps"
+    sub_folders="data shared_models prepared models translations samples mbr lengths evaluations counts overlaps extracts"
 
     echo "Could delete the following folders related to $src-$trg/$model_name:"
 
