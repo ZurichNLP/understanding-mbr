@@ -85,8 +85,8 @@ def main():
             average_utilities_hallucination.append(np.mean(utilities_hallucination))
 
     output_jobj["average_utilities_all"] = average_utilities_all
-    output_jobj["average_average_utilities_copy"] = average_utilities_copy
-    output_jobj["average_average_utilities_hallucination"] = average_utilities_hallucination
+    output_jobj["average_utilities_copy"] = average_utilities_copy
+    output_jobj["average_utilities_hallucination"] = average_utilities_hallucination
 
     output_jobj["average_average_utilities_all"] = np.mean(average_utilities_all)
     output_jobj["average_average_utilities_copy"] = np.mean(average_utilities_copy)
