@@ -16,7 +16,7 @@ mv html/test.depieced.src html/medical.depieced.src
 mv html/test.depieced.trg html/medical.depieced.trg
 
 
-# shorten to 100 first lines each
+# shorten to 50 first lines each
 
 top=50
 

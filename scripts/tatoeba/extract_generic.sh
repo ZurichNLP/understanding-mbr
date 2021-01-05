@@ -23,7 +23,7 @@ seeds="1 2"
 beam_sizes="5 10"
 
 threshold_copy=0.9
-threshold_hallucination=0.01
+threshold_hallucination=0.001
 overlap_function_reference="chrf"
 
 source $base/venvs/sockeye3-cpu/bin/activate

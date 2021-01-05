@@ -308,14 +308,11 @@ class TableCreator(object):
         jobj = json.loads(nbest_line)
         translations = jobj["translations"]  # type: List[str]
         utilities = jobj["utilities"]  # type: List[float]
+
         overlaps_with_source = jobj["overlaps_with_source"]  # type: List[float]
         overlaps_with_reference_word = jobj["overlaps_with_reference_word"]  # type: List[float]
         overlaps_with_reference_bleu2 = jobj["overlaps_with_reference_bleu2"]  # type: List[float]
-
-        try:
-            overlaps_with_reference_chrf = jobj["overlaps_with_reference_chrf"]  # type: List[Optional[float]]
-        except KeyError:
-            overlaps_with_reference_chrf = [None] * len(utilities)
+        overlaps_with_reference_chrf = jobj["overlaps_with_reference_chrf"]  # type: List[Optional[float]]
 
         lists = [translations, utilities, overlaps_with_source,
                  overlaps_with_reference_word, overlaps_with_reference_bleu2, overlaps_with_reference_chrf]
