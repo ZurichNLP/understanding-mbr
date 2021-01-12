@@ -108,11 +108,13 @@ th, td {
 
   function stats() {
 
-    const countNormal = $("tbody tr:not(:has(td[class]))").length;
-    const countCopies = $("tr").has("td.copy:not(.hallucination)").length;
-    const countHallucinations = $("tr").has("td.hallucination:not(.copy)").length;
-    const countBoth = $("tr").has("td.copy.hallucination").length;
-    const countAll = $("tbody tr").length;
+    const All = $("tbody tr");
+
+    const countNormal = All.filter(":not(:has(td.hallucination)):not(:has(td.copy))").length;
+    const countCopies = All.filter(":has(td.copy:not(.hallucination))").length;
+    const countHallucinations = All.filter(":has(td.hallucination:not(.copy))").length;
+    const countBoth = All.filter(":has(td.copy.hallucination)").length;
+    const countAll = All.length;
 
     $("#count-normal").text(countNormal.toString());
     $("#count-copies").text(countCopies.toString());
@@ -153,15 +155,15 @@ INFO_TEMPLATE = """<h1>Info</h1>
 <p>Reference: {reference}</p>
 <br>"""
 
-HEADER2 = """<h1>Settings</h1>
+HEADER2_TEMPLATE = """<h1>Settings</h1>
 <div>
   Highlight as <span class="copy">copies</span> if overlap with source larger than
-  <input id="threshold-copy" type="number" value="0.9" data-original-value="0.9" step="any"/>
+  <input id="threshold-copy" type="number" value="{threshold_copy}" data-original-value="{threshold_copy}" step="any"/>
 </div>
 <br>
 <div>
   Highlight as <span class="hallucination">hallucinations</span> if overlap with reference lower than
-  <input id="threshold-hallucination" type="number" step="any" value="0.01" data-original-value="0.01"/>
+  <input id="threshold-hallucination" type="number" step="any" value="{threshold_hallucination}" data-original-value="{threshold_hallucination}"/>
 </div>
 <br>
 <div>
@@ -175,7 +177,7 @@ HEADER2 = """<h1>Settings</h1>
 <input type="button" id="button-reset" value="Reset to default values">
 <br>
 
-<h1>Statistics</h1>
+<h1>Statistics (about top 50 translations only) </h1>
 <p>Normal hypotheses: <span id="count-normal"/></p>
 <p>Copies: <span id="count-copies"/></p>
 <p>Hallucinations: <span id="count-hallucinations"/></p>
@@ -206,7 +208,7 @@ def parse_args():
                         required=False, default=0.9)
     parser.add_argument("--highlight-threshold-hallucination", type=float, help="Threshold to highlight hypotheses as "
                                                                                 "hallucinations.",
-                        required=False, default=0.01)
+                        required=False, default=0.001)
     parser.add_argument("--highlight-type-hallucination", type=str, help="Which overlap value to use for coloring"
                                                                          "hallucination cells",
                         required=False, default="chrf", choices=["word", "bleu2", "chrf"])
@@ -383,7 +385,8 @@ def main():
 
     print(HEADER)
     print(INFO_TEMPLATE.format(source=args.source, nbest=args.nbest, reference=args.reference))
-    print(HEADER2)
+    print(HEADER2_TEMPLATE.format(threshold_copy=args.highlight_threshold_copy,
+                                  threshold_hallucination=args.highlight_threshold_hallucination))
 
     source_handle = open(args.source, "r")
     reference_handle = open(args.reference, "r")
