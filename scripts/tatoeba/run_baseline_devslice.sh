@@ -12,7 +12,7 @@ trg=epo
 
 train_additional_args="--label-smoothing 0.0"
 
-utility_functions="sentence-chrf-balanced"
+utility_functions="sentence-chrf-1"
 
 corpora="test slice-test"
 

@@ -57,13 +57,21 @@ for corpus in $corpora; do
 
             . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-            output=$output_prefix.chrf
+            output=$output_prefix.chrf_1
+            chrf_beta=1
 
             . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
-            output=$output_prefix.chrf_balanced
+            output=$output_prefix.chrf_2
+            chrf_beta=2
 
-            . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+            output=$output_prefix.chrf_3
+            chrf_beta=3
+
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
         done
     done
 
@@ -82,13 +90,20 @@ for corpus in $corpora; do
 
             . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-            output=$output_prefix.chrf
+            output=$output_prefix.chrf_1
+            chrf_beta=1
 
             . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
-            output=$output_prefix.chrf_balanced
+            output=$output_prefix.chrf_2
+            chrf_beta=2
 
-            . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+            output=$output_prefix.chrf_3
+            chrf_beta=3
+
+            . $scripts/tatoeba/evaluate_chrf_more_generic.sh
         done
     done
 
@@ -107,13 +122,20 @@ for corpus in $corpora; do
 
                 . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-                output=$output_prefix.chrf
+                output=$output_prefix.chrf_1
+                chrf_beta=1
 
                 . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
-                output=$output_prefix.chrf_balanced
+                output=$output_prefix.chrf_2
+                chrf_beta=2
 
-                . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+                output=$output_prefix.chrf_3
+                chrf_beta=3
+
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
             done
         done
@@ -135,13 +157,20 @@ for corpus in $corpora; do
 
                 . $scripts/tatoeba/evaluate_bleu_more_generic.sh
 
-                output=$output_prefix.chrf
+                output=$output_prefix.chrf_1
+                chrf_beta=1
 
                 . $scripts/tatoeba/evaluate_chrf_more_generic.sh
 
-                output=$output_prefix.chrf_balanced
+                output=$output_prefix.chrf_2
+                chrf_beta=2
 
-                . $scripts/tatoeba/evaluate_chrf_balanced_more_generic.sh
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
+
+                output=$output_prefix.chrf_3
+                chrf_beta=3
+
+                . $scripts/tatoeba/evaluate_chrf_more_generic.sh
             done
         done
     done

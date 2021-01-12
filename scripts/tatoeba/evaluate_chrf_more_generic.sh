@@ -5,6 +5,7 @@
 # $hyp
 # $ref
 # $output
+# $chrf_beta
 
 for unused in pseudo_loop; do
 
@@ -12,7 +13,7 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    cat $hyp | sacrebleu $ref --metrics chrf -w 3 > $output
+    cat $hyp | sacrebleu $ref --metrics chrf -w 3 --chrf-beta $chrf_beta > $output
 
     echo "$output"
     cat $output

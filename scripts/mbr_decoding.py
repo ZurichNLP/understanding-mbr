@@ -24,8 +24,9 @@ UTILITY_SENTENCE_BLEU_EXP = "sentence-bleu-exp"
 UTILITY_SENTENCE_METEOR = "sentence-meteor"
 UTILITY_SENTENCE_METEOR_BALANCED = "sentence-meteor-balanced"
 UTILITY_SENTENCE_TER = "sentence-ter"
-UTILITY_SENTENCE_CHRF = "sentence-chrf"
-UTILITY_SENTENCE_CHRF_BALANCED = "sentence-chrf-balanced"
+UTILITY_SENTENCE_CHRF_1 = "sentence-chrf-1"
+UTILITY_SENTENCE_CHRF_2 = "sentence-chrf-2"
+UTILITY_SENTENCE_CHRF_3 = "sentence-chrf-3"
 
 UTILITY_SENTENCE_BLEU_SYMMETRIC = "sentence-bleu-symmetric"
 UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC = "sentence-bleu-floor-symmetric"
@@ -33,7 +34,9 @@ UTILITY_SENTENCE_BLEU_ADD_K_SYMMETRIC = "sentence-bleu-add-k-symmetric"
 UTILITY_SENTENCE_BLEU_EXP_SYMMETRIC = "sentence-bleu-exp-symmetric"
 UTILITY_SENTENCE_METEOR_SYMMETRIC = "sentence-meteor-symmetric"
 UTILITY_SENTENCE_TER_SYMMETRIC = "sentence-ter-symmetric"
-UTILITY_SENTENCE_CHRF_SYMMETRIC = "sentence-chrf-symmetric"
+UTILITY_SENTENCE_CHRF_1_SYMMETRIC = "sentence-chrf-1-symmetric"
+UTILITY_SENTENCE_CHRF_2_SYMMETRIC = "sentence-chrf-2-symmetric"
+UTILITY_SENTENCE_CHRF_3_SYMMETRIC = "sentence-chrf-3-symmetric"
 
 UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_BLEU_FLOOR,
@@ -42,15 +45,18 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_METEOR,
                      UTILITY_SENTENCE_METEOR_BALANCED,
                      UTILITY_SENTENCE_TER,
-                     UTILITY_SENTENCE_CHRF,
-                     UTILITY_SENTENCE_CHRF_BALANCED,
+                     UTILITY_SENTENCE_CHRF_1,
+                     UTILITY_SENTENCE_CHRF_2,
+                     UTILITY_SENTENCE_CHRF_3,
                      UTILITY_SENTENCE_BLEU_SYMMETRIC,
                      UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC,
                      UTILITY_SENTENCE_BLEU_ADD_K_SYMMETRIC,
                      UTILITY_SENTENCE_BLEU_EXP_SYMMETRIC,
                      UTILITY_SENTENCE_METEOR_SYMMETRIC,
                      UTILITY_SENTENCE_TER_SYMMETRIC,
-                     UTILITY_SENTENCE_CHRF_SYMMETRIC]
+                     UTILITY_SENTENCE_CHRF_1_SYMMETRIC,
+                     UTILITY_SENTENCE_CHRF_2_SYMMETRIC,
+                     UTILITY_SENTENCE_CHRF_3_SYMMETRIC]
 
 
 def parse_args():
@@ -104,7 +110,8 @@ class MBR(object):
             if self.utility_function_name.endswith("balanced"):
                 chrf_beta = 1
             else:
-                chrf_beta = 2
+                last_part = self.utility_function_name.split("-")[-1]
+                chrf_beta = int(last_part)
 
             self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=False, short=False)
 

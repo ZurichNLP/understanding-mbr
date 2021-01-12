@@ -16,7 +16,7 @@ LANG_PAIRS=(
     "bel rus"
 )
 
-utility_functions="sentence-bleu-floor sentence-bleu-floor-symmetric sentence-chrf sentence-chrf-symmetric sentence-chrf-balanced sentence-meteor sentence-meteor-balanced sentence-meteor-symmetric"
+utility_functions="sentence-bleu-floor sentence-bleu-floor-symmetric sentence-chrf-1 sentence-chrf-1-symmetric sentence-chrf-2 sentence-chrf-2-symmetric sentence-chrf-3 sentence-chrf-3-symmetric sentence-meteor sentence-meteor-balanced sentence-meteor-symmetric"
 
 # compare risk functions + no label smoothing
 

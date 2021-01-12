@@ -78,7 +78,7 @@ if [ -z "$preprocess_langid" ]; then
 fi
 
 if [ -z "$utility_functions" ]; then
-    utility_functions="sentence-chrf-balanced"
+    utility_functions="sentence-chrf-1"
 fi
 
 if [ -z "$preprocess_copy_noise_probability" ]; then

@@ -196,8 +196,8 @@ def read_metric_values(metric, filepath):
     if metric == "bleu":
         metric_names = ["BLEU"]
         metric_values = [read_bleu(filepath)]
-    elif metric == "chrf":
-        metric_names = ["CHRF"]
+    elif "chrf" in metric:
+        metric_names = [metric.upper()]
         metric_values = [read_chrf(filepath)]
     elif metric == "chrf_balanced":
         metric_names = ["CHRF_BALANCED"]
@@ -399,15 +399,17 @@ def main():
                     "NUM_SAMPLES",
                     "SEED",
                     "BLEU",
-                    "CHRF",
+                    "CHRF_1",
+                    "CHRF_2",
+                    "CHRF_3",
                     "METEOR",
-                    "CHRF_BALANCED",
                     "METEOR_BALANCED"]
 
     metric_names = ["BLEU",
-                    "CHRF",
+                    "CHRF_1",
+                    "CHRF_2",
+                    "CHRF_3",
                     "METEOR",
-                    "CHRF_BALANCED",
                     "METEOR_BALANCED"]
 
     print("\t".join(header_names))
