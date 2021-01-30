@@ -27,6 +27,7 @@ UTILITY_SENTENCE_TER = "sentence-ter"
 UTILITY_SENTENCE_CHRF_1 = "sentence-chrf-1"
 UTILITY_SENTENCE_CHRF_2 = "sentence-chrf-2"
 UTILITY_SENTENCE_CHRF_3 = "sentence-chrf-3"
+UTILITY_SENTENCE_CHRF_2_PRECISION = "sentence-chrf-2-precision"
 
 UTILITY_SENTENCE_BLEU_SYMMETRIC = "sentence-bleu-symmetric"
 UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC = "sentence-bleu-floor-symmetric"
@@ -48,6 +49,7 @@ UTILITY_FUNCTIONS = [UTILITY_SENTENCE_BLEU,
                      UTILITY_SENTENCE_CHRF_1,
                      UTILITY_SENTENCE_CHRF_2,
                      UTILITY_SENTENCE_CHRF_3,
+                     UTILITY_SENTENCE_CHRF_2_PRECISION,
                      UTILITY_SENTENCE_BLEU_SYMMETRIC,
                      UTILITY_SENTENCE_BLEU_FLOOR_SYMMETRIC,
                      UTILITY_SENTENCE_BLEU_ADD_K_SYMMETRIC,
@@ -106,7 +108,16 @@ class MBR(object):
 
         :return:
         """
-        if "chrf" in self.utility_function_name:
+        if self.utility_function_name == UTILITY_SENTENCE_CHRF_2_PRECISION:
+
+            chrf_beta = 2
+
+            self.args = argparse.Namespace(chrf_order=6, chrf_beta=chrf_beta, chrf_whitespace=False, short=False)
+
+            self.scorer = cached_metrics.CachedPrecisionCHRF(self.args)
+            self.cached_scorer = True
+
+        elif "chrf" in self.utility_function_name:
             if self.utility_function_name.endswith("balanced"):
                 chrf_beta = 1
             else:

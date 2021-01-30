@@ -2,7 +2,7 @@
 
 from methodtools import lru_cache
 from collections import Counter
-from sacrebleu import CHRF, BLEU, BLEUScore
+from sacrebleu import CHRF, BLEU, BLEUScore, CHRFScore
 from itertools import zip_longest
 from typing import List, Iterable, Union
 
@@ -27,6 +27,36 @@ class CachedCHRF(CHRF):
 
     def cache_clear(self) -> None:
         self.extract_char_ngrams.cache_clear()
+
+
+class CachedPrecisionCHRF(CHRF):
+
+    @lru_cache(maxsize=LRU_CACHE_SIZE_CHRF)
+    def extract_char_ngrams(self, s: str, n: int) -> Counter:
+        """
+        Yields counts of character n-grams from string s of order n.
+        """
+        return Counter([s[i:i + n] for i in range(len(s) - n + 1)])
+
+    def cache_info(self) -> str:
+        return self.extract_char_ngrams.cache_info()
+
+    def cache_clear(self) -> None:
+        self.extract_char_ngrams.cache_clear()
+
+    def sentence_score(self, hypothesis: str, references: List[str]) -> CHRFScore:
+        """
+        Computes ChrF on a single sentence pair.
+        :param hypothesis: Hypothesis string.
+        :param references: Reference string(s).
+        :return: Chrf score.
+        """
+        hypothesis, references = references[0], [hypothesis]
+
+        assert not isinstance(references, str), \
+            "sentence_score needs a list of references, not a single string"
+        stats = self.get_sentence_statistics(hypothesis, references)
+        return self.compute_chrf(stats, self.order, self.beta)
 
 
 class CachedBLEU(BLEU):
