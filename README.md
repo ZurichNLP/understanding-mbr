@@ -86,8 +86,8 @@ For instance, to run all required steps for a number of medium-resource language
 ### Recovering partial runs
 
 Steps within a run pipeline depend on each other (SLURM sbatch `--afterok` dependency in most cases).
-This means that if a job X fails, subsequent jobs that depend on X will never start. If steps are completed,
-the exit immediately -- so you can always re-run an entire pipeline if any step fails.
+This means that if a job X fails, subsequent jobs that depend on X will never start. If you attempt to re-run completed steps
+they exit immediately -- so you can always re-run an entire pipeline if any step fails.
 
 ## Reproducing the results presented in our paper in particular
 
@@ -111,4 +111,154 @@ To reproduce exactly the tables and figures we show in the paper, use our Google
 
 https://colab.research.google.com/drive/1GYZvxRB1aebOThGllgb0teY8A4suH5j-?usp=sharing
 
-This is possible only after running the experiments themselves as described in earlier sections.
+This is possible only because we have hosted the results of our experiments on our servers and Colab can retrieve files
+from there.
+
+## Browse MBR samples
+
+We also provide examples for pools of MBR samples for your perusal, as HTML files that can be viewed
+in any browser. The example HTML files are created by running the following
+script:
+
+    ./scripts/tatoeba/local_html.sh
+
+and are available at the following URLs:
+
+### Domain robustness
+
+<table>
+    <thead>
+        <th>language pair</th>
+        <th>domain test set</th>
+        <th>link</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>DEU-ENG</td>
+            <td>it</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/deu-eng.domain_robustness.it.html</a></td>
+        </tr>
+<tr>
+            <td>DEU-ENG</td>
+            <td>koran</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/deu-eng.domain_robustness.koran.html</a></td>
+        </tr>
+<tr>
+            <td>DEU-ENG</td>
+            <td>law</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/deu-eng.domain_robustness.law.html</a></td>
+        </tr>
+<tr>
+            <td>DEU-ENG</td>
+            <td>medical</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/deu-eng.domain_robustness.medical.html</a></td>
+        </tr>
+<tr>
+            <td>DEU-ENG</td>
+            <td>subtitles</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/deu-eng.domain_robustness.subtitles.html</a></td>
+        </tr>
+    </tbody>
+</table>
+
+### Copy noise in training data
+
+<table>
+    <thead>
+        <th>language pair</th>
+        <th>amount of copy noise</th>
+        <th>link</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.001</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.001.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.005</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.005.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.01</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.01.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.05</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.05.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.075</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.075.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.1</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.1.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.25</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.25.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ARA-DEU</td>
+            <td>0.5</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/ara-deu.copy_noise.0.5.slice-test.html</a></td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <th>language pair</th>
+        <th>amount of copy noise</th>
+        <th>link</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.001</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.001.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.005</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.005.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.01</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.01.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.05</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.05.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.075</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.075.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.1</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.1.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.25</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.25.slice-test.html</a></td>
+        </tr>
+        <tr>
+            <td>ENG-MAR</td>
+            <td>0.5</td>
+            <td><a>https://files.ifi.uzh.ch/cl/archiv/2020/clcontra/eng-mar.copy_noise.0.5.slice-test.html</a></td>
+        </tr>
+    </tbody>
+</table>
