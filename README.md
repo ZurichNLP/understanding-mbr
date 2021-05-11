@@ -53,11 +53,16 @@ Individual steps in runs are submitted to a SLURM system. The generic run script
 will submit each individual step (such as translation, or model training) as a separate SLURM job. Depending on the nature of the task,
 the scripts submits to a different cluster, or asks for different resources.
 
-IMPORTANT: if
+**IMPORTANT**: if
 - you do not work on a cluster that uses SLURM for job management,
 - your cluster layout, resource naming etc. is different
   
-you absolutely need to modify the generic script `scripts/tatoeba/run_tatoeba_generic.sh` before running anything.
+you absolutely need to modify or replace the generic script `scripts/tatoeba/run_tatoeba_generic.sh` before running anything. If you do
+not use SLURM at all, it might be possible to just replace calls to `scripts/tatoeba/run_tatoeba_generic.sh` with
+`scripts/tatoeba/run_tatoeba_generic_no_slurm.sh`.
+
+`scripts/tatoeba/run_tatoeba_generic_no_slurm.sh` is a script we provide for convenience, but have not tested it ourselves.
+We cannot guarantee that it runs without error.
 
 ### Dry run
 
