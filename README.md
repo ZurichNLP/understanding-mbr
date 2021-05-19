@@ -2,7 +2,19 @@
 
 This repo provides code and documentation for the following paper:
 
-Müller and Sennrich (2021): Understanding the Properties of Minimum Bayes Risk Decoding in Neural Machine Translation.
+Müller and Sennrich (2021): [Understanding the Properties of Minimum Bayes Risk Decoding in Neural Machine Translation](https://arxiv.org/pdf/2105.08504.pdf).
+
+
+```
+@inproceedings{muller2021understanding,
+      title={Understanding the Properties of Minimum Bayes Risk Decoding in Neural Machine Translation}, 
+      author = {M{\"u}ller, Mathias  and
+      Sennrich, Rico},
+      year={2021},
+      eprint={2105.08504},
+      booktitle = "Proceedings of the Joint Conference of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (ACL-IJCNLP 2021)"
+}
+```
 
 ## Basic Setup
 
