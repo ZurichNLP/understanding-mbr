@@ -139,7 +139,7 @@ script:
 
     ./scripts/tatoeba/local_html.sh
 
-and are available at the following URLs:
+and are available at the following URLs (Markdown does not support clickable links, sorry!):
 
 ### Domain robustness
 
