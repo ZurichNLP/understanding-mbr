@@ -40,7 +40,7 @@ All other subsequent scripts will automatically activate the correct envs by exe
 
 The exact Python version we used for the experiments is `3.6.12`. `scripts/create_venv.sh` calls `pyenv` to set this specific version, assuming it was installed previously with `pyenv`. If you don't have `pyenv` on your system you can either a) install it (which can be complicated) or b) use the default Python 3 available on your system, which will probably not lead to an error. If b) then you need to remove calls to `pyenv` in `scripts/create_venv.sh`.
 
-The script above also assumes that `virtualenv` is installed on the system.
+The script above also assumes that `virtualenv` is installed on the system. If that is not the case you can either a) install `virtualenv` or b) use the [Python standard library replacement](https://docs.python.org/3/library/venv.html).
 
 **Install software**
 
