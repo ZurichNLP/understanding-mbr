@@ -32,8 +32,7 @@ any virtual Python environment:
 
     ./scripts/create_venv.sh
 
-**Important**: Then activate the env by executing the `source` command that is output by the shell
-script above.
+All other scripts will automatically activate the correct envs by executing `source` commands.
 
 Download and install required software:
 
