@@ -20,8 +20,6 @@
 # $preprocess_additional_test_corpora
 # $preprocess_langid
 
-module load volta cuda/10.2
-
 scripts=$base/scripts
 logs=$base/logs
 
