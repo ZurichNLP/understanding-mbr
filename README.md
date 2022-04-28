@@ -27,12 +27,22 @@ then proceed to install software before running any experiments.
 
 ### Install required software
 
+**Create a virtual environment**
+
 Create a new virtualenv that uses Python 3. Please make sure to run this command outside of
 any virtual Python environment:
 
     ./scripts/create_venv.sh
 
-All other scripts will automatically activate the correct envs by executing `source` commands.
+All other subsequent scripts will automatically activate the correct envs by executing `source` commands.
+
+**Note on Python versions**
+
+The exact Python version we used for the experiments is `3.6.12`. `scripts/create_venv.sh` calls `pyenv` to set this specific version, assuming it was installed previously with `pyenv`. If you don't have `pyenv` on your system you can either a) install it (which can be complicated) or b) use the default Python 3 available on your system, which will probably not lead to an error. If b) then you need to remove calls to `pyenv` in `scripts/create_venv.sh`.
+
+The script above also assumes that `virtualenv` is installed on the system.
+
+**Install software**
 
 Download and install required software:
 
@@ -79,6 +89,8 @@ We cannot guarantee that it runs without error.
 
 Before you run actual experiments, it can be useful to perform a dry run. Dry runs attempt to run all commands, create all files etc. but are finished
 within minutes and use CPU only. Dry runs help to catch some bugs (such as file permissions) early.
+
+Before calling a dry run script, make sure to change the `base` variable to an actual folder on your system, the one that contains your clone of this repo.
 
 To dry-run a baseline system for the language pair DAN-EPO, run:
 
